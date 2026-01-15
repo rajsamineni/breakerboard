@@ -1364,6 +1364,8 @@
         let selectedBreakerId = null;
         let entryTimes = [];
         let chartAbortController = null; // For cleaning up event listeners
+        let renderedBars = []; // Cached bar elements for fast highlight
+        let renderedLaneLabels = []; // Cached lane labels
         
         const filters = {
             nq: true, es: true,
@@ -1402,13 +1404,19 @@
             return rem > 0 ? `${hrs}h ${rem}m` : `${hrs}h`;
         }
         
+        let toastTimeout = null;
+        
         function showToast(msg, type = '') {
             const el = document.getElementById('status-msg');
             el.textContent = msg;
             el.className = 'status-msg ' + type;
-            // Clear after 5 seconds for non-error messages
+            // Clear previous timeout and set new one
+            if (toastTimeout) clearTimeout(toastTimeout);
             if (type !== 'error') {
-                setTimeout(() => el.textContent = '', 5000);
+                toastTimeout = setTimeout(() => {
+                    el.textContent = '';
+                    toastTimeout = null;
+                }, 5000);
             }
         }
         
@@ -1454,17 +1462,20 @@
                 liveBtn.classList.remove('inactive');
                 exploreBtn.classList.remove('explore-active');
                 exploreBtn.classList.add('inactive');
-                // Immediately show live confluence if data exists
-                if (allData.length > 0) {
+                // Show live confluence if data exists and nothing selected
+                if (allData.length > 0 && !selectedBreakerId && !selectedEntryMin) {
                     showLiveConfluence();
                 }
             } else {
                 exploreBtn.classList.remove('inactive');
                 exploreBtn.classList.add('explore-active');
                 liveBtn.classList.add('inactive');
-                // Clear live highlights and show empty panel
+                // Clear live highlights
                 clearLiveHighlight();
-                showEmptyPanel();
+                // Only show empty panel if nothing selected
+                if (!selectedBreakerId && !selectedEntryMin) {
+                    showEmptyPanel();
+                }
             }
             
             loadData();
@@ -1537,11 +1548,13 @@
             setWindow(windowStartMin, windowEndMin, 'Live');
             renderChart();
             
-            // Scroll to right edge and show live confluence
+            // Scroll to right edge and show live confluence (only if nothing selected)
             setTimeout(() => {
                 const container = document.getElementById('scroll-container');
                 container.scrollLeft = container.scrollWidth;
-                showLiveConfluence();
+                if (!selectedBreakerId && !selectedEntryMin) {
+                    showLiveConfluence();
+                }
             }, 50);
         }
         
@@ -1569,10 +1582,19 @@
             lastLoadLimit = currentHours;
             
             if (needsFullLoad) {
-                // Full load
+                // Full load with server-side time filtering
                 showToast('Loading...', '');
                 
-                fetch(FIREBASE_URL)
+                // Calculate cutoff time for server-side query
+                const now = new Date();
+                const cutoffDate = new Date(now.getTime() - (currentHours * 60 * 60 * 1000));
+                const cutoffISO = cutoffDate.toISOString().slice(0, 19).replace('T', ' ');
+                
+                // Try server-side filtered query first
+                const filteredUrl = FIREBASE_URL + 
+                    '?orderBy="observation_time"&startAt="' + cutoffISO + '"';
+                
+                fetch(filteredUrl)
                     .then(r => {
                         if (!r.ok) throw new Error('HTTP ' + r.status);
                         return r.json();
@@ -1585,24 +1607,6 @@
                         
                         if (entries.length === 0) throw new Error('No valid data');
                         
-                        // Find the latest observation time
-                        let latestTime = '';
-                        entries.forEach(([k, v]) => {
-                            if (v.observation_time > latestTime) {
-                                latestTime = v.observation_time;
-                            }
-                        });
-                        
-                        // Calculate cutoff time (X hours before latest)
-                        const latestMin = datetimeToMin(latestTime);
-                        const cutoffMin = latestMin - (currentHours * 60);
-                        
-                        // Filter to only include snapshots within time range
-                        entries = entries.filter(([k, v]) => {
-                            const snapMin = datetimeToMin(v.observation_time);
-                            return snapMin >= cutoffMin;
-                        });
-                        
                         // Sort by time
                         entries.sort((a, b) => {
                             const tsA = a[1].observation_time || '';
@@ -1614,6 +1618,53 @@
                         entries.forEach(([k, v]) => limited[k] = v);
                         
                         processFirebaseData(limited, true);
+                    })
+                    .catch(err => {
+                        // Fallback: If query fails (no index), try unfiltered load
+                        console.warn('Filtered query failed, trying full load:', err);
+                        return fetch(FIREBASE_URL)
+                            .then(r => {
+                                if (!r.ok) throw new Error('HTTP ' + r.status);
+                                return r.json();
+                            })
+                            .then(data => {
+                                if (!data) throw new Error('No data');
+                                
+                                let entries = Object.entries(data)
+                                    .filter(([k, v]) => v && v.observation_time);
+                                
+                                if (entries.length === 0) throw new Error('No valid data');
+                                
+                                // Find the latest observation time
+                                let latestTime = '';
+                                entries.forEach(([k, v]) => {
+                                    if (v.observation_time > latestTime) {
+                                        latestTime = v.observation_time;
+                                    }
+                                });
+                                
+                                // Calculate cutoff time (X hours before latest)
+                                const latestMin = datetimeToMin(latestTime);
+                                const cutoffMin = latestMin - (currentHours * 60);
+                                
+                                // Filter to only include snapshots within time range
+                                entries = entries.filter(([k, v]) => {
+                                    const snapMin = datetimeToMin(v.observation_time);
+                                    return snapMin >= cutoffMin;
+                                });
+                                
+                                // Sort by time
+                                entries.sort((a, b) => {
+                                    const tsA = a[1].observation_time || '';
+                                    const tsB = b[1].observation_time || '';
+                                    return tsA.localeCompare(tsB);
+                                });
+                                
+                                const limited = {};
+                                entries.forEach(([k, v]) => limited[k] = v);
+                                
+                                processFirebaseData(limited, true);
+                            });
                     })
                     .catch(err => {
                         showToast('Error: ' + err.message, 'error');
@@ -1811,10 +1862,44 @@
             showToast(`+${snapshotList.length} snapshots, ${newBreakers} new breakers`, 'success');
         }
         
+        // Prune data outside retention window to prevent memory growth
+        function pruneOldData() {
+            if (dataMaxTime === 0) return;
+            
+            // Use load limit + 30 min buffer as retention window
+            const retentionMinutes = (getLoadHours() * 60) + 30;
+            const cutoffMin = dataMaxTime - retentionMinutes;
+            let pruned = 0;
+            
+            for (const id in breakerCache) {
+                const breaker = breakerCache[id];
+                // Remove breakers that ended before the cutoff
+                if (breaker.endMin && breaker.endMin < cutoffMin) {
+                    delete breakerCache[id];
+                    pruned++;
+                }
+            }
+            
+            // Update dataMinTime
+            if (pruned > 0) {
+                const remaining = Object.values(breakerCache);
+                if (remaining.length > 0) {
+                    dataMinTime = Math.min(...remaining.map(d => d.startMin || d.events[0]?.absMin || dataMaxTime));
+                }
+            }
+        }
+        
         function finalizeBreakers() {
+            // Prune old data first to limit memory
+            pruneOldData();
+            
             allData = Object.values(breakerCache);
             allData.forEach(d => {
                 d.events.sort((a, b) => a.absMin - b.absMin);
+                // Limit events per breaker to prevent huge fib charts
+                if (d.events.length > 500) {
+                    d.events = d.events.slice(-500);
+                }
                 d.startMin = d.events[0]?.absMin || 0;
                 d.endMin = d.events[d.events.length - 1]?.absMin || 0;
                 d.symbol = d.id.toUpperCase().includes('NQ') ? 'NQ' : 'ES';
@@ -1835,7 +1920,8 @@
                     const container = document.getElementById('scroll-container');
                     container.scrollLeft = container.scrollWidth;
                     updateViewportIndicator();
-                    if (isLive) {
+                    // Only show live confluence if nothing selected
+                    if (isLive && !selectedBreakerId && !selectedEntryMin) {
                         showLiveConfluence();
                     }
                 }, 50);
@@ -1865,6 +1951,7 @@
             // Clean up previous event listeners
             if (chartAbortController) {
                 chartAbortController.abort();
+                chartAbortController = null;
             }
             chartAbortController = new AbortController();
             const signal = chartAbortController.signal;
@@ -1877,9 +1964,13 @@
             chartInner.innerHTML = '';
             timeHeader.innerHTML = '';
             
-            // In explore mode, preserve selections; in live mode, clear them
-            const preservedEntryMin = !isLive ? selectedEntryMin : null;
-            const preservedBreakerId = !isLive ? selectedBreakerId : null;
+            // Clear cached element arrays
+            renderedBars = [];
+            renderedLaneLabels = [];
+            
+            // Preserve selections across re-renders (both explore and live mode)
+            const preservedEntryMin = selectedEntryMin;
+            const preservedBreakerId = selectedBreakerId;
             
             selectedEntryMin = null;
             selectedBreakerId = null;
@@ -1903,7 +1994,7 @@
             }
             
             // Filter data for window
-            const windowData = allData.filter(d => {
+            let windowData = allData.filter(d => {
                 if (d.endMin < windowStartMin || d.startMin > windowEndMin) return false;
                 if (d.symbol === 'NQ' && !filters.nq) return false;
                 if (d.symbol === 'ES' && !filters.es) return false;
@@ -1911,6 +2002,13 @@
                 if (d.dir === 'bear' && !filters.bear) return false;
                 return true;
             });
+            
+            // Limit total bars to prevent browser crash (prioritize recent)
+            const MAX_BARS = 500;
+            if (windowData.length > MAX_BARS) {
+                windowData.sort((a, b) => b.endMin - a.endMin);
+                windowData = windowData.slice(0, MAX_BARS);
+            }
             
             // Group by TF → Symbol
             const grouped = {};
@@ -1973,6 +2071,9 @@
                     laneLabel.appendChild(symbolBadge);
                     leftPanel.appendChild(laneLabel);
                     
+                    // Cache lane label
+                    renderedLaneLabels.push({ el: laneLabel, tf: tf, symbol: symbol });
+                    
                     // Swimlane
                     const swimlane = document.createElement('div');
                     swimlane.className = 'swimlane';
@@ -1985,6 +2086,14 @@
                     stackedBreakers.forEach(b => {
                         const bar = createBreakerBar(b, laneHeight);
                         swimlane.appendChild(bar);
+                        // Cache bar with its time data for fast highlight
+                        renderedBars.push({
+                            el: bar,
+                            startMin: b.startMin,
+                            endMin: b.endMin,
+                            tf: tf,
+                            symbol: symbol
+                        });
                     });
                     
                     chartInner.appendChild(swimlane);
@@ -1996,7 +2105,9 @@
             // Subtract a few pixels for perfect alignment
             totalHeight -= 3;
             
-            const windowEntries = entryTimes.filter(t => t >= windowStartMin && t <= windowEndMin);
+            const windowEntries = entryTimes
+                .filter(t => t >= windowStartMin && t <= windowEndMin)
+                .slice(-100); // Limit entry lines
             windowEntries.forEach(entryMin => {
                 const x = (entryMin - windowStartMin) * PIXELS_PER_MINUTE;
                 const entryLine = document.createElement('div');
@@ -2031,8 +2142,10 @@
             // Cursor line event handlers on scroll container
             const scrollContainer = document.getElementById('scroll-container');
             let lastClientX = null;
+            let lastCursorMin = null;
+            let cursorUpdatePending = false;
             
-            function updateCursorPosition(clientX) {
+            function updateCursorPosition(clientX, isScroll = false) {
                 const scrollRect = scrollContainer.getBoundingClientRect();
                 const leftPanelWidth = 100; // matches .left-panel width
                 const x = clientX - scrollRect.left - leftPanelWidth + scrollContainer.scrollLeft;
@@ -2040,18 +2153,28 @@
                     cursorLine.style.left = x + 'px';
                     cursorLine.classList.add('visible');
                     
-                    // Calculate and show time
+                    // Calculate cursor time
                     const cursorMin = Math.round(windowStartMin + x / PIXELS_PER_MINUTE);
+                    
+                    // Always update tooltip position
                     cursorTime.textContent = minToTime(cursorMin);
                     cursorTime.style.display = 'block';
                     cursorTime.style.left = (clientX - 30) + 'px';
                     cursorTime.style.top = (scrollRect.top - 30) + 'px';
                     
-                    // Show confluence at cursor position in right panel
-                    showCursorConfluence(cursorMin);
-                    
-                    // Highlight bars at cursor (yellow)
-                    highlightCursorActive(cursorMin);
+                    // Only update panel and highlights if cursor minute changed
+                    // Skip heavy operations during scroll - only update on mousemove
+                    if (cursorMin !== lastCursorMin && !isScroll) {
+                        lastCursorMin = cursorMin;
+                        
+                        // Show confluence at cursor position in right panel (only if nothing selected)
+                        if (!selectedBreakerId && !selectedEntryMin) {
+                            showCursorConfluence(cursorMin);
+                        }
+                        
+                        // Highlight bars at cursor (yellow)
+                        highlightCursorActive(cursorMin);
+                    }
                 } else {
                     cursorLine.classList.remove('visible');
                     cursorTime.style.display = 'none';
@@ -2060,12 +2183,16 @@
             
             scrollContainer.addEventListener('mousemove', (e) => {
                 lastClientX = e.clientX;
-                updateCursorPosition(e.clientX);
+                updateCursorPosition(e.clientX, false);
             }, { signal });
             
             scrollContainer.addEventListener('scroll', () => {
-                if (lastClientX !== null) {
-                    updateCursorPosition(lastClientX);
+                if (lastClientX !== null && !cursorUpdatePending) {
+                    cursorUpdatePending = true;
+                    requestAnimationFrame(() => {
+                        updateCursorPosition(lastClientX, true);
+                        cursorUpdatePending = false;
+                    });
                 }
             }, { signal });
             
@@ -2077,13 +2204,13 @@
                 // Clear cursor highlights
                 clearCursorHighlight();
                 
-                // Restore appropriate panel state
-                if (isLive) {
-                    showLiveConfluence();
-                } else if (selectedBreakerId) {
+                // Restore appropriate panel state (selection takes priority over live mode)
+                if (selectedBreakerId) {
                     showBreakerDetail(selectedBreakerId);
                 } else if (selectedEntryMin) {
                     showEntryContext(selectedEntryMin);
+                } else if (isLive) {
+                    showLiveConfluence();
                 } else {
                     showEmptyPanel();
                 }
@@ -2115,7 +2242,7 @@
             
             updateVisibleCount(windowData.length);
             
-            // Restore selections in explore mode
+            // Restore selections (both explore and live mode)
             if (preservedBreakerId) {
                 selectedBreakerId = preservedBreakerId;
                 document.querySelectorAll(`.breaker-bar[data-breaker-id="${preservedBreakerId}"]`).forEach(el => {
@@ -2488,14 +2615,27 @@
             const maxFib = Math.max(...events.map(e => e.fib), 1);
             const fibCeil = Math.ceil(maxFib * 1.1); // Add 10% padding
             
-            // Find peak point
-            const peakEvent = events.reduce((max, e) => e.fib > max.fib ? e : max, events[0]);
+            // Find peak point (first occurrence of max fib)
+            const maxFibVal = Math.max(...events.map(e => e.fib));
+            const peakIndex = events.findIndex(e => e.fib === maxFibVal);
+            const peakEvent = events[peakIndex];
             
-            // Generate points
-            const points = events.map(e => {
+            // Downsample events if too many (keep first, last, peak, and sampled)
+            let sampledEvents = events;
+            let sampledPeakIndex = peakIndex;
+            if (events.length > 100) {
+                const step = Math.ceil(events.length / 80);
+                sampledEvents = events.filter((e, i) => 
+                    i === 0 || i === events.length - 1 || i === peakIndex || i % step === 0
+                );
+                sampledPeakIndex = sampledEvents.findIndex(e => e === events[peakIndex]);
+            }
+            
+            // Generate points from sampled events
+            const points = sampledEvents.map((e, i) => {
                 const x = padding.left + ((e.absMin - minTime) / timeRange) * chartWidth;
                 const y = padding.top + chartHeight - (e.fib / fibCeil) * chartHeight;
-                return { x, y, fib: e.fib, time: e.absMin };
+                return { x, y, fib: e.fib, time: e.absMin, isPeak: i === sampledPeakIndex };
             });
             
             // Create line path
@@ -2524,18 +2664,17 @@
             timeLabels.push(`<text class="fib-chart-label" x="${width - padding.right}" y="${height - 5}" text-anchor="end">${minToTime(maxTime)}</text>`);
             
             // Find peak point coordinates
-            const peakPoint = points.find(p => p.fib === peakEvent.fib);
+            const peakPoint = points.find(p => p.isPeak);
             
             // Generate dots (sample if too many)
             let dotPoints = points;
             if (points.length > 20) {
                 const step = Math.ceil(points.length / 15);
-                dotPoints = points.filter((p, i) => i === 0 || i === points.length - 1 || p.fib === peakEvent.fib || i % step === 0);
+                dotPoints = points.filter((p, i) => i === 0 || i === points.length - 1 || p.isPeak || i % step === 0);
             }
             
             const dots = dotPoints.map(p => {
-                const isPeak = p.fib === peakEvent.fib;
-                return `<circle class="${isPeak ? 'fib-chart-peak' : 'fib-chart-dot'}" cx="${p.x}" cy="${p.y}" r="${isPeak ? 4 : 3}"/>`;
+                return `<circle class="${p.isPeak ? 'fib-chart-peak' : 'fib-chart-dot'}" cx="${p.x}" cy="${p.y}" r="${p.isPeak ? 4 : 3}"/>`;
             }).join('');
             
             // Peak label
@@ -2600,7 +2739,10 @@
             const cursorDot = document.getElementById(chartId + '-cursor-dot');
             const tooltip = document.getElementById(chartId + '-tooltip');
             
+            // Guard: check if elements exist and listeners not already attached
             if (!svg || !cursorLine || !cursorDot || !tooltip) return;
+            if (svg.dataset.listenersAttached) return;
+            svg.dataset.listenersAttached = 'true';
             
             const container = svg.closest('.fib-chart-container');
             
@@ -2846,37 +2988,29 @@
             // Track which TF/symbol combinations have active breakers
             const activeLanes = new Set();
             
-            document.querySelectorAll('.breaker-bar').forEach(el => {
-                const startMin = parseInt(el.dataset.startMin);
-                const endMin = parseInt(el.dataset.endMin);
-                if (startMin <= entryMin && endMin >= entryMin) {
-                    el.classList.add('active-at-entry');
-                    // Track this lane
-                    const tf = el.closest('.swimlane')?.dataset.tf;
-                    const symbol = el.closest('.swimlane')?.dataset.symbol;
-                    if (tf && symbol) {
-                        activeLanes.add(`${tf}-${symbol}`);
-                    }
+            // Use cached bars
+            for (const bar of renderedBars) {
+                if (bar.startMin <= entryMin && bar.endMin >= entryMin) {
+                    bar.el.classList.add('active-at-entry');
+                    activeLanes.add(`${bar.tf}-${bar.symbol}`);
                 }
-            });
+            }
             
-            // Highlight corresponding lane labels
-            document.querySelectorAll('.lane-label').forEach(el => {
-                const tf = el.dataset.tf;
-                const symbol = el.dataset.symbol;
-                if (activeLanes.has(`${tf}-${symbol}`)) {
-                    el.classList.add('has-confluence');
+            // Use cached lane labels
+            for (const label of renderedLaneLabels) {
+                if (activeLanes.has(`${label.tf}-${label.symbol}`)) {
+                    label.el.classList.add('has-confluence');
                 }
-            });
+            }
         }
         
         function clearEntryHighlight() {
-            document.querySelectorAll('.active-at-entry').forEach(el => {
-                el.classList.remove('active-at-entry');
-            });
-            document.querySelectorAll('.has-confluence').forEach(el => {
-                el.classList.remove('has-confluence');
-            });
+            for (const bar of renderedBars) {
+                bar.el.classList.remove('active-at-entry');
+            }
+            for (const label of renderedLaneLabels) {
+                label.el.classList.remove('has-confluence');
+            }
         }
         
         // Cursor highlighting (yellow) - separate from live/selected highlighting
@@ -2884,40 +3018,32 @@
             clearCursorHighlight();
             clearLiveHighlight(); // Clear live highlight when cursor is active
             
-            document.querySelectorAll('.breaker-bar').forEach(el => {
-                const startMin = parseInt(el.dataset.startMin);
-                const endMin = parseInt(el.dataset.endMin);
-                if (startMin <= cursorMin && endMin >= cursorMin) {
-                    el.classList.add('cursor-active');
-                }
-            });
-            
-            // Highlight corresponding lane labels
             const activeLanes = new Set();
-            document.querySelectorAll('.breaker-bar.cursor-active').forEach(el => {
-                const tf = el.closest('.swimlane')?.dataset.tf;
-                const symbol = el.closest('.swimlane')?.dataset.symbol;
-                if (tf && symbol) {
-                    activeLanes.add(`${tf}-${symbol}`);
-                }
-            });
             
-            document.querySelectorAll('.lane-label').forEach(el => {
-                const tf = el.dataset.tf;
-                const symbol = el.dataset.symbol;
-                if (activeLanes.has(`${tf}-${symbol}`)) {
-                    el.classList.add('cursor-confluence');
+            // Use cached bars instead of querySelectorAll
+            for (const bar of renderedBars) {
+                if (bar.startMin <= cursorMin && bar.endMin >= cursorMin) {
+                    bar.el.classList.add('cursor-active');
+                    activeLanes.add(`${bar.tf}-${bar.symbol}`);
                 }
-            });
+            }
+            
+            // Use cached lane labels
+            for (const label of renderedLaneLabels) {
+                if (activeLanes.has(`${label.tf}-${label.symbol}`)) {
+                    label.el.classList.add('cursor-confluence');
+                }
+            }
         }
         
         function clearCursorHighlight() {
-            document.querySelectorAll('.cursor-active').forEach(el => {
-                el.classList.remove('cursor-active');
-            });
-            document.querySelectorAll('.cursor-confluence').forEach(el => {
-                el.classList.remove('cursor-confluence');
-            });
+            // Use cached bars instead of querySelectorAll
+            for (const bar of renderedBars) {
+                bar.el.classList.remove('cursor-active');
+            }
+            for (const label of renderedLaneLabels) {
+                label.el.classList.remove('cursor-confluence');
+            }
         }
         
         // Live highlighting (green) - for live mode current time
@@ -2925,40 +3051,31 @@
             clearLiveHighlight();
             const currentMin = dataMaxTime;
             
-            document.querySelectorAll('.breaker-bar').forEach(el => {
-                const startMin = parseInt(el.dataset.startMin);
-                const endMin = parseInt(el.dataset.endMin);
-                if (startMin <= currentMin && endMin >= currentMin) {
-                    el.classList.add('live-active');
-                }
-            });
-            
-            // Highlight corresponding lane labels
             const activeLanes = new Set();
-            document.querySelectorAll('.breaker-bar.live-active').forEach(el => {
-                const tf = el.closest('.swimlane')?.dataset.tf;
-                const symbol = el.closest('.swimlane')?.dataset.symbol;
-                if (tf && symbol) {
-                    activeLanes.add(`${tf}-${symbol}`);
-                }
-            });
             
-            document.querySelectorAll('.lane-label').forEach(el => {
-                const tf = el.dataset.tf;
-                const symbol = el.dataset.symbol;
-                if (activeLanes.has(`${tf}-${symbol}`)) {
-                    el.classList.add('live-confluence');
+            // Use cached bars
+            for (const bar of renderedBars) {
+                if (bar.startMin <= currentMin && bar.endMin >= currentMin) {
+                    bar.el.classList.add('live-active');
+                    activeLanes.add(`${bar.tf}-${bar.symbol}`);
                 }
-            });
+            }
+            
+            // Use cached lane labels
+            for (const label of renderedLaneLabels) {
+                if (activeLanes.has(`${label.tf}-${label.symbol}`)) {
+                    label.el.classList.add('live-confluence');
+                }
+            }
         }
         
         function clearLiveHighlight() {
-            document.querySelectorAll('.live-active').forEach(el => {
-                el.classList.remove('live-active');
-            });
-            document.querySelectorAll('.live-confluence').forEach(el => {
-                el.classList.remove('live-confluence');
-            });
+            for (const bar of renderedBars) {
+                bar.el.classList.remove('live-active');
+            }
+            for (const label of renderedLaneLabels) {
+                label.el.classList.remove('live-confluence');
+            }
         }
         
         // ===== VIEWPORT DRAG TO PAN =====
@@ -3065,14 +3182,11 @@
         
         function onScroll() {
             clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {}, 30);
+            scrollTimeout = setTimeout(updateViewportFromScroll, 30);
             
             const container = document.getElementById('scroll-container');
             const header = document.getElementById('time-header');
             header.style.transform = `translateX(${-container.scrollLeft}px)`;
-            
-            // Update viewport indicator based on scroll position
-            updateViewportFromScroll();
         }
         
         function updateViewportFromScroll() {
@@ -3147,12 +3261,9 @@
             }, 1000);
             
             refreshTimer = setInterval(() => {
-                console.log('Auto-refresh triggered');
                 loadData();
                 countdownSecs = interval;
             }, interval * 1000);
-            
-            console.log('Refresh interval set to', interval, 'seconds');
         }
         
         // ===== INIT =====
