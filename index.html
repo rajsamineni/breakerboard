@@ -1589,7 +1589,6 @@
         const LANE_PADDING = 6; // Top/bottom padding in swimlanes
         const TF_HEADER_HEIGHT = 2;
         const LEFT_PANEL_MIN_HEIGHT = 68; // Minimum based on left panel content
-        const WINDOW_HOURS = 8;
         
         const TF_ORDER = ['1m', '5m', '15m', '1h', '4h'];
         const TF_DISPLAY = { '4h': '4H', '1h': '1H', '15m': '15m', '5m': '5m', '1m': '1m' };
@@ -1747,17 +1746,18 @@
                 return;
             }
             
-            const shift = direction * WINDOW_HOURS * 60;
+            const windowHours = getLoadHours();
+            const shift = direction * windowHours * 60;
             let newStart = windowStartMin + shift;
             let newEnd = windowEndMin + shift;
             
             if (newStart < dataMinTime) {
                 newStart = dataMinTime;
-                newEnd = newStart + WINDOW_HOURS * 60;
+                newEnd = newStart + windowHours * 60;
             }
             if (newEnd > dataMaxTime) {
                 newEnd = dataMaxTime;
-                newStart = newEnd - WINDOW_HOURS * 60;
+                newStart = Math.max(dataMinTime, newEnd - windowHours * 60);
             }
             
             if (newStart === windowStartMin && newEnd === windowEndMin) {
@@ -1767,7 +1767,7 @@
             
             windowStartMin = newStart;
             windowEndMin = newEnd;
-            setWindow(windowStartMin, windowEndMin, 'Custom ' + WINDOW_HOURS + 'hr');
+            setWindow(windowStartMin, windowEndMin, 'Custom ' + windowHours + 'hr');
             renderChart();
             
             setTimeout(() => {
@@ -2000,9 +2000,9 @@
             dataMinTime = minTime;
             dataMaxTime = maxTime;
             
-            // Show last WINDOW_HOURS of data
+            // Show all loaded data (use load limit, not hardcoded 8hr)
             windowEndMin = dataMaxTime;
-            windowStartMin = Math.max(dataMinTime, dataMaxTime - WINDOW_HOURS * 60);
+            windowStartMin = dataMinTime;
             
             setWindow(windowStartMin, windowEndMin, 'Latest');
             
