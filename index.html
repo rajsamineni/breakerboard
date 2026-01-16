@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SigXFlow</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0f0f10;
             color: #e0e0e0;
             font-size: 13px;
@@ -15,7 +17,7 @@
         
         /* ===== HEADER ===== */
         .header {
-            background: #1a1a1c;
+            background: linear-gradient(180deg, #1e1e20 0%, #1a1a1c 100%);
             border-bottom: 1px solid #2a2a2e;
             padding: 10px 20px;
             display: flex;
@@ -33,12 +35,80 @@
             font-size: 16px;
             font-weight: 600;
             color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            padding: 5px 7px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .logo-icon::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 7px solid #4ade80;
+        }
+        
+        .logo-icon::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 7px solid #f87171;
         }
         
         /* Stats */
         .stats-row {
             display: flex;
-            gap: 8px;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .stat-compact {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 10px;
+            background: linear-gradient(135deg, #1a1a1c 0%, #1e1e20 100%);
+            border: 1px solid #2a2a2e;
+            border-radius: 6px;
+        }
+        
+        .stat-compact span {
+            margin-right: 3px;
+            font-size: 14px;
+        }
+        
+        .stat-compact.success { 
+            color: #4ade80; 
+            border-color: rgba(74, 222, 128, 0.2);
+        }
+        .stat-compact.success span {
+            text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+        }
+        .stat-compact.fail { 
+            color: #f87171; 
+            border-color: rgba(248, 113, 113, 0.2);
+        }
+        .stat-compact.fail span {
+            text-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
+        }
+        .stat-compact.win { 
+            color: #fbbf24; 
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+        .stat-compact.win span {
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
         }
         
         .stat {
@@ -93,14 +163,32 @@
             border-color: #4a4a4e;
         }
         
+        /* Primary action - subtle gold theme */
         .btn.primary {
-            background: #2563eb;
-            border-color: #2563eb;
-            color: #fff;
+            background: linear-gradient(135deg, #252528 0%, #2a2a2e 100%);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: #fbbf24;
+            font-weight: 600;
         }
         
         .btn.primary:hover {
-            background: #1d4ed8;
+            background: linear-gradient(135deg, #2a2a2e 0%, #333 100%);
+            border-color: rgba(251, 191, 36, 0.7);
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.2);
+        }
+        
+        /* Secondary action - muted style */
+        .btn.secondary {
+            background: linear-gradient(135deg, #1e1e20 0%, #252528 100%);
+            border: 1px solid #333;
+            color: #888;
+            font-weight: 500;
+        }
+        
+        .btn.secondary:hover {
+            border-color: #444;
+            color: #aaa;
+            background: linear-gradient(135deg, #252528 0%, #2a2a2e 100%);
         }
         
         .btn.live {
@@ -116,33 +204,75 @@
         }
         
         .btn.explore-active {
-            background: rgba(251, 191, 36, 0.2);
-            border-color: #fbbf24;
-            color: #fbbf24;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #888;
+            color: #fff;
         }
         
+        /* Styled selects - cohesive dark theme */
         .select-styled {
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
             padding: 8px 12px;
             border-radius: 6px;
-            border: 1px solid #3a3a3e;
-            background: #252528;
-            color: #bbb;
+            border: 1px solid #333;
+            background: linear-gradient(135deg, #1a1a1c 0%, #222 100%);
+            color: #888;
             cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .select-styled:hover {
+            border-color: #444;
+            color: #aaa;
+        }
+        
+        .select-styled:focus {
+            outline: none;
+            border-color: rgba(251, 191, 36, 0.5);
         }
         
         .divider {
             width: 1px;
             height: 24px;
-            background: #3a3a3e;
-            margin: 0 8px;
+            background: linear-gradient(180deg, transparent 0%, #3a3a3e 50%, transparent 100%);
+            margin: 0 4px;
+        }
+        
+        /* Settings group - load, refresh, latest */
+        .settings-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #1a1a1c 0%, #1e1e20 100%);
+            padding: 4px 6px;
+            border-radius: 8px;
+            border: 1px solid #2a2a2e;
+        }
+        
+        .settings-group .select-styled {
+            border: none;
+            background: transparent;
+            padding: 6px 8px;
+        }
+        
+        .settings-group .btn {
+            padding: 6px 12px;
+        }
+        
+        .settings-group .countdown {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #555;
+            min-width: 24px;
+            text-align: center;
         }
         
         /* ===== TOOLBAR ===== */
         .toolbar {
-            background: #1a1a1c;
-            border-bottom: 1px solid #2a2a2e;
+            background: linear-gradient(180deg, #1a1a1c 0%, #161618 100%);
+            border-bottom: 1px solid #252528;
             padding: 10px 20px;
             display: flex;
             align-items: center;
@@ -152,9 +282,10 @@
         .filter-group {
             display: flex;
             gap: 4px;
-            background: #252528;
+            background: linear-gradient(135deg, #1e1e20 0%, #222 100%);
             padding: 3px;
             border-radius: 6px;
+            border: 1px solid #2a2a2e;
         }
         
         .filter-btn {
@@ -184,18 +315,54 @@
         .filter-btn.bull.active { color: #22c55e; background: rgba(22, 163, 74, 0.2); }
         .filter-btn.bear.active { color: #f87171; background: rgba(220, 38, 38, 0.2); }
         
+        .arrow-up, .arrow-down {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        
+        .arrow-up {
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 6px solid currentColor;
+        }
+        
+        .arrow-down {
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 6px solid currentColor;
+        }
+        
+        .arrow-up-sm, .arrow-down-sm {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+        
+        .arrow-up-sm {
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
+            border-bottom: 5px solid currentColor;
+        }
+        
+        .arrow-down-sm {
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
+            border-top: 5px solid currentColor;
+        }
+        
         .toolbar-right {
             margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 8px;
         }
         
-        .visible-count {
-            font-size: 12px;
-            color: #666;
-        }
-        
+        /* Breaker count badge - prominent display */
         .status-msg {
             font-size: 11px;
             color: #888;
@@ -213,52 +380,21 @@
             color: #f87171;
         }
         
-        .refresh-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .countdown {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: #666;
-            min-width: 30px;
-        }
-        
         /* ===== TIMELINE BAR ===== */
-        .timeline-bar {
-            background: #1a1a1c;
-            padding: 8px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #2a2a2e;
-        }
-        
-        .time-label-bar {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: #888;
-            min-width: 110px;
-        }
-        
-        .time-label-bar.end { text-align: right; }
-        
         .timeline-track {
-            flex-grow: 1;
-            height: 8px;
+            height: 6px;
             background: #252528;
-            border-radius: 4px;
+            border-radius: 3px;
             position: relative;
             cursor: pointer;
+            margin-bottom: 4px;
         }
         
         .timeline-viewport {
             position: absolute;
             height: 100%;
             background: #3b82f6;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: grab;
             transition: background 0.15s;
         }
@@ -275,7 +411,7 @@
         /* ===== MAIN WRAPPER ===== */
         .main-wrapper {
             display: flex;
-            height: calc(100vh - 170px);
+            height: calc(100vh - 130px);
             margin: 10px;
             gap: 10px;
         }
@@ -301,18 +437,16 @@
         }
         
         .left-header {
-            width: 100px;
-            min-width: 100px;
-            height: 36px;
+            width: 195px;
+            min-width: 195px;
+            height: 48px;
             padding: 0 12px;
             display: flex;
             align-items: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-right: 1px solid #2a2a2e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            color: #888;
             box-sizing: border-box;
         }
         
@@ -320,10 +454,13 @@
             flex-grow: 1;
             overflow: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 6px 10px 0 10px;
         }
         
         .time-header {
-            height: 36px;
+            height: 30px;
             position: relative;
             white-space: nowrap;
         }
@@ -341,106 +478,231 @@
         
         /* Left Panel - labels */
         .left-panel {
-            width: 100px;
-            min-width: 100px;
+            width: 195px;
+            min-width: 195px;
             background: #151517;
-            border-right: 1px solid #2a2a2e;
             flex-shrink: 0;
             position: sticky;
             left: 0;
             z-index: 30;
+            overflow: hidden;
         }
         
         /* TF section header */
         .tf-header {
-            height: 28px;
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            font-weight: 700;
-            margin-top: 4px;
+            height: 4px;
+            margin-top: 8px;
             position: sticky;
             top: 0;
             z-index: 5;
         }
         
-        .tf-header.tf-4h {
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.25) 0%, #151517 100%);
-            color: #f87171;
-            border-left: 4px solid #f87171;
-        }
-        .tf-header.tf-1h {
-            background: linear-gradient(90deg, rgba(251, 191, 36, 0.25) 0%, #151517 100%);
-            color: #fbbf24;
-            border-left: 4px solid #fbbf24;
-        }
-        .tf-header.tf-15m {
-            background: linear-gradient(90deg, rgba(34, 197, 94, 0.25) 0%, #151517 100%);
-            color: #4ade80;
-            border-left: 4px solid #4ade80;
-        }
-        .tf-header.tf-5m {
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.25) 0%, #151517 100%);
-            color: #60a5fa;
-            border-left: 4px solid #60a5fa;
-        }
-        .tf-header.tf-1m {
-            background: linear-gradient(90deg, rgba(168, 85, 247, 0.25) 0%, #151517 100%);
-            color: #c084fc;
-            border-left: 4px solid #c084fc;
-        }
+        .tf-header.tf-4h { background: linear-gradient(90deg, #f87171 0%, transparent 100%); }
+        .tf-header.tf-1h { background: linear-gradient(90deg, #fbbf24 0%, transparent 100%); }
+        .tf-header.tf-15m { background: linear-gradient(90deg, #4ade80 0%, transparent 100%); }
+        .tf-header.tf-5m { background: linear-gradient(90deg, #60a5fa 0%, transparent 100%); }
+        .tf-header.tf-1m { background: linear-gradient(90deg, #c084fc 0%, transparent 100%); }
         
         .tf-header-chart {
-            height: 28px;
-            margin-top: 4px;
+            height: 2px;
+            display: block;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            width: 100vw;
+            max-width: calc(100vw - 195px);
+            background-size: 75vw 100%; /* Gradient spans 75% of viewport */
+            background-repeat: no-repeat;
         }
         
-        /* TF background tints for chart header */
-        .tf-header-chart[data-tf="1m"] { background: rgba(192, 132, 252, 0.06); }
-        .tf-header-chart[data-tf="5m"] { background: rgba(96, 165, 250, 0.06); }
-        .tf-header-chart[data-tf="15m"] { background: rgba(74, 222, 128, 0.06); }
-        .tf-header-chart[data-tf="1h"] { background: rgba(251, 191, 36, 0.06); }
-        .tf-header-chart[data-tf="4h"] { background: rgba(248, 113, 113, 0.06); }
+        .tf-spacer {
+            height: 2px;
+        }
+        
+        /* Left panel spacer - full gradient across the panel */
+        .tf-spacer[data-tf="1m"] { background: linear-gradient(90deg, #c084fc 0%, rgba(192, 132, 252, 0.5) 100%); }
+        .tf-spacer[data-tf="5m"] { background: linear-gradient(90deg, #60a5fa 0%, rgba(96, 165, 250, 0.5) 100%); }
+        .tf-spacer[data-tf="15m"] { background: linear-gradient(90deg, #4ade80 0%, rgba(74, 222, 128, 0.5) 100%); }
+        .tf-spacer[data-tf="1h"] { background: linear-gradient(90deg, #fbbf24 0%, rgba(251, 191, 36, 0.5) 100%); }
+        .tf-spacer[data-tf="4h"] { background: linear-gradient(90deg, #f87171 0%, rgba(248, 113, 113, 0.5) 100%); }
+        
+        /* TF background tints for chart header - gradient uses background-size */
+        .tf-header-chart[data-tf="1m"] { background-image: linear-gradient(90deg, rgba(192, 132, 252, 0.5) 0%, rgba(192, 132, 252, 0.2) 50%, transparent 100%); }
+        .tf-header-chart[data-tf="5m"] { background-image: linear-gradient(90deg, rgba(96, 165, 250, 0.5) 0%, rgba(96, 165, 250, 0.2) 50%, transparent 100%); }
+        .tf-header-chart[data-tf="15m"] { background-image: linear-gradient(90deg, rgba(74, 222, 128, 0.5) 0%, rgba(74, 222, 128, 0.2) 50%, transparent 100%); }
+        .tf-header-chart[data-tf="1h"] { background-image: linear-gradient(90deg, rgba(251, 191, 36, 0.5) 0%, rgba(251, 191, 36, 0.2) 50%, transparent 100%); }
+        .tf-header-chart[data-tf="4h"] { background-image: linear-gradient(90deg, rgba(248, 113, 113, 0.5) 0%, rgba(248, 113, 113, 0.2) 50%, transparent 100%); }
         
         /* Symbol Lane rows */
         .lane-label {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: row;
+            align-items: stretch;
             transition: all 0.2s ease;
             box-sizing: border-box;
+            overflow: hidden;
         }
         
-        .lane-label.has-confluence {
+        /* TF Group container */
+        .tf-group {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+        }
+        
+        .tf-group-accent {
+            width: 30px;
+            min-width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .tf-group-accent[data-tf="1m"] { background: #c084fc; color: #1a1a1c; }
+        .tf-group-accent[data-tf="5m"] { background: #60a5fa; color: #1a1a1c; }
+        .tf-group-accent[data-tf="15m"] { background: #4ade80; color: #1a1a1c; }
+        .tf-group-accent[data-tf="1h"] { background: #fbbf24; color: #1a1a1c; }
+        .tf-group-accent[data-tf="4h"] { background: #f87171; color: #1a1a1c; }
+        
+        .tf-group-lanes {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .lane-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            gap: 8px;
+            box-sizing: border-box;
+            min-height: 68px;
+            overflow: hidden;
+        }
+        
+        .lane-row[data-symbol="ES"] {
+            box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.1);
+        }
+        
+        .lane-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .lane-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+        }
+        
+        .lane-stat-dir {
+            width: 10px;
+            font-size: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .lane-stat-dir.bull::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 6px solid #22c55e;
+        }
+        
+        .lane-stat-dir.bear::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 6px solid #ef4444;
+        }
+        
+        .lane-stat-counts {
+            color: #888;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        
+        .lane-stat-bar {
+            flex: 1;
+            min-width: 20px;
+            height: 6px;
+            background: #252528;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .lane-stat-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .lane-stat-fill.bull {
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+        }
+        
+        .lane-stat-fill.bear {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        .lane-stat-pct {
+            text-align: right;
+            font-weight: 600;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        
+        .lane-stat-pct.bull { color: #4ade80; }
+        .lane-stat-pct.bear { color: #f87171; }
+        .lane-stat-pct.neutral { color: #555; }
+        
+        .lane-row.has-confluence {
             box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.4);
             background: rgba(251, 191, 36, 0.12) !important;
         }
         
-        .lane-label.has-confluence .symbol-badge {
+        .lane-row.has-confluence .symbol-badge {
             box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
         }
         
         /* Timeframe background tints for left panel */
-        .lane-label[data-tf="1m"] { border-left: 4px solid #c084fc; background: rgba(192, 132, 252, 0.06); }
-        .lane-label[data-tf="5m"] { border-left: 4px solid #60a5fa; background: rgba(96, 165, 250, 0.06); }
-        .lane-label[data-tf="15m"] { border-left: 4px solid #4ade80; background: rgba(74, 222, 128, 0.06); }
-        .lane-label[data-tf="1h"] { border-left: 4px solid #fbbf24; background: rgba(251, 191, 36, 0.06); }
-        .lane-label[data-tf="4h"] { border-left: 4px solid #f87171; background: rgba(248, 113, 113, 0.06); }
+        .tf-group[data-tf="1m"] .tf-group-lanes { background: rgba(192, 132, 252, 0.03); }
+        .tf-group[data-tf="5m"] .tf-group-lanes { background: rgba(96, 165, 250, 0.03); }
+        .tf-group[data-tf="15m"] .tf-group-lanes { background: rgba(74, 222, 128, 0.03); }
+        .tf-group[data-tf="1h"] .tf-group-lanes { background: rgba(251, 191, 36, 0.03); }
+        .tf-group[data-tf="4h"] .tf-group-lanes { background: rgba(248, 113, 113, 0.03); }
         
         .symbol-badge {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             padding: 3px 8px;
             border-radius: 4px;
-            min-width: 32px;
+            min-width: 28px;
             text-align: center;
+            flex-shrink: 0;
         }
         
-        .symbol-badge.nq { background: rgba(37, 99, 235, 0.3); color: #60a5fa; }
-        .symbol-badge.es { background: rgba(6, 182, 212, 0.3); color: #22d3ee; }
+        .symbol-badge.nq { background: rgba(37, 99, 235, 0.25); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); }
+        .symbol-badge.es { background: rgba(6, 182, 212, 0.25); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
         
         /* Right Panel - chart */
         .right-panel {
@@ -463,31 +725,24 @@
             overflow: visible;
         }
         
-        /* Future edge fade - bright glow into future */
-        .chart-inner::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 35px;
-            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 60%, rgba(255, 255, 255, 0.5) 100%);
-            pointer-events: none;
-            z-index: 20;
-        }
-        
         /* Swimlane row */
         .swimlane {
             position: relative;
             box-sizing: border-box;
+            min-height: 68px;
         }
         
         /* Timeframe background tints for swimlanes */
-        .swimlane[data-tf="1m"] { background: rgba(192, 132, 252, 0.06); }
-        .swimlane[data-tf="5m"] { background: rgba(96, 165, 250, 0.06); }
-        .swimlane[data-tf="15m"] { background: rgba(74, 222, 128, 0.06); }
-        .swimlane[data-tf="1h"] { background: rgba(251, 191, 36, 0.06); }
-        .swimlane[data-tf="4h"] { background: rgba(248, 113, 113, 0.06); }
+        .swimlane[data-tf="1m"] { background: rgba(192, 132, 252, 0.02); }
+        .swimlane[data-tf="5m"] { background: rgba(96, 165, 250, 0.02); }
+        .swimlane[data-tf="15m"] { background: rgba(74, 222, 128, 0.02); }
+        .swimlane[data-tf="1h"] { background: rgba(251, 191, 36, 0.02); }
+        .swimlane[data-tf="4h"] { background: rgba(248, 113, 113, 0.02); }
+        
+        /* ES rows slightly darker for visual separation */
+        .swimlane[data-symbol="ES"] {
+            box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.1);
+        }
         
         /* ===== BREAKER BARS ===== */
         .breaker-bar {
@@ -498,7 +753,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 4px;
+            padding: 0 5px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             font-weight: 600;
@@ -568,7 +823,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             flex-shrink: 0;
             border: 2px solid rgba(255,255,255,0.95);
@@ -597,29 +852,29 @@
             opacity: 1 !important;
         }
         
-        .lane-label.cursor-confluence {
+        .lane-row.cursor-confluence {
             box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.4);
             background: rgba(251, 191, 36, 0.12) !important;
         }
         
-        .lane-label.cursor-confluence .symbol-badge {
+        .lane-row.cursor-confluence .symbol-badge {
             box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
         }
         
-        /* Live mode highlight (blue - crisp) */
+        /* Live mode highlight (yellow - same as cursor) */
         .breaker-bar.live-active {
-            box-shadow: 0 0 0 2px #60a5fa, 0 0 8px rgba(96, 165, 250, 0.5) !important;
+            box-shadow: 0 0 0 2px #fbbf24, 0 0 8px rgba(251, 191, 36, 0.5) !important;
             z-index: 23;
             opacity: 1 !important;
         }
         
-        .lane-label.live-confluence {
-            box-shadow: inset 0 0 15px rgba(96, 165, 250, 0.4);
-            background: rgba(96, 165, 250, 0.12) !important;
+        .lane-row.live-confluence {
+            box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.4);
+            background: rgba(251, 191, 36, 0.12) !important;
         }
         
-        .lane-label.live-confluence .symbol-badge {
-            box-shadow: 0 0 8px rgba(96, 165, 250, 0.6);
+        .lane-row.live-confluence .symbol-badge {
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
         }
         
         /* Entry lines */
@@ -627,31 +882,35 @@
             position: absolute;
             top: 0;
             width: 2px;
-            background: rgba(251, 191, 36, 0.5);
+            background: rgba(251, 191, 36, 0.4);
             z-index: 15;
             cursor: pointer;
             transition: all 0.15s;
         }
         
+        /* Wider invisible hit area for easier clicking */
+        .entry-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -12px;
+            width: 26px;
+            height: 100%;
+            background: transparent;
+        }
+        
         .entry-line:hover {
             background: #fbbf24;
-            width: 3px;
+            width: 6px;
+            margin-left: -2px;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
         }
         
         .entry-line.selected {
             background: #fbbf24;
-            width: 3px;
-            box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
-        }
-        
-        .entry-line::before {
-            content: '▼';
-            position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: #fbbf24;
+            width: 4px;
+            margin-left: -1px;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
         }
         
         /* Cursor line */
@@ -698,14 +957,32 @@
         }
         
         .panel-header {
-            padding: 12px 16px;
+            padding: 10px 16px;
             background: #1f1f22;
             border-bottom: 1px solid #2a2a2e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .panel-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        
+        .panel-type {
+            font-size: 11px;
             font-weight: 600;
-            font-size: 13px;
-            color: #888;
+            color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+        
+        .panel-type.live {
+            color: #f87171;
         }
         
         .panel-content {
@@ -860,8 +1137,8 @@
         }
         
         .context-row.live-active-row {
-            background: rgba(96, 165, 250, 0.12);
-            box-shadow: inset 0 0 15px rgba(96, 165, 250, 0.4);
+            background: rgba(251, 191, 36, 0.12);
+            box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.4);
         }
         
         .context-tf {
@@ -932,13 +1209,6 @@
         .context-status-icon.success { color: #4ade80; }
         .context-status-icon.fail { color: #f87171; }
         .context-status-icon.none { color: #444; }
-        
-        .context-age {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: #666;
-            margin-left: auto;
-        }
         
         .arrow-bull { color: #4ade80; }
         .arrow-bear { color: #f87171; }
@@ -1208,90 +1478,63 @@
     <!-- Header -->
     <div class="header">
         <div class="header-left">
-            <div class="logo">📊 SigXFlow</div>
-        </div>
-        
-        <div class="stats-row">
-            <div class="stat active">
-                <div class="stat-value" id="stat-active">-</div>
-                <div class="stat-label">Active</div>
-            </div>
-            <div class="stat success">
-                <div class="stat-value" id="stat-success">-</div>
-                <div class="stat-label">Win</div>
-            </div>
-            <div class="stat fail">
-                <div class="stat-value" id="stat-fail">-</div>
-                <div class="stat-label">Loss</div>
-            </div>
-            <div class="stat win">
-                <div class="stat-value" id="stat-winrate">-</div>
-                <div class="stat-label">Win%</div>
+            <div class="logo"><span class="logo-icon"></span> SigXFlow</div>
+            <div class="stats-row">
+                <div class="stat-compact success"><span id="stat-success">-</span> S</div>
+                <div class="stat-compact fail"><span id="stat-fail">-</span> F</div>
+                <div class="stat-compact win"><span id="stat-winrate">-</span></div>
             </div>
         </div>
         
         <div class="nav-group">
-            <button class="btn" id="mode-explore" onclick="setMode('explore')">🔍 Explore</button>
-            <button class="btn live inactive" id="mode-live" onclick="setMode('live')">🔴 Live</button>
+            <button class="btn inactive" id="mode-explore" onclick="setMode('explore')">🔍 Explore</button>
+            <button class="btn live" id="mode-live" onclick="setMode('live')">🔴 Live</button>
             <div class="divider"></div>
-            <button class="btn primary" onclick="goToLatest()">Latest →|</button>
-            <div class="divider"></div>
-            <select class="select-styled" id="load-limit" onchange="loadData(true)">
-                <option value="8">Load 8hr</option>
-                <option value="12" selected>Load 12hr</option>
-                <option value="24">Load 24hr</option>
-                <option value="48">Load 48hr</option>
-            </select>
+            <div class="settings-group">
+                <select class="select-styled" id="load-limit" onchange="loadData(true)">
+                    <option value="8" selected>Load 8hr</option>
+                    <option value="12">Load 12hr</option>
+                    <option value="24">Load 24hr</option>
+                    <option value="48">Load 48hr</option>
+                </select>
+                <select class="select-styled" id="refresh-interval" onchange="setRefreshInterval()">
+                    <option value="0">Auto: Off</option>
+                    <option value="30" selected>Auto: 30s</option>
+                    <option value="60">Auto: 1m</option>
+                    <option value="300">Auto: 5m</option>
+                </select>
+                <span class="countdown" id="countdown"></span>
+                <button class="btn secondary" onclick="loadData(true)">↻</button>
+                <button class="btn primary" onclick="goToLatest()">Latest →|</button>
+            </div>
         </div>
     </div>
     
     <!-- Toolbar -->
     <div class="toolbar">
-        <div class="filter-group">
-            <button class="filter-btn nq active" id="filter-nq" onclick="toggleFilter('nq')">NQ</button>
-            <button class="filter-btn es active" id="filter-es" onclick="toggleFilter('es')">ES</button>
-        </div>
-        
-        <div class="filter-group">
-            <button class="filter-btn bull active" id="filter-bull" onclick="toggleFilter('bull')">▲ Bull</button>
-            <button class="filter-btn bear active" id="filter-bear" onclick="toggleFilter('bear')">▼ Bear</button>
-        </div>
-        
         <div class="legend">
             <div class="legend-item"><div class="legend-swatch nq-bull"></div>NQ Bull</div>
             <div class="legend-item"><div class="legend-swatch nq-bear"></div>NQ Bear</div>
             <div class="legend-item"><div class="legend-swatch es-bull"></div>ES Bull</div>
             <div class="legend-item"><div class="legend-swatch es-bear"></div>ES Bear</div>
             <div class="legend-divider"></div>
-            <div class="legend-item"><div class="legend-dot win">✓</div>Win</div>
-            <div class="legend-item"><div class="legend-dot loss">✗</div>Loss</div>
+            <div class="legend-item"><div class="legend-dot win">S</div>Success</div>
+            <div class="legend-item"><div class="legend-dot loss">F</div>Failure</div>
             <div class="legend-divider"></div>
             <div class="legend-item"><div class="legend-swatch entry"></div>Entry</div>
         </div>
         
         <div class="toolbar-right">
-            <span class="visible-count" id="visible-count"></span>
             <span class="status-msg" id="status-msg"></span>
-            <div class="refresh-group">
-                <select class="select-styled" id="refresh-interval" onchange="setRefreshInterval()">
-                    <option value="0">Auto: Off</option>
-                    <option value="30">Auto: 30s</option>
-                    <option value="60" selected>Auto: 1m</option>
-                    <option value="300">Auto: 5m</option>
-                </select>
-                <span class="countdown" id="countdown"></span>
-                <button class="btn primary" onclick="loadData(true)">↻ Reload</button>
+            <div class="filter-group">
+                <button class="filter-btn nq active" id="filter-nq" onclick="toggleFilter('nq')">NQ</button>
+                <button class="filter-btn es active" id="filter-es" onclick="toggleFilter('es')">ES</button>
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn bull active" id="filter-bull" onclick="toggleFilter('bull')"><span class="arrow-up"></span> Bull</button>
+                <button class="filter-btn bear active" id="filter-bear" onclick="toggleFilter('bear')"><span class="arrow-down"></span> Bear</button>
             </div>
         </div>
-    </div>
-    
-    <!-- Timeline Bar -->
-    <div class="timeline-bar">
-        <span class="time-label-bar" id="data-start">--</span>
-        <div class="timeline-track" id="timeline-track">
-            <div class="timeline-viewport" id="viewport-indicator"></div>
-        </div>
-        <span class="time-label-bar end" id="data-end">--</span>
     </div>
     
     <!-- Main Wrapper -->
@@ -1299,8 +1542,11 @@
         <!-- Chart Area -->
         <div class="chart-area">
             <div class="header-row">
-                <div class="left-header">TF</div>
+                <div class="left-header" id="data-start">--</div>
                 <div class="time-header-wrapper">
+                    <div class="timeline-track" id="timeline-track">
+                        <div class="timeline-viewport" id="viewport-indicator"></div>
+                    </div>
                     <div class="time-header" id="time-header"></div>
                 </div>
             </div>
@@ -1316,7 +1562,10 @@
         
         <!-- Detail Panel -->
         <div class="detail-panel">
-            <div class="panel-header">Details</div>
+            <div class="panel-header">
+                <span class="panel-time" id="panel-time"></span>
+                <span class="panel-type" id="panel-type">Details</span>
+            </div>
             <div class="panel-content" id="panel-content">
                 <div class="panel-empty">
                     <div class="panel-empty-icon">📋</div>
@@ -1335,11 +1584,11 @@
         // ===== CONFIG =====
         const FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/snapshots.json";
         const PIXELS_PER_MINUTE = 30;
-        const BAR_HEIGHT = 32;
-        const BAR_GAP = 3;
-        const LANE_PADDING = 5;
-        const TF_HEADER_HEIGHT = 28;
-        const MIN_LANE_HEIGHT = 42;
+        const BAR_HEIGHT = 26;  // Height of breaker bars
+        const BAR_GAP = 3;      // Gap between stacked bars
+        const LANE_PADDING = 6; // Top/bottom padding in swimlanes
+        const TF_HEADER_HEIGHT = 2;
+        const LEFT_PANEL_MIN_HEIGHT = 68; // Minimum based on left panel content
         const WINDOW_HOURS = 8;
         
         const TF_ORDER = ['1m', '5m', '15m', '1h', '4h'];
@@ -1353,7 +1602,7 @@
         let windowEndMin = 0;
         let dataMinTime = 0;
         let dataMaxTime = 0;
-        let isLive = false;
+        let isLive = true;
         let isFirstLoad = true;
         let lastFetchedTime = null; // Track last observation_time for incremental fetch
         let lastLoadLimit = null; // Track if limit changed (requires full reload)
@@ -1366,6 +1615,7 @@
         let chartAbortController = null; // For cleaning up event listeners
         let renderedBars = []; // Cached bar elements for fast highlight
         let renderedLaneLabels = []; // Cached lane labels
+        let laneStats = {}; // Stats per tf/symbol/direction
         
         const filters = {
             nq: true, es: true,
@@ -1569,11 +1819,12 @@
         // ===== DATA LOADING =====
         function getLoadHours() {
             const el = document.getElementById('load-limit');
-            return el ? parseInt(el.value) : 12;
+            return el ? parseInt(el.value) : 8;
         }
         
         function loadData(forceFullLoad = false) {
             const currentHours = getLoadHours();
+            
             const needsFullLoad = forceFullLoad || 
                                   !lastFetchedTime || 
                                   lastLoadLimit !== currentHours ||
@@ -1585,10 +1836,13 @@
                 // Full load with server-side time filtering
                 showToast('Loading...', '');
                 
-                // Calculate cutoff time for server-side query
+                // Calculate cutoff time for server-side query (local time to match Firebase format)
                 const now = new Date();
                 const cutoffDate = new Date(now.getTime() - (currentHours * 60 * 60 * 1000));
-                const cutoffISO = cutoffDate.toISOString().slice(0, 19).replace('T', ' ');
+                
+                // Format as local time ISO string (Firebase stores Eastern time, not UTC)
+                const pad = n => n.toString().padStart(2, '0');
+                const cutoffISO = `${cutoffDate.getFullYear()}-${pad(cutoffDate.getMonth()+1)}-${pad(cutoffDate.getDate())}T${pad(cutoffDate.getHours())}:${pad(cutoffDate.getMinutes())}:${pad(cutoffDate.getSeconds())}`;
                 
                 // Try server-side filtered query first
                 const filteredUrl = FIREBASE_URL + 
@@ -1606,6 +1860,8 @@
                             .filter(([k, v]) => v && v.observation_time);
                         
                         if (entries.length === 0) throw new Error('No valid data');
+                        
+                        console.log('✓ Indexed query returned', entries.length, 'snapshots');
                         
                         // Sort by time
                         entries.sort((a, b) => {
@@ -1634,6 +1890,8 @@
                                     .filter(([k, v]) => v && v.observation_time);
                                 
                                 if (entries.length === 0) throw new Error('No valid data');
+                                
+                                console.log('⚠ Fallback: loaded ALL', entries.length, 'snapshots, filtering client-side');
                                 
                                 // Find the latest observation time
                                 let latestTime = '';
@@ -1742,9 +2000,9 @@
             dataMinTime = minTime;
             dataMaxTime = maxTime;
             
-            // Show all loaded data
-            windowStartMin = dataMinTime;
+            // Show last WINDOW_HOURS of data
             windowEndMin = dataMaxTime;
+            windowStartMin = Math.max(dataMinTime, dataMaxTime - WINDOW_HOURS * 60);
             
             setWindow(windowStartMin, windowEndMin, 'Latest');
             
@@ -1890,18 +2148,25 @@
         }
         
         function finalizeBreakers() {
-            // Prune old data first to limit memory
+            // First, set startMin/endMin on all breakers in cache
+            for (const id in breakerCache) {
+                const d = breakerCache[id];
+                if (d.events.length > 0) {
+                    d.events.sort((a, b) => a.absMin - b.absMin);
+                    d.startMin = d.events[0]?.absMin || 0;
+                    d.endMin = d.events[d.events.length - 1]?.absMin || 0;
+                }
+            }
+            
+            // Prune old data (needs endMin to be set first)
             pruneOldData();
             
             allData = Object.values(breakerCache);
             allData.forEach(d => {
-                d.events.sort((a, b) => a.absMin - b.absMin);
                 // Limit events per breaker to prevent huge fib charts
                 if (d.events.length > 500) {
                     d.events = d.events.slice(-500);
                 }
-                d.startMin = d.events[0]?.absMin || 0;
-                d.endMin = d.events[d.events.length - 1]?.absMin || 0;
                 d.symbol = d.id.toUpperCase().includes('NQ') ? 'NQ' : 'ES';
             });
             
@@ -1931,19 +2196,51 @@
         
         // ===== STATS =====
         function updateStats() {
-            const stats = { active: 0, success: 0, fail: 0 };
-            allData.forEach(d => {
-                const status = d.status.toLowerCase();
-                if (stats[status] !== undefined) stats[status]++;
+            // Calculate overall stats (NQ Bull 1M only - the primary trading signal)
+            const primary = { success: 0, fail: 0 };
+            
+            // Calculate stats per tf/symbol/direction
+            laneStats = {};
+            TF_ORDER.forEach(tf => {
+                SYMBOLS.forEach(symbol => {
+                    ['bull', 'bear'].forEach(dir => {
+                        laneStats[`${tf}-${symbol}-${dir}`] = { success: 0, fail: 0 };
+                    });
+                });
             });
             
-            const completed = stats.success + stats.fail;
-            const winRate = completed > 0 ? Math.round(stats.success / completed * 100) : 0;
+            allData.forEach(d => {
+                const status = d.status.toLowerCase();
+                const tf = d.tf.replace('hr', 'h');
+                const key = `${tf}-${d.symbol}-${d.dir}`;
+                
+                // Primary stats: NQ Bull 1M only
+                if (tf === '1m' && d.symbol === 'NQ' && d.dir === 'bull') {
+                    if (status === 'success') primary.success++;
+                    else if (status === 'fail') primary.fail++;
+                }
+                
+                // Per-lane stats
+                if (laneStats[key]) {
+                    if (status === 'success') laneStats[key].success++;
+                    else if (status === 'fail') laneStats[key].fail++;
+                }
+            });
             
-            document.getElementById('stat-active').textContent = stats.active;
-            document.getElementById('stat-success').textContent = stats.success;
-            document.getElementById('stat-fail').textContent = stats.fail;
+            const completed = primary.success + primary.fail;
+            const winRate = completed > 0 ? Math.round(primary.success / completed * 100) : 0;
+            
+            document.getElementById('stat-success').textContent = primary.success;
+            document.getElementById('stat-fail').textContent = primary.fail;
             document.getElementById('stat-winrate').textContent = winRate + '%';
+        }
+        
+        function getLaneStats(tf, symbol, dir) {
+            const key = `${tf}-${symbol}-${dir}`;
+            const stats = laneStats[key] || { success: 0, fail: 0 };
+            const total = stats.success + stats.fail;
+            const pct = total > 0 ? Math.round(stats.success / total * 100) : 0;
+            return { wins: stats.success, losses: stats.fail, total, pct };
         }
         
         // ===== RENDERING =====
@@ -2030,55 +2327,117 @@
             
             // Render TF sections
             TF_ORDER.forEach((tf, tfIndex) => {
-                // TF header - left panel
-                const tfHeaderLeft = document.createElement('div');
-                tfHeaderLeft.className = 'tf-header tf-' + tf;
-                tfHeaderLeft.textContent = TF_DISPLAY[tf];
-                leftPanel.appendChild(tfHeaderLeft);
+                // TF divider spacer for left panel (matches chart divider height)
+                const tfSpacer = document.createElement('div');
+                tfSpacer.className = 'tf-spacer';
+                tfSpacer.dataset.tf = tf;
+                leftPanel.appendChild(tfSpacer);
                 
-                // TF header - chart
+                // TF divider - chart
                 const tfHeaderChart = document.createElement('div');
                 tfHeaderChart.className = 'tf-header-chart';
-                tfHeaderChart.style.width = chartWidth + 'px';
+                // Width set via CSS to be viewport-based
                 tfHeaderChart.dataset.tf = tf;
                 chartInner.appendChild(tfHeaderChart);
                 
-                // TF_HEADER_HEIGHT + 4px margin-top
-                totalHeight += TF_HEADER_HEIGHT + 4;
+                // TF_HEADER_HEIGHT for divider
+                totalHeight += TF_HEADER_HEIGHT;
                 
-                // Symbol lanes within this TF
-                visibleSymbols.forEach(symbol => {
+                // Calculate lane heights for all symbols in this TF first
+                const laneHeights = {};
+                let tfGroupHeight = 0;
+                
+                visibleSymbols.forEach((symbol, idx) => {
                     const breakers = grouped[tf][symbol];
-                    
-                    // Calculate stack positions
                     const stackedBreakers = assignStackPositions(breakers);
                     const maxStack = stackedBreakers.length > 0 
                         ? Math.max(...stackedBreakers.map(b => b.stackIdx)) + 1 
                         : 1;
                     
-                    // Dynamic lane height based on stacking
-                    const laneHeight = Math.max(MIN_LANE_HEIGHT, LANE_PADDING * 2 + maxStack * (BAR_HEIGHT + BAR_GAP) - BAR_GAP);
+                    // Calculate height needed for breaker stacking
+                    const breakerStackHeight = LANE_PADDING * 2 + maxStack * (BAR_HEIGHT + BAR_GAP) - BAR_GAP;
                     
-                    // Lane label
-                    const laneLabel = document.createElement('div');
-                    laneLabel.className = 'lane-label';
-                    laneLabel.style.height = laneHeight + 'px';
-                    laneLabel.dataset.tf = tf;
-                    laneLabel.dataset.symbol = symbol;
-                    const symbolBadge = document.createElement('span');
-                    symbolBadge.className = 'symbol-badge ' + symbol.toLowerCase();
-                    symbolBadge.textContent = symbol;
-                    laneLabel.appendChild(symbolBadge);
-                    leftPanel.appendChild(laneLabel);
+                    // Use the larger of left panel minimum or breaker stack needs
+                    const laneHeight = Math.max(LEFT_PANEL_MIN_HEIGHT, breakerStackHeight);
                     
-                    // Cache lane label
-                    renderedLaneLabels.push({ el: laneLabel, tf: tf, symbol: symbol });
+                    laneHeights[symbol] = laneHeight;
+                    tfGroupHeight += laneHeight;
+                });
+                
+                // Create TF group container for left panel
+                const tfGroup = document.createElement('div');
+                tfGroup.className = 'tf-group';
+                // Height determined by children via flexbox
+                tfGroup.dataset.tf = tf;
+                
+                // TF accent bar spanning all symbols
+                const tfLabel = tf.toUpperCase();
+                const tfAccent = document.createElement('div');
+                tfAccent.className = 'tf-group-accent';
+                tfAccent.dataset.tf = tf;
+                tfAccent.textContent = tfLabel;
+                tfGroup.appendChild(tfAccent);
+                
+                // Lanes container
+                const tfLanes = document.createElement('div');
+                tfLanes.className = 'tf-group-lanes';
+                
+                // Symbol lanes within this TF
+                visibleSymbols.forEach((symbol, symbolIdx) => {
+                    const breakers = grouped[tf][symbol];
+                    const stackedBreakers = assignStackPositions(breakers);
+                    const laneHeight = laneHeights[symbol];
+                    
+                    // Get stats for this lane
+                    const bullStats = getLaneStats(tf, symbol, 'bull');
+                    const bearStats = getLaneStats(tf, symbol, 'bear');
+                    
+                    // Lane row
+                    const laneRow = document.createElement('div');
+                    laneRow.className = 'lane-row';
+                    // Only set explicit height if breakers need more than minimum
+                    if (laneHeight > LEFT_PANEL_MIN_HEIGHT) {
+                        laneRow.style.height = laneHeight + 'px';
+                    }
+                    laneRow.dataset.tf = tf;
+                    laneRow.dataset.symbol = symbol;
+                    
+                    // Horizontal layout: symbol left, stats right
+                    laneRow.innerHTML = `
+                        <span class="symbol-badge ${symbol.toLowerCase()}">${symbol}</span>
+                        <div class="lane-stats">
+                            <div class="lane-stat-row">
+                                <span class="lane-stat-dir bull"></span>
+                                <span class="lane-stat-counts">${bullStats.wins}/${bullStats.losses}</span>
+                                <div class="lane-stat-bar">
+                                    <div class="lane-stat-fill bull" style="width: ${bullStats.pct}%"></div>
+                                </div>
+                                <span class="lane-stat-pct ${bullStats.total > 0 ? 'bull' : 'neutral'}">${bullStats.total > 0 ? bullStats.pct + '%' : '-'}</span>
+                            </div>
+                            <div class="lane-stat-row">
+                                <span class="lane-stat-dir bear"></span>
+                                <span class="lane-stat-counts">${bearStats.wins}/${bearStats.losses}</span>
+                                <div class="lane-stat-bar">
+                                    <div class="lane-stat-fill bear" style="width: ${bearStats.pct}%"></div>
+                                </div>
+                                <span class="lane-stat-pct ${bearStats.total > 0 ? 'bear' : 'neutral'}">${bearStats.total > 0 ? bearStats.pct + '%' : '-'}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tfLanes.appendChild(laneRow);
+                    
+                    // Cache lane row for highlighting
+                    renderedLaneLabels.push({ el: laneRow, tf: tf, symbol: symbol });
                     
                     // Swimlane
                     const swimlane = document.createElement('div');
                     swimlane.className = 'swimlane';
                     swimlane.style.width = chartWidth + 'px';
-                    swimlane.style.height = laneHeight + 'px';
+                    // Only set explicit height if breakers need more than minimum
+                    if (laneHeight > LEFT_PANEL_MIN_HEIGHT) {
+                        swimlane.style.height = laneHeight + 'px';
+                    }
                     swimlane.dataset.symbol = symbol;
                     swimlane.dataset.tf = tf;
                     
@@ -2099,6 +2458,9 @@
                     chartInner.appendChild(swimlane);
                     totalHeight += laneHeight;
                 });
+                
+                tfGroup.appendChild(tfLanes);
+                leftPanel.appendChild(tfGroup);
             });
             
             // Render entry lines spanning full chart height
@@ -2108,8 +2470,11 @@
             const windowEntries = entryTimes
                 .filter(t => t >= windowStartMin && t <= windowEndMin)
                 .slice(-100); // Limit entry lines
+            
             windowEntries.forEach(entryMin => {
                 const x = (entryMin - windowStartMin) * PIXELS_PER_MINUTE;
+                
+                // Entry line in chart
                 const entryLine = document.createElement('div');
                 entryLine.className = 'entry-line';
                 entryLine.style.left = x + 'px';
@@ -2147,9 +2512,13 @@
             
             function updateCursorPosition(clientX, isScroll = false) {
                 const scrollRect = scrollContainer.getBoundingClientRect();
-                const leftPanelWidth = 100; // matches .left-panel width
+                const leftPanelWidth = 195; // matches .left-panel width
+                
+                // Check if mouse is actually over the chart area (not left panel)
+                const mouseOverChart = clientX > scrollRect.left + leftPanelWidth;
+                
                 const x = clientX - scrollRect.left - leftPanelWidth + scrollContainer.scrollLeft;
-                if (x >= 0 && x <= chartWidth) {
+                if (mouseOverChart && x >= 0 && x <= chartWidth) {
                     cursorLine.style.left = x + 'px';
                     cursorLine.classList.add('visible');
                     
@@ -2178,6 +2547,11 @@
                 } else {
                     cursorLine.classList.remove('visible');
                     cursorTime.style.display = 'none';
+                    
+                    // Clear cursor highlights when leaving chart area
+                    if (!isScroll) {
+                        clearCursorHighlight();
+                    }
                 }
             }
             
@@ -2240,8 +2614,6 @@
             // Setup viewport drag handlers
             setupViewportHandlers();
             
-            updateVisibleCount(windowData.length);
-            
             // Restore selections (both explore and live mode)
             if (preservedBreakerId) {
                 selectedBreakerId = preservedBreakerId;
@@ -2253,7 +2625,7 @@
                 selectedEntryMin = preservedEntryMin;
                 highlightActiveAtEntry(preservedEntryMin);
                 showEntryContext(preservedEntryMin);
-                // Highlight entry line if it exists
+                // Highlight entry line and markers if they exist
                 document.querySelectorAll('.entry-line').forEach(el => {
                     if (parseInt(el.dataset.entryMin) === preservedEntryMin) {
                         el.classList.add('selected');
@@ -2277,7 +2649,7 @@
             const endX = (b.endMin - windowStartMin) * PIXELS_PER_MINUTE;
             const barWidth = Math.max(endX - startX + PIXELS_PER_MINUTE, 6);
             
-            // Calculate vertical position based on stack index
+            // Calculate vertical position - top aligned with padding
             const topOffset = LANE_PADDING + b.stackIdx * (BAR_HEIGHT + BAR_GAP);
             
             const bar = document.createElement('div');
@@ -2311,7 +2683,7 @@
             if (b.status === 'success' || b.status === 'fail') {
                 const dot = document.createElement('div');
                 dot.className = 'status-dot ' + b.status;
-                dot.textContent = b.status === 'success' ? '✓' : '✗';
+                dot.textContent = b.status === 'success' ? 'S' : 'F';
                 rightGroup.appendChild(dot);
             }
             
@@ -2328,6 +2700,10 @@
         
         // ===== DETAIL PANEL =====
         function showEmptyPanel() {
+            document.getElementById('panel-time').textContent = '';
+            document.getElementById('panel-type').textContent = 'Details';
+            document.getElementById('panel-type').classList.remove('live');
+            
             document.getElementById('panel-content').innerHTML = `
                 <div class="panel-empty">
                     <div class="panel-empty-icon">📋</div>
@@ -2374,8 +2750,8 @@
                         }
                         
                         // Status indicator
-                        const statusIcon = breaker.status === 'success' ? '✓' : 
-                                          breaker.status === 'fail' ? '✗' : '●';
+                        const statusIcon = breaker.status === 'success' ? 'S' : 
+                                          breaker.status === 'fail' ? 'F' : '-';
                         const statusClass = breaker.status;
                         
                         contextRows.push(`
@@ -2392,21 +2768,20 @@
                             <div class="context-row">
                                 <span class="context-tf">${TF_DISPLAY[tf]}</span>
                                 <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <span class="context-dir none">—</span>
-                                <span class="context-fib">—</span>
-                                <span class="context-status-icon none">—</span>
+                                <span class="context-dir none">-</span>
+                                <span class="context-fib">-</span>
+                                <span class="context-status-icon none">-</span>
                             </div>
                         `);
                     }
                 });
             });
             
+            document.getElementById('panel-time').textContent = minToTime(cursorMin);
+            document.getElementById('panel-type').textContent = 'Confluence';
+            document.getElementById('panel-type').classList.remove('live');
+            
             document.getElementById('panel-content').innerHTML = `
-                <div class="detail-section">
-                    <div class="detail-section-title">Confluence @ Cursor</div>
-                    <div class="context-time">${minToTime(cursorMin)}</div>
-                </div>
-                
                 <div class="detail-section">
                     <div class="detail-section-title">Active Breakers</div>
                     <div class="context-header">
@@ -2424,11 +2799,11 @@
                 <div class="context-summary">
                     <div class="context-summary-row">
                         <span class="context-summary-label">NQ</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}▲</span> <span class="arrow-bear">${nqBear}▼</span></span>
+                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${nqBear}<span class="arrow-down-sm"></span></span></span>
                     </div>
                     <div class="context-summary-row">
                         <span class="context-summary-label">ES</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${esBull}▲</span> <span class="arrow-bear">${esBear}▼</span></span>
+                        <span class="context-summary-value"><span class="arrow-bull">${esBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${esBear}<span class="arrow-down-sm"></span></span></span>
                     </div>
                 </div>
             `;
@@ -2470,8 +2845,8 @@
                         const currentFib = breaker.maxFib;
                         
                         // Status indicator
-                        const statusIcon = breaker.status === 'success' ? '✓' : 
-                                          breaker.status === 'fail' ? '✗' : '●';
+                        const statusIcon = breaker.status === 'success' ? 'S' : 
+                                          breaker.status === 'fail' ? 'F' : '-';
                         const statusClass = breaker.status;
                         
                         contextRows.push(`
@@ -2488,24 +2863,20 @@
                             <div class="context-row">
                                 <span class="context-tf">${TF_DISPLAY[tf]}</span>
                                 <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <span class="context-dir none">—</span>
-                                <span class="context-fib">—</span>
-                                <span class="context-status-icon none">—</span>
+                                <span class="context-dir none">-</span>
+                                <span class="context-fib">-</span>
+                                <span class="context-status-icon none">-</span>
                             </div>
                         `);
                     }
                 });
             });
             
+            document.getElementById('panel-time').textContent = minToTime(currentMin);
+            document.getElementById('panel-type').textContent = 'Live Confluence';
+            document.getElementById('panel-type').classList.add('live');
+            
             document.getElementById('panel-content').innerHTML = `
-                <div class="detail-section">
-                    <div class="detail-section-title">
-                        <span class="live-indicator"></span>
-                        Live Confluence
-                    </div>
-                    <div class="context-time">${minToTime(currentMin)}</div>
-                </div>
-                
                 <div class="detail-section">
                     <div class="detail-section-title">Active Breakers</div>
                     <div class="context-header">
@@ -2523,11 +2894,11 @@
                 <div class="context-summary">
                     <div class="context-summary-row">
                         <span class="context-summary-label">NQ</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}▲</span> <span class="arrow-bear">${nqBear}▼</span></span>
+                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${nqBear}<span class="arrow-down-sm"></span></span></span>
                     </div>
                     <div class="context-summary-row">
                         <span class="context-summary-label">ES</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${esBull}▲</span> <span class="arrow-bear">${esBear}▼</span></span>
+                        <span class="context-summary-value"><span class="arrow-bull">${esBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${esBear}<span class="arrow-down-sm"></span></span></span>
                     </div>
                 </div>
             `;
@@ -2543,6 +2914,10 @@
             
             // Generate fib chart
             const fibChart = generateFibChart(b);
+            
+            document.getElementById('panel-time').textContent = minToTime(b.startMin);
+            document.getElementById('panel-type').textContent = 'Breaker Detail';
+            document.getElementById('panel-type').classList.remove('live');
             
             document.getElementById('panel-content').innerHTML = `
                 <div class="detail-section">
@@ -2813,8 +3188,7 @@
             
             // Build context for each TF/Symbol combination
             const contextRows = [];
-            let bullCount = 0;
-            let bearCount = 0;
+            let nqBull = 0, nqBear = 0, esBull = 0, esBear = 0;
             
             TF_ORDER.forEach(tf => {
                 SYMBOLS.forEach(symbol => {
@@ -2823,21 +3197,36 @@
                     );
                     
                     if (breaker) {
-                        const age = entryMin - breaker.startMin;
-                        const ageStr = age < 60 ? `${age}m` : `${Math.floor(age/60)}h ${age%60}m`;
+                        // Count for alignment
+                        if (symbol === 'NQ') {
+                            if (breaker.dir === 'bull') nqBull++; else nqBear++;
+                        } else {
+                            if (breaker.dir === 'bull') esBull++; else esBear++;
+                        }
                         
-                        if (breaker.dir === 'bull') bullCount++;
-                        else bearCount++;
+                        // Get fib at start
+                        const startFib = breaker.events[0]?.fib || 1.0;
+                        
+                        // Get fib at entry time
+                        let fibAtEntry = startFib;
+                        for (const evt of breaker.events) {
+                            if (evt.absMin <= entryMin) {
+                                fibAtEntry = evt.fib;
+                            }
+                        }
+                        
+                        // Status indicator
+                        const statusIcon = breaker.status === 'success' ? 'S' : 
+                                          breaker.status === 'fail' ? 'F' : '-';
+                        const statusClass = breaker.status;
                         
                         contextRows.push(`
                             <div class="context-row active">
                                 <span class="context-tf">${TF_DISPLAY[tf]}</span>
                                 <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <div class="context-status">
-                                    <div class="context-indicator active"></div>
-                                    <span class="context-dir ${breaker.dir}">${breaker.dir.toUpperCase()}</span>
-                                </div>
-                                <span class="context-age">${ageStr} old</span>
+                                <span class="context-dir ${breaker.dir}">${breaker.dir.toUpperCase()}</span>
+                                <span class="context-fib">${startFib.toFixed(1)} → ${fibAtEntry.toFixed(1)}</span>
+                                <span class="context-status-icon ${statusClass}">${statusIcon}</span>
                             </div>
                         `);
                     } else {
@@ -2845,44 +3234,29 @@
                             <div class="context-row">
                                 <span class="context-tf">${TF_DISPLAY[tf]}</span>
                                 <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <div class="context-status">
-                                    <div class="context-indicator none"></div>
-                                    <span class="context-dir none">—</span>
-                                </div>
-                                <span class="context-age"></span>
+                                <span class="context-dir none">-</span>
+                                <span class="context-fib">-</span>
+                                <span class="context-status-icon none">-</span>
                             </div>
                         `);
                     }
                 });
             });
             
-            // Find the entry breaker to get outcome (only for actual entry times)
-            const entryBreaker = allData.find(d => 
-                d.symbol === 'NQ' && d.tf === '1m' && d.dir === 'bull' && d.startMin === entryMin
-            );
-            
-            // Build outcome row only if this is an actual entry
-            let outcomeRow = '';
-            if (entryBreaker) {
-                const outcome = entryBreaker.status;
-                const outcomeClass = outcome === 'success' ? 'good' : outcome === 'fail' ? 'bad' : 'neutral';
-                const outcomeText = outcome.charAt(0).toUpperCase() + outcome.slice(1);
-                outcomeRow = `
-                    <div class="context-summary-row">
-                        <span class="context-summary-label">Outcome</span>
-                        <span class="context-summary-value ${outcomeClass}">${outcomeText}${entryBreaker.status !== 'active' ? ` (${entryBreaker.maxFib.toFixed(1)})` : ''}</span>
-                    </div>
-                `;
-            }
+            document.getElementById('panel-time').textContent = minToTime(entryMin);
+            document.getElementById('panel-type').textContent = 'Entry Confluence';
+            document.getElementById('panel-type').classList.remove('live');
             
             document.getElementById('panel-content').innerHTML = `
                 <div class="detail-section">
-                    <div class="detail-section-title">Selected Time</div>
-                    <div class="context-time">${minToTime(entryMin)}</div>
-                </div>
-                
-                <div class="detail-section">
                     <div class="detail-section-title">Active Breakers</div>
+                    <div class="context-header">
+                        <span>TF</span>
+                        <span>Sym</span>
+                        <span>Dir</span>
+                        <span>Fib</span>
+                        <span>St</span>
+                    </div>
                     <div class="context-grid">
                         ${contextRows.join('')}
                     </div>
@@ -2890,14 +3264,13 @@
                 
                 <div class="context-summary">
                     <div class="context-summary-row">
-                        <span class="context-summary-label">Bull Active</span>
-                        <span class="context-summary-value">${bullCount} TFs</span>
+                        <span class="context-summary-label">NQ</span>
+                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${nqBear}<span class="arrow-down-sm"></span></span></span>
                     </div>
                     <div class="context-summary-row">
-                        <span class="context-summary-label">Bear Active</span>
-                        <span class="context-summary-value">${bearCount} TFs</span>
+                        <span class="context-summary-label">ES</span>
+                        <span class="context-summary-value"><span class="arrow-bull">${esBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${esBear}<span class="arrow-down-sm"></span></span></span>
                     </div>
-                    ${outcomeRow}
                 </div>
             `;
         }
@@ -2926,7 +3299,7 @@
                 showBreakerDetail(breakerId);
             }
             
-            // Update entry line styling
+            // Update entry line and marker styling
             document.querySelectorAll('.entry-line').forEach(el => {
                 el.classList.remove('selected');
             });
@@ -2950,7 +3323,7 @@
                 showEntryContext(entryMin);
             }
             
-            // Update entry line styling
+            // Update entry line and marker styling
             document.querySelectorAll('.entry-line').forEach(el => {
                 if (parseInt(el.dataset.entryMin) === selectedEntryMin) {
                     el.classList.add('selected');
@@ -3227,15 +3600,10 @@
             // Update time labels
             if (dataMinTime > 0 && dataMaxTime > 0) {
                 document.getElementById('data-start').textContent = minToDateTime(dataMinTime);
-                document.getElementById('data-end').textContent = minToDateTime(dataMaxTime);
             }
             
             // Update viewport bar position based on current scroll
             updateViewportFromScroll();
-        }
-        
-        function updateVisibleCount(count) {
-            document.getElementById('visible-count').textContent = count + ' breakers in window';
         }
         
         // ===== AUTO REFRESH =====
@@ -3268,10 +3636,8 @@
         
         // ===== INIT =====
         window.onload = function() {
-            isLive = false;
-            document.getElementById('mode-explore').classList.remove('inactive');
-            document.getElementById('mode-explore').classList.add('explore-active');
-            document.getElementById('mode-live').classList.add('inactive');
+            // Start in Live mode (buttons already set in HTML)
+            isLive = true;
             loadData();
             setRefreshInterval();
             
