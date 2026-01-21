@@ -5394,11 +5394,24 @@
                     const tfNorm = tf.replace('hr', 'h').toLowerCase();
                     const smtForLane = smtData.filter(smt => {
                         const smtTfNorm = smt.tf.replace('m', 'm').replace('h', 'h').toLowerCase();
-                        return smtTfNorm === tfNorm && 
+                        const matches = smtTfNorm === tfNorm && 
                                smt.defensiveAsset === symbol &&
                                smt.smtMin >= windowStartMin && 
                                smt.smtMin <= windowEndMin;
+                        
+                        // Debug logging for each SMT
+                        if (smtData.length > 0 && smtData.indexOf(smt) === 0) {
+                            console.log(`🔍 SMT Filter Debug for ${tf}/${symbol}:`);
+                            console.log(`   Lane TF: "${tfNorm}", SMT TF: "${smtTfNorm}", Match: ${smtTfNorm === tfNorm}`);
+                            console.log(`   Lane Symbol: "${symbol}", SMT Defensive: "${smt.defensiveAsset}", Match: ${smt.defensiveAsset === symbol}`);
+                            console.log(`   Window: ${windowStartMin}-${windowEndMin}, SMT Min: ${smt.smtMin}, In Range: ${smt.smtMin >= windowStartMin && smt.smtMin <= windowEndMin}`);
+                        }
+                        return matches;
                     });
+                    
+                    if (smtForLane.length > 0) {
+                        console.log(`📍 Rendering ${smtForLane.length} SMT markers in ${tf}/${symbol} lane`);
+                    }
                     
                     smtForLane.forEach(smt => {
                         const marker = createSmtMarker(smt, 0, laneHeight);
@@ -5617,6 +5630,14 @@
                         return;
                     }
                     
+                    // Debug: show raw Firebase data
+                    const keys = Object.keys(data);
+                    console.log(`📊 Raw Firebase: ${keys.length} records`);
+                    console.log('📊 Firebase keys:', keys);
+                    if (keys.length > 0) {
+                        console.log('📊 First raw record:', JSON.stringify(data[keys[0]], null, 2));
+                    }
+                    
                     // Convert to array and parse
                     smtData = [];
                     const errors = [];
@@ -5733,9 +5754,19 @@
                         errors.forEach(e => console.error(`   ${e}`));
                     }
                     
+                    // Check for duplicates
+                    const smtIds = smtData.map(s => s.smtId);
+                    const duplicates = smtIds.filter((id, idx) => smtIds.indexOf(id) !== idx);
+                    if (duplicates.length > 0) {
+                        console.warn(`⚠️ Duplicate SMT IDs found:`, duplicates);
+                    }
+                    
                     console.log(`📊 Loaded ${smtData.length} valid SMT signals`);
                     if (smtData.length > 0) {
-                        console.log('📊 Sample SMT:', smtData[0]);
+                        console.log('📊 All SMT signals:');
+                        smtData.forEach(s => {
+                            console.log(`   ${s.smtId} | TF: ${s.tf} | Dir: ${s.dir} | Def: ${s.defensiveAsset} | Min: ${s.smtMin} | Time: ${s.smtTime}`);
+                        });
                     }
                 })
                 .catch(err => {
