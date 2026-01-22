@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SigXFlow</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
@@ -75,7 +75,7 @@
         }
         
         .stat-compact {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             font-weight: 600;
             padding: 6px 10px;
@@ -121,7 +121,7 @@
         }
         
         .stat-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 18px;
             font-weight: 600;
         }
@@ -211,7 +211,7 @@
         
         /* Styled selects - cohesive dark theme */
         .select-styled {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 500;
             padding: 8px 12px;
@@ -262,7 +262,7 @@
         }
         
         .settings-group .countdown {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #555;
             min-width: 24px;
@@ -289,7 +289,7 @@
         }
         
         .filter-btn {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 500;
             padding: 5px 10px;
@@ -443,7 +443,7 @@
             padding: 0 12px;
             display: flex;
             align-items: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 500;
             color: #888;
@@ -556,7 +556,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 700;
             letter-spacing: -0.5px;
@@ -603,7 +603,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
         }
         
@@ -691,7 +691,7 @@
         .tf-group[data-tf="4h"] .tf-group-lanes { background: rgba(248, 113, 113, 0.03); }
         
         .symbol-badge {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 700;
             padding: 3px 8px;
@@ -712,7 +712,7 @@
         
         .time-tick-label {
             position: absolute;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #555;
             top: 50%;
@@ -732,7 +732,7 @@
         
         .date-separator-label {
             position: absolute;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 600;
             color: #60a5fa;
@@ -752,7 +752,7 @@
             top: 130px;
             left: 50%;
             transform: translateX(-50%);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             font-weight: 600;
             color: #60a5fa;
@@ -804,7 +804,7 @@
             align-items: center;
             justify-content: flex-end;
             padding: 0 5px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 600;
             color: rgba(255,255,255,0.95);
@@ -863,6 +863,34 @@
         /* Fib label */
         .bar-fib {
             flex-shrink: 0;
+            font-size: 11px;
+            opacity: 0.95;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .bar-fib-value {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .bar-points {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #000;
         }
         
         /* Status dot */
@@ -984,7 +1012,7 @@
             display: none;
             background: #fbbf24;
             color: #000;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 700;
             padding: 4px 8px;
@@ -1108,7 +1136,7 @@
             transform: translateX(-50%);
             font-size: 9px;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             white-space: nowrap;
             transition: all 0.15s;
             text-shadow: 0 0 4px rgba(0,0,0,0.8);
@@ -1232,7 +1260,7 @@
             display: block;
             font-size: 9px;
             color: #666;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             margin-bottom: 2px;
         }
         
@@ -1240,7 +1268,7 @@
             display: block;
             font-size: 11px;
             color: #aaa;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
         }
         
         .smt-swing-connector {
@@ -1274,7 +1302,7 @@
         .smt-swing-structure {
             font-size: 14px;
             font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
         }
         
         .smt-swing-result.bullish .smt-swing-structure { color: #4ade80; }
@@ -1282,7 +1310,7 @@
         
         .smt-swing-delta {
             font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             color: #888;
         }
         
@@ -1297,7 +1325,7 @@
         .smt-timing-endpoint {
             font-size: 10px;
             color: #888;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
         }
         
         .smt-timing-connector {
@@ -1320,7 +1348,7 @@
             font-weight: 600;
             padding: 2px 8px;
             border-radius: 10px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
         }
         
         .smt-timing-delta.sync {
@@ -1399,7 +1427,7 @@
         .smt-entry-value {
             font-size: 11px;
             color: #ccc;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             text-align: right;
         }
         
@@ -1415,7 +1443,7 @@
         .smt-fvg-item {
             font-size: 11px;
             color: #4ade80;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             padding: 4px 8px;
             background: rgba(74, 222, 128, 0.1);
             border-radius: 4px;
@@ -1510,7 +1538,7 @@
         .smt-quality-value {
             font-size: 18px;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             min-width: 32px;
             text-align: right;
         }
@@ -1542,7 +1570,7 @@
             font-size: 12px;
             font-weight: 600;
             color: #888;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
         }
         
         /* Meta Footer */
@@ -1556,7 +1584,7 @@
             border-top: 1px solid #2a2a2f;
             font-size: 9px;
             color: #555;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
         }
         
         /* ===== DETAIL PANEL ===== */
@@ -1582,7 +1610,7 @@
         }
         
         .panel-time {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 14px;
             font-weight: 700;
             color: #fbbf24;
@@ -1665,7 +1693,7 @@
         }
         
         .detail-id {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 16px;
             font-weight: 600;
             color: #fff;
@@ -1679,7 +1707,7 @@
         }
         
         .detail-badge {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 600;
             padding: 4px 10px;
@@ -1711,7 +1739,7 @@
         }
         
         .detail-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             color: #ddd;
             font-size: 12px;
             font-weight: 500;
@@ -1722,9 +1750,124 @@
             color: #fff;
         }
         
+        .detail-metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .detail-metric {
+            background: #1a1a1c;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .detail-metric-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .detail-metric-label {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .failure-reason {
+            margin-top: 8px;
+            padding: 6px 10px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 4px;
+            font-size: 11px;
+            color: #ef4444;
+        }
+        
+        .detail-badge.tf {
+            background: #374151;
+            color: #9ca3af;
+        }
+        
+        .compact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px 0 !important;
+        }
+        
+        .info-item {
+            flex: 1 1 45%;
+            min-width: 60px;
+            background: #1a1a1c;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .info-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            display: block;
+        }
+        
+        .info-label {
+            font-size: 9px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .price-zone-container {
+            background: #151517;
+            border-radius: 6px;
+            padding: 12px;
+        }
+        
+        .price-chart {
+            width: 100%;
+            height: 100px;
+        }
+        
+        .price-chart-breaker-zone {
+            fill: rgba(96, 165, 250, 0.15);
+        }
+        
+        .price-chart-breaker-line {
+            stroke: #60a5fa;
+            stroke-width: 2;
+        }
+        
+        .price-chart-level {
+            stroke: #444;
+            stroke-width: 1;
+            stroke-dasharray: 4, 4;
+        }
+        
+        .price-chart-price-line {
+            fill: none;
+            stroke: #f97316;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .price-chart-price-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            fill: #60a5fa;
+        }
+        
         /* Entry Context View */
         .context-time {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 20px;
             font-weight: 600;
             color: #fbbf24;
@@ -1757,7 +1900,7 @@
         }
         
         .context-tf {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 700;
             width: 36px;
@@ -1765,7 +1908,7 @@
         }
         
         .context-symbol {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 700;
             width: 28px;
@@ -1808,7 +1951,7 @@
         .context-header span:nth-child(5) { width: 24px; text-align: center; }
         
         .context-fib {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             color: #aaa;
             flex: 1;
@@ -1847,7 +1990,7 @@
         }
         
         .context-summary-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-weight: 600;
             font-size: 12px;
         }
@@ -1862,6 +2005,35 @@
             background: #151517;
             border-radius: 6px;
             padding: 12px;
+        }
+        
+        .fib-chart-legend {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-bottom: 4px;
+            font-size: 10px;
+            color: #888;
+        }
+        
+        .fib-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .fib-legend-line {
+            width: 16px;
+            height: 3px;
+            border-radius: 1px;
+        }
+        
+        .fib-legend-line.max {
+            background: #60a5fa;
+        }
+        
+        .fib-legend-line.current {
+            background: #f97316;
         }
         
         .fib-chart {
@@ -1888,6 +2060,15 @@
             stroke-linejoin: round;
         }
         
+        .fib-chart-line-current {
+            fill: none;
+            stroke: #f97316;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.8;
+        }
+        
         .fib-chart-area {
             fill: url(#fibGradient);
             opacity: 0.3;
@@ -1905,13 +2086,13 @@
         }
         
         .fib-chart-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             fill: #666;
         }
         
         .fib-chart-value-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             fill: #888;
         }
@@ -1923,7 +2104,7 @@
         }
         
         .fib-peak-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             fill: #4ade80;
             font-weight: 600;
@@ -1953,7 +2134,7 @@
             border: 1px solid #3a3a3e;
             border-radius: 4px;
             padding: 6px 10px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             pointer-events: none;
             opacity: 0;
@@ -2158,7 +2339,7 @@
         }
         
         .analysis-decision-badge {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 24px;
             font-weight: 800;
             padding: 14px 32px;
@@ -2188,7 +2369,7 @@
         }
         
         .analysis-hero-id {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 13px;
             color: #94a3b8;
         }
@@ -2204,7 +2385,7 @@
         }
         
         .analysis-score-big {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 36px;
             font-weight: 700;
             color: #fff;
@@ -2248,7 +2429,7 @@
         }
         
         .analysis-tab-count {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             padding: 3px 8px;
             border-radius: 10px;
@@ -2305,7 +2486,7 @@
         }
         
         .analysis-card-code {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 700;
             color: #60a5fa;
@@ -2321,7 +2502,7 @@
         }
         
         .analysis-card-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             font-weight: 700;
             padding: 6px 16px;
@@ -2366,7 +2547,7 @@
         }
         
         .analysis-bias-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             font-weight: 600;
         }
@@ -2410,7 +2591,7 @@
         }
         
         .analysis-tf-bar-count {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #ccc;
             font-weight: 600;
@@ -2440,7 +2621,7 @@
         }
         
         .analysis-metric-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 13px;
             font-weight: 600;
             color: #e2e8f0;
@@ -2498,7 +2679,7 @@
         }
         
         .analysis-failed-item-status {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 600;
         }
@@ -2738,7 +2919,7 @@
         }
         
         .analysis-dimension-code {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             color: #666;
             background: rgba(0,0,0,0.2);
@@ -2757,7 +2938,7 @@
         }
         
         .analysis-dimension-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 600;
             padding: 3px 10px;
@@ -2839,7 +3020,7 @@
             border-radius: 4px;
             padding: 10px 12px;
             margin-bottom: 10px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
         }
         
@@ -2929,7 +3110,7 @@
         }
         
         .analysis-zones-entry {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #60a5fa;
             background: rgba(96, 165, 250, 0.1);
@@ -2961,7 +3142,7 @@
         .analysis-zone.tf-1m { border-left-color: #f87171; }
         
         .analysis-zone-tf {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-weight: 600;
             min-width: 32px;
             padding: 2px 6px;
@@ -2985,13 +3166,13 @@
         .analysis-zone-type.bear { color: #f87171; }
         
         .analysis-zone-range {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             color: #ccc;
             min-width: 120px;
         }
         
         .analysis-zone-fib {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             padding: 2px 6px;
             border-radius: 3px;
             min-width: 55px;
@@ -3003,7 +3184,7 @@
         .analysis-zone-fib.extended { background: rgba(248, 113, 113, 0.15); color: #f87171; }
         
         .analysis-zone-dist {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             color: #888;
             min-width: 60px;
             text-align: right;
@@ -3088,7 +3269,7 @@
         }
         
         .price-ladder-axis-tick {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             color: #555;
             text-align: right;
@@ -3136,7 +3317,7 @@
         .price-ladder-level-label {
             position: absolute;
             right: 0;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             padding: 3px 8px;
             border-radius: 3px;
@@ -3170,7 +3351,7 @@
             display: flex;
             align-items: center;
             padding: 0 8px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             transition: all 0.15s;
             cursor: default;
@@ -3259,7 +3440,7 @@
         .price-ladder-rr-segment.risk { background: linear-gradient(0deg, #f87171, rgba(248, 113, 113, 0.3)); }
         
         .price-ladder-rr-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 700;
             color: #4ade80;
@@ -3279,7 +3460,7 @@
         
         .direction-flow-symbol {
             width: 36px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 600;
             color: #888;
@@ -3374,7 +3555,7 @@
             text-align: center;
             padding: 6px 10px;
             border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 600;
         }
@@ -3427,7 +3608,7 @@
         }
         
         .inversion-cell-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             color: #888;
             margin-bottom: 6px;
@@ -3465,7 +3646,7 @@
         }
         
         .burn-gauge-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 600;
             color: #888;
@@ -3504,7 +3685,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 16px;
             font-weight: 700;
         }
@@ -3544,7 +3725,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
         }
         
@@ -3578,7 +3759,7 @@
         
         .formation-visual-label {
             position: absolute;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 8px;
             color: #888;
         }
@@ -3600,7 +3781,7 @@
         }
         
         .attraction-visual-tf {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             padding: 3px 8px;
             border-radius: 4px;
@@ -3625,7 +3806,7 @@
         }
         
         .attraction-visual-sd-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 18px;
             font-weight: 700;
         }
@@ -3638,7 +3819,7 @@
         .attraction-visual-phase {
             padding: 4px 10px;
             border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             font-weight: 600;
         }
@@ -3704,7 +3885,7 @@
         }
         
         .rr-visual-price-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 14px;
             font-weight: 600;
         }
@@ -3730,7 +3911,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             color: #f87171;
         }
@@ -3743,7 +3924,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             color: #4ade80;
         }
@@ -3759,7 +3940,7 @@
         
         .rr-visual-ratio {
             text-align: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 20px;
             font-weight: 700;
         }
@@ -3784,7 +3965,7 @@
         }
         
         .vix-gauge-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 24px;
             font-weight: 700;
         }
@@ -3794,7 +3975,7 @@
         .vix-gauge-value.high { color: #f87171; }
         
         .vix-gauge-ratio {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             padding: 4px 10px;
             border-radius: 4px;
@@ -3887,7 +4068,7 @@
         }
         
         .session-visual-time {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 20px;
             font-weight: 600;
             color: #fff;
@@ -3896,7 +4077,7 @@
         .session-visual-badge {
             padding: 6px 12px;
             border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             font-weight: 600;
         }
@@ -3948,7 +4129,7 @@
         }
         
         .analysis-zone-chart-price {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             color: #666;
             text-align: right;
@@ -3994,7 +4175,7 @@
         .analysis-zone-chart-label {
             position: absolute;
             right: 0;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             padding: 2px 6px;
             border-radius: 3px;
@@ -4024,7 +4205,7 @@
             display: flex;
             align-items: center;
             padding-left: 8px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 9px;
             opacity: 0.9;
             transition: opacity 0.2s;
@@ -4102,7 +4283,7 @@
         .analysis-zone-ladder-entry {
             position: relative;
             padding: 6px 0 6px 15px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #60a5fa;
         }
@@ -4118,7 +4299,7 @@
         .analysis-zone-ladder-target {
             position: relative;
             padding: 6px 0 6px 15px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #4ade80;
         }
@@ -4134,7 +4315,7 @@
         .analysis-zone-ladder-stop {
             position: relative;
             padding: 6px 0 6px 15px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 11px;
             color: #f87171;
         }
@@ -4170,7 +4351,7 @@
         }
         
         .analysis-decision-value {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 14px;
             font-weight: 700;
             padding: 6px 16px;
@@ -4226,7 +4407,7 @@
         .analysis-score-fill.low { background: #f87171; }
         
         .analysis-score-text {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             color: #888;
         }
@@ -4706,8 +4887,18 @@
                         .then(data => {
                             if (!data) throw new Error('No data');
                             
+                            // Snapshot key IS the timestamp (e.g. "2026-01-21T0731")
+                            // Convert to entries with observation_time from key
                             let entries = Object.entries(data)
-                                .filter(([k, v]) => v && v.observation_time);
+                                .filter(([k, v]) => v && typeof v === 'object')
+                                .map(([k, v]) => {
+                                    // Convert key "2026-01-21T0731" to "2026-01-21T07:31"
+                                    let obsTime = k;
+                                    if (k.match(/^\d{4}-\d{2}-\d{2}T\d{4}$/)) {
+                                        obsTime = k.slice(0, 13) + ':' + k.slice(13);
+                                    }
+                                    return [k, { ...v, observation_time: obsTime }];
+                                });
                             
                             if (entries.length === 0) throw new Error('No valid data');
                             
@@ -4754,17 +4945,20 @@
                         });
                 } else {
                     // For short time ranges (<24h), use indexed query with wall clock time
+                    // Since the key IS the timestamp now, we need to filter differently
                     const now = new Date();
                     const cutoffDate = new Date(now.getTime() - (currentHours * 60 * 60 * 1000));
                     
                     const pad = n => n.toString().padStart(2, '0');
-                    const cutoffISO = `${cutoffDate.getFullYear()}-${pad(cutoffDate.getMonth()+1)}-${pad(cutoffDate.getDate())}T${pad(cutoffDate.getHours())}:${pad(cutoffDate.getMinutes())}:${pad(cutoffDate.getSeconds())}`;
+                    // Key format is "2026-01-21T0731" (no colon in time)
+                    const cutoffKey = `${cutoffDate.getFullYear()}-${pad(cutoffDate.getMonth()+1)}-${pad(cutoffDate.getDate())}T${pad(cutoffDate.getHours())}${pad(cutoffDate.getMinutes())}`;
                     
                     console.log(`📊 Loading ${currentHours} hours of data`);
-                    console.log(`📊 Cutoff: ${cutoffISO}`);
+                    console.log(`📊 Cutoff key: ${cutoffKey}`);
                     
+                    // Query by key (since key IS the timestamp)
                     const filteredUrl = FIREBASE_URL + 
-                        '?orderBy="observation_time"&startAt="' + cutoffISO + '"';
+                        '?orderBy="$key"&startAt="' + cutoffKey + '"';
                     
                     fetch(filteredUrl)
                         .then(r => {
@@ -4774,13 +4968,21 @@
                         .then(data => {
                             if (!data) throw new Error('No data');
                             
+                            // Convert keys to observation_time
                             let entries = Object.entries(data)
-                                .filter(([k, v]) => v && v.observation_time);
+                                .filter(([k, v]) => v && typeof v === 'object')
+                                .map(([k, v]) => {
+                                    let obsTime = k;
+                                    if (k.match(/^\d{4}-\d{2}-\d{2}T\d{4}$/)) {
+                                        obsTime = k.slice(0, 13) + ':' + k.slice(13);
+                                    }
+                                    return [k, { ...v, observation_time: obsTime }];
+                                });
                             
                             if (entries.length === 0) throw new Error('No valid data');
                             
                             const times = entries.map(([k, v]) => v.observation_time).sort();
-                            console.log(`✓ Indexed query returned ${entries.length} snapshots`);
+                            console.log(`✓ Query returned ${entries.length} snapshots`);
                             console.log(`✓ Data range: ${times[0]} to ${times[times.length-1]}`);
                             
                             entries.sort((a, b) => {
@@ -4801,8 +5003,10 @@
                 }
             } else {
                 // Incremental load - only fetch newer data from Firebase
+                // Convert lastFetchedTime from "2026-01-21T07:31" to key format "2026-01-21T0731"
+                const lastKey = lastFetchedTime ? lastFetchedTime.replace(':', '') : '';
                 const url = FIREBASE_URL + 
-                    '?orderBy="observation_time"&startAfter="' + lastFetchedTime + '"';
+                    '?orderBy="$key"&startAfter="' + lastKey + '"';
                 
                 console.log('Incremental fetch:', url);
                 
@@ -4823,8 +5027,20 @@
                             return;
                         }
                         
-                        console.log('Incremental data:', Object.keys(data).length, 'snapshots');
-                        processIncrementalData(data);
+                        // Convert keys to snapshots with observation_time
+                        const converted = {};
+                        Object.entries(data).forEach(([k, v]) => {
+                            if (v && typeof v === 'object') {
+                                let obsTime = k;
+                                if (k.match(/^\d{4}-\d{2}-\d{2}T\d{4}$/)) {
+                                    obsTime = k.slice(0, 13) + ':' + k.slice(13);
+                                }
+                                converted[k] = { ...v, observation_time: obsTime };
+                            }
+                        });
+                        
+                        console.log('Incremental data:', Object.keys(converted).length, 'snapshots');
+                        processIncrementalData(converted);
                     })
                     .catch(err => {
                         // If query fails (no index), show error with instructions
@@ -4886,15 +5102,37 @@
                 const datetime = ts.replace('T', ' ');
                 const absMin = datetimeToMin(ts);
                 
-                Object.entries(snap.breakers || {}).forEach(([id, b]) => {
+                // Breakers are direct children of snapshot (not under 'breakers' key)
+                Object.entries(snap).forEach(([id, b]) => {
+                    // Skip non-breaker fields
+                    if (id === 'observation_time' || typeof b !== 'object' || !b) return;
+                    
+                    // Parse all fields from breaker ID
+                    // Format: ES-15m-260120T1000-260121T0715-6865-24p-S
+                    const idParts = id.split('-');
+                    const symbol = idParts[0] || 'ES';
+                    const tf = idParts[1] || '1m';
+                    const dir = idParts[idParts.length - 1] === 'S' ? 'bear' : 'bull';
+                    const formationTime = idParts[2] || ''; // e.g., "260120T1000"
+                    const confirmationTime = idParts[3] || ''; // e.g., "260121T0715"
+                    const price = parseInt(idParts[4]) || 0; // e.g., "6865"
+                    const pointsStr = idParts[5] || ''; // e.g., "24p"
+                    const points = parseInt(pointsStr.replace('p', '')) || 0;
+                    
                     if (!breakerCache[id]) {
                         breakerCache[id] = {
                             id,
                             displayId: b.display_id || id,
-                            tf: b.tf.toLowerCase(),
-                            dir: b.dir.toLowerCase(),
+                            symbol: symbol.toUpperCase(),
+                            tf: tf.toLowerCase(),
+                            dir: dir.toLowerCase(),
+                            price: price,
+                            points: points,
+                            formationTime: formationTime,
+                            confirmationTime: confirmationTime,
                             status: 'active',
                             events: [],
+                            currentFib: 0,
                             maxFib: 0
                         };
                     }
@@ -4904,18 +5142,32 @@
                         breakerCache[id].displayId = b.display_id;
                     }
                     
-                    const fib = b.fib || 1;
+                    // Parse fib - "current/max" string format
+                    let currentFib = 0, maxFib = 0;
+                    try {
+                        const fibStr = String(b.fib || '0/0');
+                        const [curr, max] = fibStr.split('/').map(parseFloat);
+                        currentFib = curr || 0;
+                        maxFib = max || curr || 0;
+                    } catch (e) {
+                    }
+                    
+                    // Get snapshot price
+                    const snapshotPrice = b.price || 0;
+                    
                     // Avoid duplicate events (same timestamp)
                     if (!breakerCache[id].events.some(e => e.absMin === absMin)) {
-                        breakerCache[id].events.push({ datetime, absMin, fib });
+                        breakerCache[id].events.push({ datetime, absMin, fib: currentFib, maxFib: maxFib, price: snapshotPrice });
                     }
-                    breakerCache[id].maxFib = Math.max(breakerCache[id].maxFib, fib);
+                    breakerCache[id].currentFib = currentFib;
+                    breakerCache[id].maxFib = Math.max(breakerCache[id].maxFib, maxFib);
                     
-                    if (b.status === 'success' || b.status === 'fail') {
+                    if (b.status === 'success' || b.status?.startsWith('failed:')) {
                         breakerCache[id].status = b.status;
                     }
                 });
             });
+            
             
             finalizeBreakers();
             
@@ -4959,15 +5211,37 @@
                 const datetime = ts.replace('T', ' ');
                 const absMin = datetimeToMin(ts);
                 
-                Object.entries(snap.breakers || {}).forEach(([id, b]) => {
+                // Breakers are direct children of snapshot (not under 'breakers' key)
+                Object.entries(snap).forEach(([id, b]) => {
+                    // Skip non-breaker fields
+                    if (id === 'observation_time' || typeof b !== 'object' || !b) return;
+                    
+                    // Parse all fields from breaker ID
+                    // Format: ES-15m-260120T1000-260121T0715-6865-24p-S
+                    const idParts = id.split('-');
+                    const symbol = idParts[0] || 'ES';
+                    const tf = idParts[1] || '1m';
+                    const dir = idParts[idParts.length - 1] === 'S' ? 'bear' : 'bull';
+                    const formationTime = idParts[2] || '';
+                    const confirmationTime = idParts[3] || '';
+                    const price = parseInt(idParts[4]) || 0;
+                    const pointsStr = idParts[5] || '';
+                    const points = parseInt(pointsStr.replace('p', '')) || 0;
+                    
                     if (!breakerCache[id]) {
                         breakerCache[id] = {
                             id,
                             displayId: b.display_id || id,
-                            tf: b.tf.toLowerCase(),
-                            dir: b.dir.toLowerCase(),
+                            symbol: symbol.toUpperCase(),
+                            tf: tf.toLowerCase(),
+                            dir: dir.toLowerCase(),
+                            price: price,
+                            points: points,
+                            formationTime: formationTime,
+                            confirmationTime: confirmationTime,
                             status: 'active',
                             events: [],
+                            currentFib: 0,
                             maxFib: 0
                         };
                         newBreakers++;
@@ -4978,14 +5252,27 @@
                         breakerCache[id].displayId = b.display_id;
                     }
                     
-                    const fib = b.fib || 1;
+                    // Parse fib - "current/max" string format
+                    let currentFib = 0, maxFib = 0;
+                    try {
+                        const fibStr = String(b.fib || '0/0');
+                        const [curr, max] = fibStr.split('/').map(parseFloat);
+                        currentFib = curr || 0;
+                        maxFib = max || curr || 0;
+                    } catch (e) {
+                    }
+                    
+                    // Get snapshot price
+                    const snapshotPrice = b.price || 0;
+                    
                     // Avoid duplicate events (same timestamp)
                     if (!breakerCache[id].events.some(e => e.absMin === absMin)) {
-                        breakerCache[id].events.push({ datetime, absMin, fib });
+                        breakerCache[id].events.push({ datetime, absMin, fib: currentFib, maxFib: maxFib, price: snapshotPrice });
                     }
-                    breakerCache[id].maxFib = Math.max(breakerCache[id].maxFib, fib);
+                    breakerCache[id].currentFib = currentFib;
+                    breakerCache[id].maxFib = Math.max(breakerCache[id].maxFib, maxFib);
                     
-                    if (b.status === 'success' || b.status === 'fail') {
+                    if (b.status === 'success' || b.status?.startsWith('failed:')) {
                         breakerCache[id].status = b.status;
                     }
                 });
@@ -5038,14 +5325,52 @@
             }
         }
         
+        // Parse confirmation time from breaker ID
+        // Format: ES-15m-260120T1000-260121T0715-6865-24p-S
+        //                            ^^^^^^^^^^^^^ confirmation time
+        function parseConfirmationTime(breakerId) {
+            const parts = breakerId.split('-');
+            // parts: [asset, tf, formationTime, confirmationTime, price, range, dir]
+            if (parts.length >= 4) {
+                const confTime = parts[3]; // e.g. "260121T0715"
+                // Parse: YYMMDDTHHMM
+                const match = confTime.match(/^(\d{2})(\d{2})(\d{2})T(\d{2})(\d{2})$/);
+                if (match) {
+                    const [_, yy, mm, dd, hh, min] = match;
+                    const year = 2000 + parseInt(yy);
+                    const month = parseInt(mm);
+                    const day = parseInt(dd);
+                    const hour = parseInt(hh);
+                    const minute = parseInt(min);
+                    // Convert to absolute minutes
+                    return datetimeToMin(`${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}T${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`);
+                }
+            }
+            return null;
+        }
+        
         function finalizeBreakers() {
+            
             // First, set startMin/endMin on all breakers in cache
             for (const id in breakerCache) {
                 const d = breakerCache[id];
                 if (d.events.length > 0) {
                     d.events.sort((a, b) => a.absMin - b.absMin);
-                    d.startMin = d.events[0]?.absMin || 0;
+                    
+                    // Try to get confirmation time from breaker ID
+                    const confirmMin = parseConfirmationTime(id);
+                    if (confirmMin) {
+                        d.startMin = confirmMin;
+                    } else {
+                        // Fallback to first observation
+                        d.startMin = d.events[0]?.absMin || 0;
+                    }
                     d.endMin = d.events[d.events.length - 1]?.absMin || 0;
+                    
+                    // Ensure startMin <= endMin
+                    if (d.startMin > d.endMin) {
+                        d.endMin = d.startMin;
+                    }
                 }
             }
             
@@ -5065,7 +5390,10 @@
                 if (d.events.length > 500) {
                     d.events = d.events.slice(-500);
                 }
-                d.symbol = d.id.toUpperCase().includes('NQ') ? 'NQ' : 'ES';
+                // Use symbol from cache (parsed from ID during load)
+                if (!d.symbol) {
+                    d.symbol = d.id.toUpperCase().includes('NQ') ? 'NQ' : 'ES';
+                }
             });
             
             // Extract 1M NQ Bull entry times
@@ -5111,17 +5439,18 @@
                 const status = d.status.toLowerCase();
                 const tf = d.tf.replace('hr', 'h');
                 const key = `${tf}-${d.symbol}-${d.dir}`;
+                const isFailed = status?.startsWith('failed:');
                 
                 // Primary stats: NQ Bull 1M only
                 if (tf === '1m' && d.symbol === 'NQ' && d.dir === 'bull') {
                     if (status === 'success') primary.success++;
-                    else if (status === 'fail') primary.fail++;
+                    else if (isFailed) primary.fail++;
                 }
                 
                 // Per-lane stats
                 if (laneStats[key]) {
                     if (status === 'success') laneStats[key].success++;
-                    else if (status === 'fail') laneStats[key].fail++;
+                    else if (isFailed) laneStats[key].fail++;
                 }
             });
             
@@ -5394,24 +5723,11 @@
                     const tfNorm = tf.replace('hr', 'h').toLowerCase();
                     const smtForLane = smtData.filter(smt => {
                         const smtTfNorm = smt.tf.replace('m', 'm').replace('h', 'h').toLowerCase();
-                        const matches = smtTfNorm === tfNorm && 
+                        return smtTfNorm === tfNorm && 
                                smt.defensiveAsset === symbol &&
                                smt.smtMin >= windowStartMin && 
                                smt.smtMin <= windowEndMin;
-                        
-                        // Debug logging for each SMT
-                        if (smtData.length > 0 && smtData.indexOf(smt) === 0) {
-                            console.log(`🔍 SMT Filter Debug for ${tf}/${symbol}:`);
-                            console.log(`   Lane TF: "${tfNorm}", SMT TF: "${smtTfNorm}", Match: ${smtTfNorm === tfNorm}`);
-                            console.log(`   Lane Symbol: "${symbol}", SMT Defensive: "${smt.defensiveAsset}", Match: ${smt.defensiveAsset === symbol}`);
-                            console.log(`   Window: ${windowStartMin}-${windowEndMin}, SMT Min: ${smt.smtMin}, In Range: ${smt.smtMin >= windowStartMin && smt.smtMin <= windowEndMin}`);
-                        }
-                        return matches;
                     });
-                    
-                    if (smtForLane.length > 0) {
-                        console.log(`📍 Rendering ${smtForLane.length} SMT markers in ${tf}/${symbol} lane`);
-                    }
                     
                     smtForLane.forEach(smt => {
                         const marker = createSmtMarker(smt, 0, laneHeight);
@@ -5630,14 +5946,6 @@
                         return;
                     }
                     
-                    // Debug: show raw Firebase data
-                    const keys = Object.keys(data);
-                    console.log(`📊 Raw Firebase: ${keys.length} records`);
-                    console.log('📊 Firebase keys:', keys);
-                    if (keys.length > 0) {
-                        console.log('📊 First raw record:', JSON.stringify(data[keys[0]], null, 2));
-                    }
-                    
                     // Convert to array and parse
                     smtData = [];
                     const errors = [];
@@ -5751,23 +6059,17 @@
                     // Log results
                     if (errors.length > 0) {
                         console.error(`❌ SMT Schema Errors (${errors.length}):`);
-                        errors.forEach(e => console.error(`   ${e}`));
+                        errors.slice(0, 5).forEach(e => console.error(`   ${e}`));
                     }
                     
                     // Check for duplicates
                     const smtIds = smtData.map(s => s.smtId);
                     const duplicates = smtIds.filter((id, idx) => smtIds.indexOf(id) !== idx);
                     if (duplicates.length > 0) {
-                        console.warn(`⚠️ Duplicate SMT IDs found:`, duplicates);
+                        console.warn(`⚠️ ${duplicates.length} duplicate SMT IDs found`);
                     }
                     
                     console.log(`📊 Loaded ${smtData.length} valid SMT signals`);
-                    if (smtData.length > 0) {
-                        console.log('📊 All SMT signals:');
-                        smtData.forEach(s => {
-                            console.log(`   ${s.smtId} | TF: ${s.tf} | Dir: ${s.dir} | Def: ${s.defensiveAsset} | Min: ${s.smtMin} | Time: ${s.smtTime}`);
-                        });
-                    }
                 })
                 .catch(err => {
                     console.error('❌ Error loading SMT data:', err);
@@ -5783,7 +6085,7 @@
             marker.style.left = x + 'px';
             marker.style.top = laneTop + 'px';
             marker.style.height = laneHeight + 'px';
-            marker.dataset.smtId = smt.id;
+            marker.dataset.smtId = smt.smtId;
             
             // Diamond in center
             const diamond = document.createElement('div');
@@ -5799,7 +6101,7 @@
             // Click handler
             marker.addEventListener('click', (e) => {
                 e.stopPropagation();
-                selectSmt(smt.id);
+                selectSmt(smt.smtId);
             });
             
             return marker;
@@ -5829,7 +6131,7 @@
         }
         
         function showSmtDetail(smtId) {
-            const smt = smtData.find(s => s.id === smtId);
+            const smt = smtData.find(s => s.smtId === smtId);
             if (!smt) return;
             
             document.getElementById('panel-time').textContent = minToTime(smt.smtMin);
@@ -6122,19 +6424,42 @@
             const rightGroup = document.createElement('div');
             rightGroup.className = 'bar-right-group';
             
-            // Show fib on wider bars (right side, before status)
-            if (barWidth > 50) {
+            // Show fib on wider bars (right side, before status) - currentFib/maxFib and points
+            if (barWidth > 40) {
                 const fibSpan = document.createElement('span');
                 fibSpan.className = 'bar-fib';
-                fibSpan.textContent = b.maxFib.toFixed(1);
+                
+                const currFib = (b.currentFib || b.maxFib || 0).toFixed(1);
+                const maxFib = (b.maxFib || 0).toFixed(1);
+                const points = b.points || 0;
+                
+                // Fib text
+                const fibText = document.createElement('span');
+                fibText.className = 'bar-fib-value';
+                fibText.textContent = `${currFib}/${maxFib}`;
+                fibSpan.appendChild(fibText);
+                
+                // Points in box
+                if (points > 0) {
+                    const pointsBox = document.createElement('span');
+                    pointsBox.className = 'bar-points';
+                    pointsBox.textContent = `${points}p`;
+                    fibSpan.appendChild(pointsBox);
+                }
+                
                 rightGroup.appendChild(fibSpan);
             }
             
             // Status dot - only for completed
-            if (b.status === 'success' || b.status === 'fail') {
+            const isFailed = b.status?.startsWith('failed:');
+            if (b.status === 'success' || isFailed) {
                 const dot = document.createElement('div');
-                dot.className = 'status-dot ' + b.status;
+                dot.className = 'status-dot ' + (isFailed ? 'fail' : 'success');
                 dot.textContent = b.status === 'success' ? 'S' : 'F';
+                // Add tooltip for failure reason
+                if (isFailed) {
+                    dot.title = b.status.replace('failed:', '');
+                }
                 rightGroup.appendChild(dot);
             }
             
@@ -6201,9 +6526,10 @@
                         }
                         
                         // Status indicator
+                        const isBreakerFailed = breaker.status?.startsWith('failed:');
                         const statusIcon = breaker.status === 'success' ? 'S' : 
-                                          breaker.status === 'fail' ? 'F' : '-';
-                        const statusClass = breaker.status;
+                                          isBreakerFailed ? 'F' : '-';
+                        const statusClass = isBreakerFailed ? 'fail' : breaker.status;
                         
                         contextRows.push(`
                             <div class="context-row active">
@@ -6296,9 +6622,10 @@
                         const currentFib = breaker.maxFib;
                         
                         // Status indicator
+                        const isBreakerFailed = breaker.status?.startsWith('failed:');
                         const statusIcon = breaker.status === 'success' ? 'S' : 
-                                          breaker.status === 'fail' ? 'F' : '-';
-                        const statusClass = breaker.status;
+                                          isBreakerFailed ? 'F' : '-';
+                        const statusClass = isBreakerFailed ? 'fail' : breaker.status;
                         
                         contextRows.push(`
                             <div class="context-row live-active-row">
@@ -6360,11 +6687,30 @@
             if (!b) return;
             
             const duration = minToDuration(b.startMin, b.endMin);
-            const statusClass = b.status.toLowerCase();
-            const statusText = b.status.charAt(0).toUpperCase() + b.status.slice(1);
+            const isFailed = b.status?.startsWith('failed:');
+            const statusClass = isFailed ? 'fail' : b.status.toLowerCase();
+            let statusText = b.status.charAt(0).toUpperCase() + b.status.slice(1);
+            let failureReason = '';
+            if (isFailed) {
+                failureReason = b.status.replace('failed:', '');
+                statusText = 'Failed';
+            }
+            
+            // Parse confirmation time for display
+            function formatIdTime(timeStr) {
+                if (!timeStr || timeStr.length < 10) return '—';
+                const match = timeStr.match(/^(\d{2})(\d{2})(\d{2})T(\d{2})(\d{2})$/);
+                if (!match) return timeStr;
+                const [_, yy, mm, dd, hh, min] = match;
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                return `${months[parseInt(mm)-1]} ${parseInt(dd)} ${hh}:${min}`;
+            }
             
             // Generate fib chart
             const fibChart = generateFibChart(b);
+            
+            // Generate price zone visualization
+            const priceZone = generatePriceZone(b);
             
             document.getElementById('panel-time').textContent = minToTime(b.startMin);
             document.getElementById('panel-type').textContent = 'Breaker Detail';
@@ -6376,46 +6722,46 @@
                     <div class="detail-badges">
                         <span class="detail-badge ${b.symbol.toLowerCase()}">${b.symbol}</span>
                         <span class="detail-badge ${b.dir}">${b.dir.toUpperCase()}</span>
+                        <span class="detail-badge tf">${TF_DISPLAY[b.tf] || b.tf.toUpperCase()}</span>
                         <span class="detail-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    ${failureReason ? `<div class="failure-reason">Reason: ${failureReason}</div>` : ''}
+                </div>
+                
+                <div class="detail-section compact-info">
+                    <div class="info-item">
+                        <span class="info-value">${b.price || '—'}</span>
+                        <span class="info-label">Price</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value">${b.points}p</span>
+                        <span class="info-label">Range</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value">${b.currentFib.toFixed(1)}/${b.maxFib.toFixed(1)}</span>
+                        <span class="info-label">Fib C/P</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value">${duration}</span>
+                        <span class="info-label">Duration</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">Price Zone</div>
+                    <div class="price-zone-container">
+                        ${priceZone}
                     </div>
                 </div>
                 
                 <div class="detail-section">
                     <div class="detail-section-title">Fib Progression</div>
+                    <div class="fib-chart-legend">
+                        <span class="fib-legend-item"><span class="fib-legend-line max"></span>Peak</span>
+                        <span class="fib-legend-item"><span class="fib-legend-line current"></span>Current</span>
+                    </div>
                     <div class="fib-chart-container">
                         ${fibChart}
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-section-title">Metrics</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Max Fib</span>
-                        <span class="detail-value large">${b.maxFib.toFixed(2)}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Timeframe</span>
-                        <span class="detail-value">${TF_DISPLAY[b.tf] || b.tf.toUpperCase()}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Duration</span>
-                        <span class="detail-value">${duration}</span>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-section-title">Timeline</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Start</span>
-                        <span class="detail-value">${minToDateTime(b.startMin)}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">End</span>
-                        <span class="detail-value">${minToDateTime(b.endMin)}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Snapshots</span>
-                        <span class="detail-value">${b.events.length}</span>
                     </div>
                 </div>
                 
@@ -6444,12 +6790,15 @@
             const maxTime = events[events.length - 1].absMin;
             const timeRange = maxTime - minTime || 1;
             
-            const maxFib = Math.max(...events.map(e => e.fib), 1);
-            const fibCeil = Math.ceil(maxFib * 1.1); // Add 10% padding
+            // Use max of both fib values for scale
+            const maxFibCurrent = Math.max(...events.map(e => e.fib || 0), 1);
+            const maxFibPeak = Math.max(...events.map(e => e.maxFib || e.fib || 0), 1);
+            const maxFibVal = Math.max(maxFibCurrent, maxFibPeak);
+            const fibCeil = Math.ceil(maxFibVal * 1.1); // Add 10% padding
             
-            // Find peak point (first occurrence of max fib)
-            const maxFibVal = Math.max(...events.map(e => e.fib));
-            const peakIndex = events.findIndex(e => e.fib === maxFibVal);
+            // Find peak point (first occurrence of max fib in maxFib line)
+            const peakVal = Math.max(...events.map(e => e.maxFib || e.fib || 0));
+            const peakIndex = events.findIndex(e => (e.maxFib || e.fib) === peakVal);
             const peakEvent = events[peakIndex];
             
             // Downsample events if too many (keep first, last, peak, and sampled)
@@ -6463,18 +6812,27 @@
                 sampledPeakIndex = sampledEvents.findIndex(e => e === events[peakIndex]);
             }
             
-            // Generate points from sampled events
-            const points = sampledEvents.map((e, i) => {
+            // Generate points for currentFib line
+            const currentPoints = sampledEvents.map((e, i) => {
                 const x = padding.left + ((e.absMin - minTime) / timeRange) * chartWidth;
-                const y = padding.top + chartHeight - (e.fib / fibCeil) * chartHeight;
-                return { x, y, fib: e.fib, time: e.absMin, isPeak: i === sampledPeakIndex };
+                const y = padding.top + chartHeight - ((e.fib || 0) / fibCeil) * chartHeight;
+                return { x, y, fib: e.fib || 0, time: e.absMin };
             });
             
-            // Create line path
-            const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            // Generate points for maxFib line
+            const maxPoints = sampledEvents.map((e, i) => {
+                const x = padding.left + ((e.absMin - minTime) / timeRange) * chartWidth;
+                const fibVal = e.maxFib || e.fib || 0;
+                const y = padding.top + chartHeight - (fibVal / fibCeil) * chartHeight;
+                return { x, y, fib: fibVal, time: e.absMin, isPeak: i === sampledPeakIndex };
+            });
             
-            // Create area path (for gradient fill)
-            const areaPath = linePath + ` L ${points[points.length-1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`;
+            // Create line paths
+            const currentLinePath = currentPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            const maxLinePath = maxPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            
+            // Create area path (for gradient fill under max line)
+            const areaPath = maxLinePath + ` L ${maxPoints[maxPoints.length-1].x} ${padding.top + chartHeight} L ${maxPoints[0].x} ${padding.top + chartHeight} Z`;
             
             // Generate Y-axis labels
             const yLabels = [];
@@ -6495,36 +6853,36 @@
             timeLabels.push(`<text class="fib-chart-label" x="${padding.left + chartWidth/2}" y="${height - 5}" text-anchor="middle">${minToTime(midTime)}</text>`);
             timeLabels.push(`<text class="fib-chart-label" x="${width - padding.right}" y="${height - 5}" text-anchor="end">${minToTime(maxTime)}</text>`);
             
-            // Find peak point coordinates
-            const peakPoint = points.find(p => p.isPeak);
+            // Find peak point coordinates (on maxFib line)
+            const peakPoint = maxPoints.find(p => p.isPeak);
             
-            // Generate dots (sample if too many)
-            let dotPoints = points;
-            if (points.length > 20) {
-                const step = Math.ceil(points.length / 15);
-                dotPoints = points.filter((p, i) => i === 0 || i === points.length - 1 || p.isPeak || i % step === 0);
+            // Generate dots for maxFib line (sample if too many)
+            let dotPoints = maxPoints;
+            if (maxPoints.length > 20) {
+                const step = Math.ceil(maxPoints.length / 15);
+                dotPoints = maxPoints.filter((p, i) => i === 0 || i === maxPoints.length - 1 || p.isPeak || i % step === 0);
             }
             
             const dots = dotPoints.map(p => {
                 return `<circle class="${p.isPeak ? 'fib-chart-peak' : 'fib-chart-dot'}" cx="${p.x}" cy="${p.y}" r="${p.isPeak ? 4 : 3}"/>`;
             }).join('');
             
-            // Peak label
+            // Peak label (show maxFib value)
             const peakLabel = peakPoint ? `
-                <text class="fib-peak-label" x="${peakPoint.x}" y="${peakPoint.y - 8}" text-anchor="middle">${peakEvent.fib.toFixed(2)}</text>
+                <text class="fib-peak-label" x="${peakPoint.x}" y="${peakPoint.y - 8}" text-anchor="middle">${peakPoint.fib.toFixed(2)}</text>
             ` : '';
             
             // Store chart data for cursor interaction
             const chartId = 'fib-chart-' + Date.now();
             
-            // Schedule cursor setup after DOM update
-            setTimeout(() => setupFibChartCursor(chartId, points, padding, chartWidth, chartHeight, fibCeil, minTime, timeRange), 0);
+            // Schedule cursor setup after DOM update (pass both point sets)
+            setTimeout(() => setupFibChartCursor(chartId, maxPoints, padding, chartWidth, chartHeight, fibCeil, minTime, timeRange, currentPoints), 0);
             
             return `
                 <svg id="${chartId}" class="fib-chart" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
                     <defs>
                         <linearGradient id="fibGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.4"/>
+                            <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.3"/>
                             <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0"/>
                         </linearGradient>
                     </defs>
@@ -6536,13 +6894,16 @@
                     <line class="fib-chart-axis" x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + chartHeight}"/>
                     <line class="fib-chart-axis" x1="${padding.left}" y1="${padding.top + chartHeight}" x2="${width - padding.right}" y2="${padding.top + chartHeight}"/>
                     
-                    <!-- Area fill -->
+                    <!-- Area fill (under max line) -->
                     <path class="fib-chart-area" d="${areaPath}"/>
                     
-                    <!-- Line -->
-                    <path class="fib-chart-line" d="${linePath}"/>
+                    <!-- Current Fib line (orange, thinner) -->
+                    <path class="fib-chart-line-current" d="${currentLinePath}"/>
                     
-                    <!-- Dots -->
+                    <!-- Max Fib line (blue, thicker) -->
+                    <path class="fib-chart-line" d="${maxLinePath}"/>
+                    
+                    <!-- Dots on max line -->
                     ${dots}
                     
                     <!-- Peak label -->
@@ -6562,6 +6923,116 @@
                     <span class="fib-val">0.00</span>
                     <span class="time-val">00:00</span>
                 </div>
+            `;
+        }
+        
+        function generatePriceZone(breaker) {
+            const events = breaker.events;
+            if (events.length < 2 || !breaker.price || !breaker.points) {
+                return '<div style="color:#666;text-align:center;padding:20px;">Not enough data</div>';
+            }
+            
+            // Check if we have price data in events
+            const hasPrice = events.some(e => e.price > 0);
+            if (!hasPrice) {
+                return '<div style="color:#666;text-align:center;padding:20px;">No price data</div>';
+            }
+            
+            const width = 280;
+            const height = 100;
+            const padding = { top: 10, right: 45, bottom: 20, left: 10 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            const breakerLevel = breaker.price; // Confirmation price from ID
+            const range = breaker.points;
+            const isBull = breaker.dir === 'bull';
+            
+            // Breaker zone:
+            // Bull: zone is support BELOW price. Top = breakerLevel, Bottom = breakerLevel - range
+            // Bear: zone is resistance ABOVE price. Bottom = breakerLevel, Top = breakerLevel + range
+            const zoneTop = isBull ? breakerLevel : breakerLevel + range;
+            const zoneBottom = isBull ? breakerLevel - range : breakerLevel;
+            
+            // Find time range
+            const minTime = events[0].absMin;
+            const maxTime = events[events.length - 1].absMin;
+            const timeRange = maxTime - minTime || 1;
+            
+            // Get actual prices from events
+            const priceData = events.filter(e => e.price > 0).map(e => ({
+                time: e.absMin,
+                price: e.price
+            }));
+            
+            if (priceData.length < 2) {
+                return '<div style="color:#666;text-align:center;padding:20px;">Not enough price data</div>';
+            }
+            
+            // Find price range for scale
+            const allPrices = priceData.map(p => p.price);
+            allPrices.push(zoneTop, zoneBottom);
+            const minPrice = Math.min(...allPrices);
+            const maxPrice = Math.max(...allPrices);
+            const priceRange = maxPrice - minPrice || 1;
+            const pricePadding = priceRange * 0.15;
+            const scaledMinPrice = minPrice - pricePadding;
+            const scaledMaxPrice = maxPrice + pricePadding;
+            const scaledRange = scaledMaxPrice - scaledMinPrice;
+            
+            // Convert price to Y coordinate (higher price = lower Y)
+            const priceToY = (price) => {
+                return padding.top + chartHeight - ((price - scaledMinPrice) / scaledRange) * chartHeight;
+            };
+            
+            // Downsample if too many points
+            let sampledData = priceData;
+            if (priceData.length > 100) {
+                const step = Math.ceil(priceData.length / 80);
+                sampledData = priceData.filter((_, i) => i === 0 || i === priceData.length - 1 || i % step === 0);
+            }
+            
+            // Generate price line points
+            const pricePoints = sampledData.map(d => {
+                const x = padding.left + ((d.time - minTime) / timeRange) * chartWidth;
+                const y = priceToY(d.price);
+                return { x, y };
+            });
+            
+            // Create price line path
+            const pricePath = pricePoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            
+            // Zone Y coordinates
+            const zoneTopY = priceToY(zoneTop);
+            const zoneBottomY = priceToY(zoneBottom);
+            const zoneHeight = zoneBottomY - zoneTopY;
+            
+            // Breaker level line (top of zone for bull, bottom for bear)
+            const breakerLineY = priceToY(breakerLevel);
+            
+            // Price labels
+            const priceLabels = `
+                <text class="price-chart-price-label" x="${width - 3}" y="${zoneTopY + 3}" text-anchor="end">${Math.round(zoneTop)}</text>
+                <text class="price-chart-price-label" x="${width - 3}" y="${zoneBottomY + 3}" text-anchor="end">${Math.round(zoneBottom)}</text>
+            `;
+            
+            return `
+                <svg class="price-chart" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
+                    <!-- Breaker zone (shaded) -->
+                    <rect class="price-chart-breaker-zone" x="${padding.left}" y="${zoneTopY}" width="${chartWidth}" height="${zoneHeight}"/>
+                    
+                    <!-- Breaker level line (solid blue) -->
+                    <line class="price-chart-breaker-line" x1="${padding.left}" y1="${breakerLineY}" x2="${padding.left + chartWidth}" y2="${breakerLineY}"/>
+                    
+                    <!-- Zone bottom line (dashed) -->
+                    <line class="price-chart-level" x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}"/>
+                    
+                    <!-- Price line (orange) -->
+                    <path class="price-chart-price-line" d="${pricePath}"/>
+                    
+                    <!-- Price labels -->
+                    ${priceLabels}
+                </svg>
             `;
         }
         
@@ -6673,9 +7144,10 @@
                         }
                         
                         // Status indicator
+                        const isBreakerFailed = breaker.status?.startsWith('failed:');
                         const statusIcon = breaker.status === 'success' ? 'S' : 
-                                          breaker.status === 'fail' ? 'F' : '-';
-                        const statusClass = breaker.status;
+                                          isBreakerFailed ? 'F' : '-';
+                        const statusClass = isBreakerFailed ? 'fail' : breaker.status;
                         
                         contextRows.push(`
                             <div class="context-row active">
@@ -7330,11 +7802,11 @@
                                     </defs>
                                     <line x1="50" y1="50" x2="350" y2="50" stroke="url(#clearPath)" stroke-width="3" stroke-dasharray="8,4"/>
                                     <circle cx="50" cy="50" r="8" fill="#60a5fa"/>
-                                    <text x="50" y="75" text-anchor="middle" fill="#60a5fa" font-size="10" font-family="JetBrains Mono">Entry</text>
+                                    <text x="50" y="75" text-anchor="middle" fill="#60a5fa" font-size="10" font-family="Roboto Mono">Entry</text>
                                     <polygon points="350,50 340,44 340,56" fill="#4ade80"/>
                                     <circle cx="350" cy="50" r="8" fill="#4ade80"/>
-                                    <text x="350" y="75" text-anchor="middle" fill="#4ade80" font-size="10" font-family="JetBrains Mono">Target</text>
-                                    <text x="200" y="30" text-anchor="middle" fill="#4ade80" font-size="11" font-family="JetBrains Mono">✓ Clear Path</text>
+                                    <text x="350" y="75" text-anchor="middle" fill="#4ade80" font-size="10" font-family="Roboto Mono">Target</text>
+                                    <text x="200" y="30" text-anchor="middle" fill="#4ade80" font-size="11" font-family="Roboto Mono">✓ Clear Path</text>
                                 </svg>
                             </div>
                         </div>
