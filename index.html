@@ -6647,19 +6647,13 @@
                     
                     // Render SMT markers in defensive asset lane
                     const tfNorm = tf.replace('hr', 'h').toLowerCase();
-                    console.log(`📊 Render: Filtering SMTs for ${symbol}/${tf}, tfNorm=${tfNorm}, smtData.length=${smtData.length}`);
                     const smtForLane = smtData.filter(smt => {
                         const smtTfNorm = smt.tf.replace('m', 'm').replace('h', 'h').toLowerCase();
-                        const matches = smtTfNorm === tfNorm && 
+                        return smtTfNorm === tfNorm && 
                                smt.defensiveAsset === symbol &&
                                smt.smtMin >= windowStartMin && 
                                smt.smtMin <= windowEndMin;
-                        if (smt.defensiveAsset === symbol) {
-                            console.log(`📊 SMT ${smt.smtId}: tfNorm=${smtTfNorm} vs ${tfNorm}, smtMin=${smt.smtMin}, window=${windowStartMin}-${windowEndMin}, matches=${matches}`);
-                        }
-                        return matches;
                     });
-                    console.log(`📊 Found ${smtForLane.length} SMTs for ${symbol}/${tf}`);
                     
                     smtForLane.forEach(smt => {
                         const marker = createSmtMarker(smt, 0, laneHeight);
@@ -6876,18 +6870,10 @@
         
         // ===== SMT DATA LOADING =====
         function loadSmtData(incremental = false) {
-            console.log(`📊 Loading SMT signals... (${incremental ? 'incremental' : 'full'})`);
-            
             return fetch(SMT_FIREBASE_URL)
-                .then(r => {
-                    console.log('📊 SMT fetch response status:', r.status);
-                    return r.json();
-                })
+                .then(r => r.json())
                 .then(data => {
-                    console.log('📊 SMT raw data:', data);
-                    
                     if (!data) {
-                        console.log('📊 No SMT signals found');
                         if (!incremental) smtData = [];
                         return;
                     }
@@ -6902,12 +6888,7 @@
                     let newCount = 0;
                     let updatedCount = 0;
                     
-                    const entries = Object.entries(data);
-                    console.log(`📊 Processing ${entries.length} SMT entries`);
-                    
-                    entries.forEach(([key, smt]) => {
-                        console.log(`📊 Processing SMT entry: ${key}`, smt);
-                        
+                    Object.entries(data).forEach(([key, smt]) => {
                         // STRICT VALIDATION - all fields required
                         const missing = [];
                         if (!smt.smt_id) missing.push('smt_id');
@@ -6925,7 +6906,6 @@
                         if (!smt.status) missing.push('status');
                         
                         if (missing.length > 0) {
-                            console.warn(`📊 ${key}: Missing fields: ${missing.join(', ')}`);
                             errors.push(`${key}: Missing fields: ${missing.join(', ')}`);
                             return;
                         }
@@ -6952,12 +6932,9 @@
                         if (smt.criteria.defensive_held === undefined) nestedMissing.push('criteria.defensive_held');
                         
                         if (nestedMissing.length > 0) {
-                            console.warn(`📊 ${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
                             errors.push(`${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
                             return;
                         }
-                        
-                        console.log(`📊 ${key}: Validation passed`);
                         
                         // For incremental updates, skip if unchanged
                         if (incremental && smtCache[smt.smt_id]) {
@@ -6969,9 +6946,7 @@
                         
                         // Parse smt_time to minutes
                         const smtMin = datetimeToMin(smt.smt_time);
-                        console.log(`📊 ${key}: smt_time=${smt.smt_time} -> smtMin=${smtMin}`);
                         if (isNaN(smtMin)) {
-                            console.warn(`📊 ${key}: Invalid smt_time format: ${smt.smt_time}`);
                             errors.push(`${key}: Invalid smt_time format: ${smt.smt_time}`);
                             return;
                         }
@@ -7060,32 +7035,28 @@
                         smtCache[parsed.smtId] = { lastDetected: parsed.lastDetected, status: parsed.status };
                     });
                     
-                    // Log results
+                    // Log errors if any
                     if (errors.length > 0) {
-                        console.error(`❌ SMT Schema Errors (${errors.length}):`);
-                        errors.slice(0, 5).forEach(e => console.error(`   ${e}`));
+                        console.warn(`SMT validation errors: ${errors.length}`);
                     }
                     
                     // Check for duplicates
                     const smtIds = smtData.map(s => s.smtId);
                     const duplicates = smtIds.filter((id, idx) => smtIds.indexOf(id) !== idx);
                     if (duplicates.length > 0) {
-                        console.warn(`⚠️ ${duplicates.length} duplicate SMT IDs found`);
+                        console.warn(`Duplicate SMT IDs: ${duplicates.length}`);
                     }
                     
                     if (incremental) {
-                        console.log(`📊 SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
+                        console.log(`SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
                     } else {
-                        console.log(`📊 Loaded ${smtData.length} valid SMT signals`);
-                        if (smtData.length > 0) {
-                            console.log('📊 Sample SMT:', smtData[0]);
-                        }
+                        console.log(`Loaded ${smtData.length} SMT signals`);
                     }
                     
                     lastSmtFetchTime = new Date().toISOString();
                 })
                 .catch(err => {
-                    console.error('❌ Error loading SMT data:', err);
+                    console.error('Error loading SMT data:', err);
                     smtData = [];
                 });
         }
@@ -7245,9 +7216,6 @@
                 }
             };
             const qualityBgColor = getQualityColor(qScore);
-            
-            // Strength stars
-            // (removed - using M1, M2, M3 format now)
             
             // Build all criteria - show checkmark for true, blank for false
             const allCriteria = [
