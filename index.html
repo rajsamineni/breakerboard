@@ -1351,13 +1351,14 @@
         
         .smt-div-structure {
             font-size: 9px;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
             color: #555;
         }
         
-        .smt-div-structure.bearish { color: #f87171; }
-        .smt-div-structure.bullish { color: #4ade80; }
+        /* LL/LH = bearish structures, HL/HH = bullish structures */
+        .smt-div-structure.LL, .smt-div-structure.LH { color: #f87171; }
+        .smt-div-structure.HL, .smt-div-structure.HH { color: #4ade80; }
         
         .smt-div-chart-area {
             height: 60px;
@@ -6646,13 +6647,19 @@
                     
                     // Render SMT markers in defensive asset lane
                     const tfNorm = tf.replace('hr', 'h').toLowerCase();
+                    console.log(`📊 Render: Filtering SMTs for ${symbol}/${tf}, tfNorm=${tfNorm}, smtData.length=${smtData.length}`);
                     const smtForLane = smtData.filter(smt => {
                         const smtTfNorm = smt.tf.replace('m', 'm').replace('h', 'h').toLowerCase();
-                        return smtTfNorm === tfNorm && 
+                        const matches = smtTfNorm === tfNorm && 
                                smt.defensiveAsset === symbol &&
                                smt.smtMin >= windowStartMin && 
                                smt.smtMin <= windowEndMin;
+                        if (smt.defensiveAsset === symbol) {
+                            console.log(`📊 SMT ${smt.smtId}: tfNorm=${smtTfNorm} vs ${tfNorm}, smtMin=${smt.smtMin}, window=${windowStartMin}-${windowEndMin}, matches=${matches}`);
+                        }
+                        return matches;
                     });
+                    console.log(`📊 Found ${smtForLane.length} SMTs for ${symbol}/${tf}`);
                     
                     smtForLane.forEach(smt => {
                         const marker = createSmtMarker(smt, 0, laneHeight);
@@ -6872,8 +6879,13 @@
             console.log(`📊 Loading SMT signals... (${incremental ? 'incremental' : 'full'})`);
             
             return fetch(SMT_FIREBASE_URL)
-                .then(r => r.json())
+                .then(r => {
+                    console.log('📊 SMT fetch response status:', r.status);
+                    return r.json();
+                })
                 .then(data => {
+                    console.log('📊 SMT raw data:', data);
+                    
                     if (!data) {
                         console.log('📊 No SMT signals found');
                         if (!incremental) smtData = [];
@@ -6890,7 +6902,12 @@
                     let newCount = 0;
                     let updatedCount = 0;
                     
-                    Object.entries(data).forEach(([key, smt]) => {
+                    const entries = Object.entries(data);
+                    console.log(`📊 Processing ${entries.length} SMT entries`);
+                    
+                    entries.forEach(([key, smt]) => {
+                        console.log(`📊 Processing SMT entry: ${key}`, smt);
+                        
                         // STRICT VALIDATION - all fields required
                         const missing = [];
                         if (!smt.smt_id) missing.push('smt_id');
@@ -6905,10 +6922,10 @@
                         if (!smt.nq) missing.push('nq');
                         if (!smt.criteria) missing.push('criteria');
                         if (smt.quality === undefined) missing.push('quality');
-                        if (smt.price === undefined) missing.push('price');
                         if (!smt.status) missing.push('status');
                         
                         if (missing.length > 0) {
+                            console.warn(`📊 ${key}: Missing fields: ${missing.join(', ')}`);
                             errors.push(`${key}: Missing fields: ${missing.join(', ')}`);
                             return;
                         }
@@ -6920,9 +6937,13 @@
                         if (smt.es.prev_price === undefined) nestedMissing.push('es.prev_price');
                         if (smt.es.curr_price === undefined) nestedMissing.push('es.curr_price');
                         if (!smt.es.structure) nestedMissing.push('es.structure');
+                        if (!smt.es.prev_time) nestedMissing.push('es.prev_time');
+                        if (!smt.es.curr_time) nestedMissing.push('es.curr_time');
                         if (smt.nq.prev_price === undefined) nestedMissing.push('nq.prev_price');
                         if (smt.nq.curr_price === undefined) nestedMissing.push('nq.curr_price');
                         if (!smt.nq.structure) nestedMissing.push('nq.structure');
+                        if (!smt.nq.prev_time) nestedMissing.push('nq.prev_time');
+                        if (!smt.nq.curr_time) nestedMissing.push('nq.curr_time');
                         
                         // Validate criteria fields
                         if (smt.criteria.has_fvg === undefined) nestedMissing.push('criteria.has_fvg');
@@ -6931,9 +6952,12 @@
                         if (smt.criteria.defensive_held === undefined) nestedMissing.push('criteria.defensive_held');
                         
                         if (nestedMissing.length > 0) {
+                            console.warn(`📊 ${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
                             errors.push(`${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
                             return;
                         }
+                        
+                        console.log(`📊 ${key}: Validation passed`);
                         
                         // For incremental updates, skip if unchanged
                         if (incremental && smtCache[smt.smt_id]) {
@@ -6945,7 +6969,9 @@
                         
                         // Parse smt_time to minutes
                         const smtMin = datetimeToMin(smt.smt_time);
+                        console.log(`📊 ${key}: smt_time=${smt.smt_time} -> smtMin=${smtMin}`);
                         if (isNaN(smtMin)) {
+                            console.warn(`📊 ${key}: Invalid smt_time format: ${smt.smt_time}`);
                             errors.push(`${key}: Invalid smt_time format: ${smt.smt_time}`);
                             return;
                         }
@@ -6982,8 +7008,8 @@
                                 prevPrice: smt.es.prev_price,
                                 currPrice: smt.es.curr_price,
                                 structure: smt.es.structure,
-                                prevTime: smt.es.prev_time || null,
-                                currTime: smt.es.curr_time || null
+                                prevTime: smt.es.prev_time,
+                                currTime: smt.es.curr_time
                             },
                             
                             // NQ swing data
@@ -6991,8 +7017,8 @@
                                 prevPrice: smt.nq.prev_price,
                                 currPrice: smt.nq.curr_price,
                                 structure: smt.nq.structure,
-                                prevTime: smt.nq.prev_time || null,
-                                currTime: smt.nq.curr_time || null
+                                prevTime: smt.nq.prev_time,
+                                currTime: smt.nq.curr_time
                             },
                             
                             // Criteria
@@ -7011,9 +7037,6 @@
                             
                             // Quality score (0-10)
                             quality: smt.quality,
-                            
-                            // Price
-                            price: smt.price,
                             
                             // Status
                             status: smt.status
@@ -7054,6 +7077,9 @@
                         console.log(`📊 SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
                     } else {
                         console.log(`📊 Loaded ${smtData.length} valid SMT signals`);
+                        if (smtData.length > 0) {
+                            console.log('📊 Sample SMT:', smtData[0]);
+                        }
                     }
                     
                     lastSmtFetchTime = new Date().toISOString();
@@ -7138,18 +7164,13 @@
                 const sign = val >= 0 ? '+' : '';
                 return sign + Math.round(val).toLocaleString('en-US');
             };
-            const formatTime = (timeStr) => {
-                if (!timeStr) return '—';
-                const parts = timeStr.split('T');
-                return parts[1] ? parts[1].substring(0, 5) : '—';
-            };
             
             // Render mini chart SVG
             const renderSmtMiniChart = (type, data, asset) => {
                 const prevPrice = data.prevPrice;
                 const currPrice = data.currPrice;
-                const prevTime = formatTime(data.prevTime);
-                const currTime = formatTime(data.currTime);
+                const prevTime = data.prevTime.split('T')[1].substring(0,5);
+                const currTime = data.currTime.split('T')[1].substring(0,5);
                 
                 const w = 150, h = 60;
                 const padL = 38, padR = 38, padT = 10, padB = 14;
@@ -7262,7 +7283,7 @@
                         <div class="smt-dir-expect">${expectation}</div>
                     </div>
                     <div class="smt-dir-methods">
-                        ${smt.methods.map((m, i) => `<span class="smt-method-pill">M${i + 1}</span>`).join('')}
+                        ${smt.methods.map(m => `<span class="smt-method-pill">${m}</span>`).join('')}
                     </div>
                 </div>
                 
