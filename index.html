@@ -1150,441 +1150,549 @@
             color: #f87171;
         }
         
+        /* Status-based marker styling */
+        .smt-marker.smt-invalidated {
+            opacity: 0.4;
+        }
+        .smt-marker.smt-invalidated .smt-diamond {
+            border-style: dashed;
+        }
+        
+        .smt-marker.smt-expired {
+            opacity: 0.25;
+        }
+        .smt-marker.smt-expired .smt-diamond {
+            border-style: dotted;
+        }
+        
         /* ═══════════════════════════════════════════════════════════════════════
-           SMT DASHBOARD - World Class Signal Analysis Panel
+           SMT DASHBOARD - Comprehensive Signal Analysis Panel
            ═══════════════════════════════════════════════════════════════════════ */
         
-        /* Headline */
-        .smt-headline {
-            font-size: 14px;
+        /* Header Row - Status & Quality */
+        .smt-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .smt-status-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 9px;
             font-weight: 700;
-            text-align: center;
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 4px;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+        .smt-status-pill.active { background: #166534; color: #4ade80; }
+        .smt-status-pill.invalidated { background: #7f1d1d; color: #fca5a5; }
+        .smt-status-pill.expired { background: #44403c; color: #a8a29e; }
         
-        .smt-headline.bull {
-            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(74, 222, 128, 0.1) 100%);
-            color: #4ade80;
-            border: 1px solid rgba(74, 222, 128, 0.3);
+        .smt-quality-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: #0f0f12;
+            border: 1px solid #2a2a2f;
+        }
+        .smt-quality-pill.high { border-color: #16a34a; }
+        .smt-quality-pill.med { border-color: #ca8a04; }
+        .smt-quality-pill.low { border-color: #dc2626; }
+        
+        .smt-quality-score {
+            padding: 6px 12px;
+            border-radius: 6px;
+            min-width: 50px;
+            text-align: center;
         }
         
-        .smt-headline.bear {
-            background: linear-gradient(135deg, rgba(248, 113, 113, 0.2) 0%, rgba(248, 113, 113, 0.1) 100%);
-            color: #f87171;
+        .smt-quality-score .smt-quality-num {
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .smt-quality-num {
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .smt-quality-pill.high .smt-quality-num { color: #4ade80; }
+        .smt-quality-pill.med .smt-quality-num { color: #fbbf24; }
+        .smt-quality-pill.low .smt-quality-num { color: #f87171; }
+        
+        .smt-quality-label {
+            font-size: 8px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        /* Direction Block */
+        .smt-direction-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .smt-direction-block.bull {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        .smt-direction-block.bear {
+            background: linear-gradient(135deg, rgba(248, 113, 113, 0.15) 0%, rgba(248, 113, 113, 0.05) 100%);
             border: 1px solid rgba(248, 113, 113, 0.3);
         }
         
-        .smt-story-summary {
-            text-align: center;
-            font-size: 11px;
+        .smt-dir-icon {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .smt-direction-block.bull .smt-dir-icon { color: #4ade80; }
+        .smt-direction-block.bear .smt-dir-icon { color: #f87171; }
+        
+        .smt-dir-info {
+            flex: 1;
+        }
+        .smt-dir-label {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .smt-direction-block.bull .smt-dir-label { color: #4ade80; }
+        .smt-direction-block.bear .smt-dir-label { color: #f87171; }
+        
+        .smt-dir-expect {
+            font-size: 10px;
             color: #888;
-            font-style: italic;
-            margin-bottom: 4px;
+            margin-top: 2px;
         }
         
-        /* Divergence Grid */
-        .smt-divergence-grid {
+        .smt-swept-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+        
+        /* Section Title */
+        .smt-section-title {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        /* Story Cards */
+        /* SMT Divergence Chart - Tight */
+        .smt-div-chart {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             align-items: stretch;
         }
         
-        .smt-divergence-vs {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #555;
-            padding: 0 2px;
-        }
-        
-        /* Swing Cards */
-        .smt-swing-card {
+        .smt-div-panel {
             flex: 1;
-            background: #0f0f12;
-            border-radius: 8px;
-            padding: 10px;
-            border: 1px solid #2a2a2f;
+            background: #18181a;
+            border: 1px solid #2a2a2e;
+            border-radius: 6px;
+            padding: 6px 8px;
+            min-width: 0;
         }
         
-        .smt-swing-card.trap {
-            border-color: rgba(248, 113, 113, 0.4);
-        }
+        .smt-div-panel.sweep { border-left: 2px solid #f87171; }
+        .smt-div-panel.defender { border-left: 2px solid #4ade80; }
         
-        .smt-swing-card.truth {
-            border-color: rgba(74, 222, 128, 0.4);
-        }
-        
-        .smt-swing-label {
-            font-size: 8px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-align: center;
+        .smt-div-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 4px;
         }
         
-        .smt-swing-card.trap .smt-swing-label { color: #f87171; }
-        .smt-swing-card.truth .smt-swing-label { color: #4ade80; }
-        
-        .smt-swing-asset {
-            font-size: 13px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-        
-        .smt-swing-asset.nq { color: #a78bfa; }
-        .smt-swing-asset.es { color: #22d3ee; }
-        
-        .smt-swing-timeline {
+        .smt-div-title {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .smt-swing-point {
-            text-align: center;
-        }
-        
-        .smt-swing-point.current .smt-swing-price {
-            font-weight: 700;
-            color: #fff;
-        }
-        
-        .smt-swing-time {
-            display: block;
-            font-size: 9px;
-            color: #666;
-            font-family: 'Roboto Mono', monospace;
-            margin-bottom: 2px;
-        }
-        
-        .smt-swing-price {
-            display: block;
-            font-size: 11px;
-            color: #aaa;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        .smt-swing-connector {
-            padding: 0 4px;
-        }
-        
-        .smt-swing-arrow {
-            font-size: 16px;
-        }
-        
-        .smt-swing-connector.bullish .smt-swing-arrow { color: #4ade80; }
-        .smt-swing-connector.bearish .smt-swing-arrow { color: #f87171; }
-        
-        .smt-swing-result {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 6px;
-            border-radius: 4px;
-        }
-        
-        .smt-swing-result.bullish {
-            background: rgba(74, 222, 128, 0.15);
-        }
-        
-        .smt-swing-result.bearish {
-            background: rgba(248, 113, 113, 0.15);
-        }
-        
-        .smt-swing-structure {
-            font-size: 14px;
-            font-weight: 800;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        .smt-swing-result.bullish .smt-swing-structure { color: #4ade80; }
-        .smt-swing-result.bearish .smt-swing-structure { color: #f87171; }
-        
-        .smt-swing-delta {
-            font-size: 11px;
-            font-family: 'Roboto Mono', monospace;
-            color: #888;
-        }
-        
-        /* Timing Bar */
-        .smt-timing-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-        }
-        
-        .smt-timing-endpoint {
-            font-size: 10px;
-            color: #888;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        .smt-timing-connector {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 12px;
-        }
-        
-        .smt-timing-line {
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, #333 0%, #555 50%, #333 100%);
-            border-radius: 1px;
-        }
-        
-        .smt-timing-delta {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        .smt-timing-delta.sync {
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ade80;
-        }
-        
-        .smt-timing-delta.partial {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fbbf24;
-        }
-        
-        .smt-timing-delta.async {
-            background: rgba(248, 113, 113, 0.2);
-            color: #f87171;
-        }
-        
-        .smt-timing-label {
-            text-align: center;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 4px 12px;
-            border-radius: 4px;
-            margin: 0 auto;
-            display: inline-block;
-        }
-        
-        .smt-timing-label.sync {
-            background: rgba(74, 222, 128, 0.15);
-            color: #4ade80;
-        }
-        
-        .smt-timing-label.partial {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-        }
-        
-        .smt-timing-label.async {
-            background: rgba(248, 113, 113, 0.15);
-            color: #f87171;
-        }
-        
-        /* Entry Section */
-        .smt-entry-section {
-            background: #0f0f12;
-            border-radius: 6px;
-            padding: 10px 12px;
-        }
-        
-        .smt-entry-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 6px 0;
-            border-bottom: 1px solid #1a1a1f;
-        }
-        
-        .smt-entry-row:last-child {
-            border-bottom: none;
-        }
-        
-        .smt-entry-row.fvg {
-            flex-direction: column;
             gap: 6px;
         }
         
-        .smt-entry-label {
-            font-size: 10px;
-            color: #666;
+        .smt-div-role {
+            font-size: 9px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
         
-        .smt-entry-value {
-            font-size: 11px;
-            color: #ccc;
+        .smt-div-panel.sweep .smt-div-role { color: #f87171; }
+        .smt-div-panel.defender .smt-div-role { color: #4ade80; }
+        
+        .smt-div-asset {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .smt-div-asset.nq { background: #1e3a5f; color: #60a5fa; }
+        .smt-div-asset.es { background: #3f2e1e; color: #fbbf24; }
+        
+        .smt-div-structure {
+            font-size: 9px;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #555;
+        }
+        
+        .smt-div-structure.bearish { color: #f87171; }
+        .smt-div-structure.bullish { color: #4ade80; }
+        
+        .smt-div-chart-area {
+            height: 60px;
+            position: relative;
+        }
+        
+        .smt-div-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .smt-div-svg .price-label {
             font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+        }
+        
+        .smt-div-svg .price-label.prev { fill: #999; }
+        .smt-div-svg .price-label.curr { fill: #e0e0e0; }
+        
+        .smt-div-svg .time-label {
+            font-family: 'Roboto Mono', monospace;
+            fill: #999;
+        }
+        
+        .smt-div-svg .chart-line {
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+        }
+        
+        .smt-div-panel.sweep .smt-div-svg .chart-line { stroke: #f87171; }
+        .smt-div-panel.defender .smt-div-svg .chart-line { stroke: #4ade80; }
+        
+        .smt-div-svg .chart-point {
+            stroke-width: 2;
+        }
+        
+        .smt-div-svg .chart-point.prev {
+            fill: #18181a;
+            stroke: #555;
+        }
+        
+        .smt-div-panel.sweep .smt-div-svg .chart-point.curr { fill: #f87171; stroke: #f87171; }
+        .smt-div-panel.defender .smt-div-svg .chart-point.curr { fill: #4ade80; stroke: #4ade80; }
+        
+        .smt-div-delta {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
             text-align: right;
         }
         
-        .smt-entry-value.smt-fvg-present {
-            color: #4ade80;
-            font-weight: 600;
-        }
+        .smt-div-delta.positive { color: #4ade80; }
+        .smt-div-delta.negative { color: #f87171; }
         
-        .smt-fvg-list {
-            width: 100%;
-        }
-        
-        .smt-fvg-item {
-            font-size: 11px;
-            color: #4ade80;
-            font-family: 'Roboto Mono', monospace;
-            padding: 4px 8px;
-            background: rgba(74, 222, 128, 0.1);
-            border-radius: 4px;
-            margin-top: 4px;
-        }
-        
-        .smt-fvg-size {
-            color: #666;
-            font-size: 10px;
-        }
-        
-        /* Strength/Weakness Matrix */
-        .smt-matrix {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background: #2a2a2f;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .smt-matrix-header {
-            padding: 8px 10px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .smt-matrix-header.strength {
-            background: rgba(74, 222, 128, 0.15);
-            color: #4ade80;
-        }
-        
-        .smt-matrix-header.weakness {
-            background: rgba(248, 113, 113, 0.15);
-            color: #f87171;
-        }
-        
-        .smt-matrix-cell {
-            padding: 5px 8px;
-            font-size: 10px;
-            background: #0f0f12;
-            min-height: 24px;
+        .smt-div-vs {
             display: flex;
             align-items: center;
+            justify-content: center;
+            width: 20px;
+            flex-shrink: 0;
+            color: #444;
+            font-size: 12px;
         }
         
-        .smt-matrix-cell.strength { color: #4ade80; }
-        .smt-matrix-cell.weakness { color: #f87171; }
+        /* Detection Grid */
+        .smt-detection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
         
-        .smt-matrix-bullet {
-            margin-right: 5px;
+        .smt-detect-item {
+            background: #0a0a0c;
+            border-radius: 6px;
+            padding: 8px 10px;
+            border: 1px solid #1a1a1f;
+        }
+        
+        .smt-detect-label {
+            font-size: 8px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .smt-detect-value {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ccc;
+        }
+        .smt-detect-value.method {
+            font-size: 10px;
+            color: #a78bfa;
+        }
+        .smt-detect-value.strength {
+            color: #fbbf24;
+            letter-spacing: 2px;
+        }
+        .smt-detect-value.asset {
             font-weight: 700;
         }
+        .smt-detect-value.asset.nq { color: #60a5fa; }
+        .smt-detect-value.asset.es { color: #fbbf24; }
+        .smt-detect-value.price {
+            font-family: 'Roboto Mono', monospace;
+            color: #fb923c;
+        }
         
-        /* Quality Section */
-        .smt-quality-section {
-            background: #0f0f12;
+        /* Criteria Chips */
+        .smt-criteria-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .smt-criteria-row:last-child { margin-bottom: 0; }
+        
+        .smt-criteria-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            background: #0a0a0c;
+            border: 1px solid #2a2a2f;
+            cursor: default;
+        }
+        .smt-criteria-chip.ok {
+            border-color: rgba(74, 222, 128, 0.4);
+            color: #4ade80;
+        }
+        .smt-criteria-chip.fail {
+            border-color: #333;
+            color: #666;
+        }
+        .smt-criteria-row.levels .smt-criteria-chip.ok {
+            border-color: rgba(251, 191, 36, 0.4);
+            color: #fbbf24;
+        }
+        
+        .smt-chip-icon {
+            font-size: 9px;
+        }
+        .smt-chip-label {
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        /* Methods Pills - inside direction block */
+        .smt-dir-methods {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;
+        }
+        
+        .smt-method-pill {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Criteria List - Big & Visible */
+        .smt-criteria-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .smt-criteria-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background: #0a0a0c;
+            border: 1px solid #1a1a1f;
+        }
+        
+        .smt-criteria-row.ok {
+            border-color: rgba(74, 222, 128, 0.25);
+            background: rgba(74, 222, 128, 0.03);
+        }
+        
+        .smt-criteria-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .smt-criteria-row.ok .smt-criteria-label {
+            color: #ccc;
+        }
+        
+        .smt-criteria-status {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .smt-criteria-row.ok .smt-criteria-status {
+            color: #4ade80;
+        }
+        
+        .smt-criteria-row:not(.ok) .smt-criteria-status {
+            color: #444;
+        }
+        
+        /* Quality Bar Section */
+        .smt-quality-bar-section {
+            background: #0a0a0c;
             border-radius: 6px;
             padding: 10px;
         }
         
-        .smt-quality-main {
-            margin-bottom: 8px;
-        }
-        
-        .smt-quality-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .smt-quality-track {
-            flex: 1;
+        .smt-qbar-track {
+            position: relative;
             height: 8px;
-            background: #2a2a2f;
+            background: #1a1a1f;
             border-radius: 4px;
-            overflow: hidden;
+            overflow: visible;
+            margin-bottom: 6px;
         }
         
-        .smt-quality-fill {
+        .smt-qbar-fill {
             height: 100%;
             border-radius: 4px;
-            transition: width 0.3s;
+            transition: width 0.3s ease;
         }
+        .smt-qbar-fill.high { background: linear-gradient(90deg, #16a34a, #4ade80); }
+        .smt-qbar-fill.med { background: linear-gradient(90deg, #ca8a04, #fbbf24); }
+        .smt-qbar-fill.low { background: linear-gradient(90deg, #dc2626, #f87171); }
         
-        .smt-quality-fill.high { background: linear-gradient(90deg, #22c55e, #4ade80); }
-        .smt-quality-fill.med { background: linear-gradient(90deg, #eab308, #fbbf24); }
-        .smt-quality-fill.low { background: linear-gradient(90deg, #dc2626, #f87171); }
-        
-        .smt-quality-value {
-            font-size: 18px;
-            font-weight: 700;
+        .smt-qbar-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+        }
+        .smt-qbar-mark {
+            position: absolute;
+            top: -14px;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: #444;
             font-family: 'Roboto Mono', monospace;
-            min-width: 32px;
-            text-align: right;
         }
         
-        .smt-quality-value.high { color: #4ade80; }
-        .smt-quality-value.med { color: #fbbf24; }
-        .smt-quality-value.low { color: #f87171; }
-        
-        .smt-quality-breakdown {
+        .smt-qbar-labels {
             display: flex;
-            justify-content: space-around;
-            padding-top: 8px;
-            border-top: 1px solid #1a1a1f;
-        }
-        
-        .smt-quality-item {
-            text-align: center;
-        }
-        
-        .smt-quality-item-label {
-            display: block;
-            font-size: 9px;
-            color: #555;
+            justify-content: space-between;
+            font-size: 8px;
+            color: #444;
             text-transform: uppercase;
-            margin-bottom: 2px;
         }
         
-        .smt-quality-item-value {
-            font-size: 12px;
-            font-weight: 600;
-            color: #888;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        /* Meta Footer */
-        .smt-meta-footer {
+        /* Meta Row */
+        .smt-meta-row {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
             padding: 8px;
-            margin-top: 4px;
-            border-top: 1px solid #2a2a2f;
-            font-size: 9px;
-            color: #555;
+            margin-top: 8px;
+            border-top: 1px solid #1a1a1f;
+        }
+        
+        .smt-meta-tf {
+            font-size: 10px;
+            font-weight: 700;
+            color: #888;
             font-family: 'Roboto Mono', monospace;
+        }
+        .smt-meta-sep { color: #333; }
+        .smt-meta-id {
+            font-size: 9px;
+            color: #444;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        /* Footer Section */
+        .smt-footer-section {
+            background: #0a0a0c;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-top: 8px;
+        }
+        
+        .smt-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+        
+        .smt-footer-row:not(:last-child) {
+            border-bottom: 1px solid #1a1a1f;
+        }
+        
+        .smt-footer-label {
+            font-size: 10px;
+            color: #555;
+            text-transform: uppercase;
+        }
+        
+        .smt-footer-value {
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .smt-footer-value.time {
+            font-size: 12px;
+            font-weight: 600;
+            color: #fbbf24;
+        }
+        
+        .smt-footer-value.tf {
+            font-size: 12px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+        
+        .smt-footer-value.id {
+            font-size: 11px;
+            color: #aaa;
+            word-break: break-all;
         }
         
         /* ===== DETAIL PANEL ===== */
@@ -2179,7 +2287,8 @@
             gap: 2px;
         }
         
-        .confluence-card {
+        /* Old card styles - keep for right panel */
+        .confluence-card-old {
             display: flex;
             background: #111;
             border-radius: 4px;
@@ -2188,7 +2297,7 @@
             transition: background 0.15s;
         }
         
-        .confluence-card:hover {
+        .confluence-card-old:hover {
             background: #1a1a1c;
         }
         
@@ -5018,6 +5127,200 @@
             background: rgba(96, 165, 250, 0.1);
             border-color: rgba(96, 165, 250, 0.2);
         }
+        
+        /* Confluence Button */
+        .confluence-btn {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%) !important;
+            border: none !important;
+        }
+        
+        .confluence-btn:hover {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+        }
+        
+        /* Confluence Modal */
+        .confluence-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a0c;
+            z-index: 10000;
+            display: none;
+        }
+        
+        .confluence-modal-overlay.visible {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .confluence-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: #0a0a0c;
+            border-bottom: 1px solid #18181a;
+        }
+        
+        .confluence-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .confluence-modal-title span {
+            color: #a78bfa;
+        }
+        
+        .confluence-modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+        }
+        
+        .confluence-modal-close:hover {
+            color: #fff;
+        }
+        
+        .confluence-modal-time-header {
+            height: 28px;
+            background: #0a0a0c;
+            border-bottom: 1px solid #18181a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .confluence-time-inner {
+            position: absolute;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        
+        .confluence-time-tick {
+            position: absolute;
+            font-size: 10px;
+            color: #555;
+            font-family: 'Roboto Mono', monospace;
+            transform: translateX(-50%);
+        }
+        
+        .confluence-modal-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            background: #030304;
+        }
+        
+        .confluence-scroll-container {
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            position: relative;
+            background: #030304;
+        }
+        
+        .confluence-chart-inner {
+            position: relative;
+            min-height: 100%;
+            padding-left: 20px;
+            padding-top: 10px;
+            background: #030304;
+        }
+        
+        .confluence-cursor-line {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(168, 85, 247, 0.7);
+            pointer-events: none;
+            z-index: 10001;
+            display: none;
+        }
+        
+        .confluence-cursor-line.visible {
+            display: block;
+        }
+        
+        .confluence-cursor-time {
+            position: fixed;
+            background: #7c3aed;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-family: 'Roboto Mono', monospace;
+            pointer-events: none;
+            z-index: 10004;
+            display: none;
+            transform: translateX(-50%);
+        }
+        
+        .confluence-card {
+            position: absolute;
+            background: #131416;
+            border-radius: 6px;
+            overflow: hidden;
+            min-width: 100px;
+            height: 220px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+        
+        .confluence-card-body {
+            height: 220px;
+            position: relative;
+            background: #131416;
+        }
+        
+        .confluence-card-body svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Cursor label that appears at top of each card */
+        .confluence-cursor-label {
+            position: fixed;
+            background: rgba(19, 20, 22, 0.98);
+            border-radius: 2px 0 0 2px;
+            padding: 4px 8px 4px 6px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #fff;
+            pointer-events: none;
+            z-index: 10003;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+        }
+        
+        .confluence-labels-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10002;
+        }
+        
+        .confluence-no-data {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #555;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -5035,6 +5338,7 @@
         <div class="nav-group">
             <button class="btn inactive" id="mode-explore" onclick="setMode('explore')">🔍 Explore</button>
             <button class="btn live" id="mode-live" onclick="setMode('live')">🔴 Live</button>
+            <button class="btn confluence-btn" onclick="openConfluenceModal()">◈ Confluence</button>
             <div class="divider"></div>
             <div class="settings-group">
                 <select class="select-styled" id="load-limit" onchange="loadData(true)">
@@ -5164,6 +5468,27 @@
         </div>
     </div>
 
+    <!-- Confluence Modal -->
+    <div class="confluence-modal-overlay" id="confluence-modal">
+        <div class="confluence-modal-header">
+            <div class="confluence-modal-title"><span>◈</span> Confluence View</div>
+            <button class="confluence-modal-close" onclick="closeConfluenceModal()">&times;</button>
+        </div>
+        <div class="confluence-modal-time-header" id="confluence-time-header">
+            <div class="confluence-time-inner" id="confluence-time-inner"></div>
+        </div>
+        <div class="confluence-modal-body">
+            <div class="confluence-scroll-container" id="confluence-scroll">
+                <div class="confluence-chart-inner" id="confluence-chart-inner">
+                    <!-- Cards rendered here -->
+                </div>
+            </div>
+        </div>
+        <div class="confluence-cursor-line" id="confluence-cursor-line"></div>
+        <div class="confluence-cursor-time" id="confluence-cursor-time"></div>
+        <div class="confluence-labels-container" id="confluence-labels-container"></div>
+    </div>
+
     <script>
         // ===== CONFIG =====
         const FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/snapshots.json";
@@ -5182,6 +5507,8 @@
         // ===== STATE =====
         let allData = [];
         let smtData = [];  // SMT signals
+        let smtCache = {}; // For incremental SMT updates
+        let lastSmtFetchTime = null; // Track last SMT fetch for incremental updates
         let breakerCache = {}; // For incremental updates
         let windowStartMin = 0;
         let windowEndMin = 0;
@@ -5581,6 +5908,9 @@
                 }
             } else {
                 // Incremental load - only fetch newer data from Firebase
+                // Also refresh SMT data incrementally
+                loadSmtData(true);
+                
                 // Convert lastFetchedTime from "2026-01-21T07:31" to key format "2026-01-21T0731"
                 const lastKey = lastFetchedTime ? lastFetchedTime.replace(':', '') : '';
                 const url = FIREBASE_URL + 
@@ -5981,6 +6311,23 @@
             
             updateStats();
             renderChart();
+            
+            // Refresh confluence modal if open
+            if (confluenceModalOpen) {
+                // Save scroll position before re-rendering
+                const scroll = document.getElementById('confluence-scroll');
+                const savedScrollLeft = scroll ? scroll.scrollLeft : 0;
+                
+                renderConfluenceModal();
+                
+                // Restore scroll position (or scroll to end in live mode on first load only)
+                setTimeout(() => {
+                    const scrollEl = document.getElementById('confluence-scroll');
+                    if (scrollEl) {
+                        scrollEl.scrollLeft = savedScrollLeft;
+                    }
+                }, 10);
+            }
             
             // In live mode: always scroll to latest and show live confluence
             // In explore mode: only scroll on first load
@@ -6521,36 +6868,45 @@
         }
         
         // ===== SMT DATA LOADING =====
-        function loadSmtData() {
-            console.log('📊 Loading SMT signals...');
+        function loadSmtData(incremental = false) {
+            console.log(`📊 Loading SMT signals... (${incremental ? 'incremental' : 'full'})`);
             
             return fetch(SMT_FIREBASE_URL)
                 .then(r => r.json())
                 .then(data => {
                     if (!data) {
                         console.log('📊 No SMT signals found');
-                        smtData = [];
+                        if (!incremental) smtData = [];
                         return;
                     }
                     
-                    // Convert to array and parse
-                    smtData = [];
+                    // For full load, clear cache
+                    if (!incremental) {
+                        smtData = [];
+                        smtCache = {};
+                    }
+                    
                     const errors = [];
+                    let newCount = 0;
+                    let updatedCount = 0;
                     
                     Object.entries(data).forEach(([key, smt]) => {
-                        // Validate required fields
+                        // STRICT VALIDATION - all fields required
                         const missing = [];
                         if (!smt.smt_id) missing.push('smt_id');
                         if (!smt.dir) missing.push('dir');
                         if (!smt.tf) missing.push('tf');
                         if (!smt.smt_time) missing.push('smt_time');
+                        if (!smt.last_detected) missing.push('last_detected');
+                        if (!smt.methods) missing.push('methods');
+                        if (smt.strength === undefined) missing.push('strength');
                         if (!smt.roles) missing.push('roles');
                         if (!smt.es) missing.push('es');
                         if (!smt.nq) missing.push('nq');
-                        if (!smt.classification) missing.push('classification');
-                        if (!smt.quality) missing.push('quality');
-                        if (!smt.validation) missing.push('validation');
-                        if (!smt.price) missing.push('price');
+                        if (!smt.criteria) missing.push('criteria');
+                        if (smt.quality === undefined) missing.push('quality');
+                        if (smt.price === undefined) missing.push('price');
+                        if (!smt.status) missing.push('status');
                         
                         if (missing.length > 0) {
                             errors.push(`${key}: Missing fields: ${missing.join(', ')}`);
@@ -6561,14 +6917,30 @@
                         const nestedMissing = [];
                         if (!smt.roles.defensive) nestedMissing.push('roles.defensive');
                         if (!smt.roles.sweep) nestedMissing.push('roles.sweep');
-                        if (smt.es.structure === undefined) nestedMissing.push('es.structure');
-                        if (smt.nq.structure === undefined) nestedMissing.push('nq.structure');
-                        if (!smt.classification.sync_label) nestedMissing.push('classification.sync_label');
-                        if (smt.quality.total === undefined) nestedMissing.push('quality.total');
+                        if (smt.es.prev_price === undefined) nestedMissing.push('es.prev_price');
+                        if (smt.es.curr_price === undefined) nestedMissing.push('es.curr_price');
+                        if (!smt.es.structure) nestedMissing.push('es.structure');
+                        if (smt.nq.prev_price === undefined) nestedMissing.push('nq.prev_price');
+                        if (smt.nq.curr_price === undefined) nestedMissing.push('nq.curr_price');
+                        if (!smt.nq.structure) nestedMissing.push('nq.structure');
+                        
+                        // Validate criteria fields
+                        if (smt.criteria.has_fvg === undefined) nestedMissing.push('criteria.has_fvg');
+                        if (smt.criteria.is_sync === undefined) nestedMissing.push('criteria.is_sync');
+                        if (smt.criteria.sweep_magnitude_ok === undefined) nestedMissing.push('criteria.sweep_magnitude_ok');
+                        if (smt.criteria.defensive_held === undefined) nestedMissing.push('criteria.defensive_held');
                         
                         if (nestedMissing.length > 0) {
                             errors.push(`${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
                             return;
+                        }
+                        
+                        // For incremental updates, skip if unchanged
+                        if (incremental && smtCache[smt.smt_id]) {
+                            const cached = smtCache[smt.smt_id];
+                            if (cached.lastDetected === smt.last_detected && cached.status === smt.status) {
+                                return;
+                            }
                         }
                         
                         // Parse smt_time to minutes
@@ -6578,69 +6950,91 @@
                             return;
                         }
                         
-                        // Build parsed object matching actual schema
+                        // Normalize direction: L/long/bull → 'bull', S/short/bear → 'bear'
+                        let rawDir = (smt.dir || '').toLowerCase();
+                        if (!rawDir && smt.smt_id) {
+                            const lastChar = smt.smt_id.slice(-1).toLowerCase();
+                            rawDir = lastChar;
+                        }
+                        const normalizedDir = (rawDir === 'l' || rawDir === 'long' || rawDir === 'bull' || rawDir === 'bullish') ? 'bull' : 'bear';
+                        
                         const parsed = {
                             id: key,
                             smtId: smt.smt_id,
-                            dir: smt.dir.toLowerCase(),
+                            dir: normalizedDir,
                             tf: smt.tf.toLowerCase(),
                             smtTime: smt.smt_time,
                             smtMin: smtMin,
+                            barIndex: smt.bar_index || 0,
+                            lastDetected: smt.last_detected,
+                            
+                            // Methods and strength
+                            methods: smt.methods,
+                            strength: smt.strength,
                             
                             // Roles
                             defensiveAsset: smt.roles.defensive,
                             sweepAsset: smt.roles.sweep,
-                            leadingAsset: smt.roles.leading,
+                            leadingAsset: smt.roles.leading || smt.roles.defensive,
                             
                             // ES swing data
                             es: {
                                 prevPrice: smt.es.prev_price,
                                 currPrice: smt.es.curr_price,
-                                prevTime: smt.es.prev_time,
-                                currTime: smt.es.curr_time,
-                                structure: smt.es.structure
+                                structure: smt.es.structure,
+                                prevTime: smt.es.prev_time || null,
+                                currTime: smt.es.curr_time || null
                             },
                             
                             // NQ swing data
                             nq: {
                                 prevPrice: smt.nq.prev_price,
                                 currPrice: smt.nq.curr_price,
-                                prevTime: smt.nq.prev_time,
-                                currTime: smt.nq.curr_time,
-                                structure: smt.nq.structure
+                                structure: smt.nq.structure,
+                                prevTime: smt.nq.prev_time || null,
+                                currTime: smt.nq.curr_time || null
                             },
                             
-                            // Classification (was timing)
-                            classification: {
-                                syncLabel: smt.classification.sync_label,
-                                category: smt.classification.category,
-                                isHtf: smt.classification.is_htf || false,
-                                sweptLevel: smt.classification.swept_level
+                            // Criteria
+                            criteria: {
+                                sweptLevel: smt.criteria.swept_level || null,
+                                isDaily: smt.criteria.is_daily || false,
+                                isWeekly: smt.criteria.is_weekly || false,
+                                isMidnight: smt.criteria.is_midnight || false,
+                                isSession: smt.criteria.is_session || false,
+                                hasFvg: smt.criteria.has_fvg,
+                                isHtf: smt.criteria.is_htf || false,
+                                isSync: smt.criteria.is_sync,
+                                sweepMagnitudeOk: smt.criteria.sweep_magnitude_ok,
+                                defensiveHeld: smt.criteria.defensive_held
                             },
                             
-                            // Quality scores
-                            quality: {
-                                score: smt.quality.total,
-                                correspondence: smt.quality.correspondence || 0,
-                                sweep: smt.quality.sweep || 0,
-                                structure: smt.quality.structure || 0
-                            },
+                            // Quality score (0-10)
+                            quality: smt.quality,
                             
-                            // Validation flags
-                            validation: {
-                                fvgPresent: smt.validation.fvg_present,
-                                defensiveHeld: smt.validation.defensive_held,
-                                sweepMagnitudeOk: smt.validation.sweep_magnitude_ok
-                            },
+                            // Price
+                            price: smt.price,
                             
-                            // Price data
-                            price: {
-                                defensive: smt.price.defensive,
-                                sweepDepthAtr: smt.price.sweep_depth_atr
-                            }
+                            // Status
+                            status: smt.status
                         };
                         
-                        smtData.push(parsed);
+                        // For incremental updates, update or add
+                        if (incremental) {
+                            const existingIdx = smtData.findIndex(s => s.smtId === parsed.smtId);
+                            if (existingIdx >= 0) {
+                                smtData[existingIdx] = parsed;
+                                updatedCount++;
+                            } else {
+                                smtData.push(parsed);
+                                newCount++;
+                            }
+                        } else {
+                            smtData.push(parsed);
+                        }
+                        
+                        // Update cache
+                        smtCache[parsed.smtId] = { lastDetected: parsed.lastDetected, status: parsed.status };
                     });
                     
                     // Log results
@@ -6656,7 +7050,13 @@
                         console.warn(`⚠️ ${duplicates.length} duplicate SMT IDs found`);
                     }
                     
-                    console.log(`📊 Loaded ${smtData.length} valid SMT signals`);
+                    if (incremental) {
+                        console.log(`📊 SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
+                    } else {
+                        console.log(`📊 Loaded ${smtData.length} valid SMT signals`);
+                    }
+                    
+                    lastSmtFetchTime = new Date().toISOString();
                 })
                 .catch(err => {
                     console.error('❌ Error loading SMT data:', err);
@@ -6668,7 +7068,9 @@
             const x = (smt.smtMin - windowStartMin) * PIXELS_PER_MINUTE;
             
             const marker = document.createElement('div');
-            marker.className = 'smt-marker ' + smt.dir;
+            // Add status class for visual differentiation
+            const statusClass = smt.status !== 'ACTIVE' ? ' smt-' + smt.status.toLowerCase() : '';
+            marker.className = 'smt-marker ' + smt.dir + statusClass;
             marker.style.left = x + 'px';
             marker.style.top = laneTop + 'px';
             marker.style.height = laneHeight + 'px';
@@ -6679,10 +7081,10 @@
             diamond.className = 'smt-diamond';
             marker.appendChild(diamond);
             
-            // Score at bottom
+            // Score at bottom (now single number 0-10)
             const score = document.createElement('div');
             score.className = 'smt-score';
-            score.textContent = Math.round(smt.quality.score);
+            score.textContent = smt.quality.toFixed(1);
             marker.appendChild(score);
             
             // Click handler
@@ -6727,19 +7129,59 @@
             document.getElementById('panel-type').classList.remove('live');
             
             // Format helpers
-            const formatTime = (t) => {
-                if (!t) return '-';
-                const timePart = t.split('T')[1] || t;
-                return timePart.substring(0, 5); // HH:MM
-            };
             const formatPrice = (asset, p) => {
                 if (p === null || p === undefined) return '-';
-                return asset === 'NQ' ? p.toFixed(0) : p.toFixed(2);
+                return Math.round(p).toLocaleString('en-US');
             };
             const formatDelta = (val) => {
                 if (val === null || val === undefined) return '-';
                 const sign = val >= 0 ? '+' : '';
-                return sign + val.toFixed(val < 10 ? 2 : 0);
+                return sign + Math.round(val).toLocaleString('en-US');
+            };
+            const formatTime = (timeStr) => {
+                if (!timeStr) return '—';
+                const parts = timeStr.split('T');
+                return parts[1] ? parts[1].substring(0, 5) : '—';
+            };
+            
+            // Render mini chart SVG
+            const renderSmtMiniChart = (type, data, asset) => {
+                const prevPrice = data.prevPrice;
+                const currPrice = data.currPrice;
+                const prevTime = formatTime(data.prevTime);
+                const currTime = formatTime(data.currTime);
+                
+                const w = 150, h = 60;
+                const padL = 38, padR = 38, padT = 10, padB = 14;
+                const chartW = w - padL - padR;
+                const chartH = h - padT - padB;
+                
+                const minP = Math.min(prevPrice, currPrice);
+                const maxP = Math.max(prevPrice, currPrice);
+                const range = maxP - minP || 1;
+                const yPad = range * 0.25;
+                const yMin = minP - yPad;
+                const yMax = maxP + yPad;
+                
+                const priceToY = (p) => padT + chartH - ((p - yMin) / (yMax - yMin)) * chartH;
+                
+                const x1 = padL;
+                const x2 = w - padR;
+                const y1 = priceToY(prevPrice);
+                const y2 = priceToY(currPrice);
+                
+                return `
+                    <svg class="smt-div-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+                        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y1}" stroke="#2a2a2e" stroke-width="1" stroke-dasharray="2,2" />
+                        <line class="chart-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />
+                        <circle class="chart-point prev" cx="${x1}" cy="${y1}" r="3.5" />
+                        <circle class="chart-point curr" cx="${x2}" cy="${y2}" r="4" />
+                        <text class="price-label prev" x="${x1 - 6}" y="${y1 + 3}" text-anchor="end" font-size="10">${formatPrice(asset, prevPrice)}</text>
+                        <text class="price-label curr" x="${x2 + 6}" y="${y2 + 3}" text-anchor="start" font-size="10">${formatPrice(asset, currPrice)}</text>
+                        <text class="time-label" x="${x1}" y="${h - 2}" text-anchor="middle" font-size="9">${prevTime}</text>
+                        <text class="time-label" x="${x2}" y="${h - 2}" text-anchor="middle" font-size="9">${currTime}</text>
+                    </svg>
+                `;
             };
             
             // Get sweep and defensive data
@@ -6752,235 +7194,144 @@
             const sweepDelta = sweepData.currPrice - sweepData.prevPrice;
             const defDelta = defData.currPrice - defData.prevPrice;
             
-            // Swept level from classification
-            const sweptLevel = smt.classification.sweptLevel;
-            const category = smt.classification.category;
-            
-            // Build headline
+            // Direction descriptions
             const dirLabel = smt.dir === 'bull' ? 'BULLISH' : 'BEARISH';
-            let headline = dirLabel;
-            if (sweptLevel) {
-                headline = `${dirLabel} @ ${sweptLevel}`;
-            } else if (category) {
-                headline = `${dirLabel} • ${category}`;
-            }
+            const dirIcon = smt.dir === 'bull' ? '↑' : '↓';
+            const expectation = smt.dir === 'bull' ? 'Expect upward move' : 'Expect downward move';
             
-            // Narrative
-            const trapAction = smt.dir === 'bull' ? 'swept low' : 'swept high';
-            const truthAction = smt.dir === 'bull' ? 'held higher' : 'held lower';
+            // Status
+            const statusClass = smt.status === 'ACTIVE' ? 'active' : 
+                               smt.status === 'INVALIDATED' ? 'invalidated' : 'expired';
             
-            // FVG info (boolean only in this schema)
-            const hasFvg = smt.validation.fvgPresent;
+            // Quality (0-10 scale) - compute color gradient from red to dark green
+            const qScore = smt.quality;
+            // Color gradient: 0=red(#dc2626), 5=yellow(#fbbf24), 10=dark green(#166534)
+            const getQualityColor = (score) => {
+                if (score <= 5) {
+                    // Red to yellow (0-5)
+                    const ratio = score / 5;
+                    const r = Math.round(220 - (220 - 251) * ratio);
+                    const g = Math.round(38 + (191 - 38) * ratio);
+                    const b = Math.round(38 + (36 - 38) * ratio);
+                    return `rgb(${r}, ${g}, ${b})`;
+                } else {
+                    // Yellow to dark green (5-10)
+                    const ratio = (score - 5) / 5;
+                    const r = Math.round(251 - (251 - 22) * ratio);
+                    const g = Math.round(191 - (191 - 101) * ratio);
+                    const b = Math.round(36 + (52 - 36) * ratio);
+                    return `rgb(${r}, ${g}, ${b})`;
+                }
+            };
+            const qualityBgColor = getQualityColor(qScore);
             
-            // Sync label
-            const syncLabel = smt.classification.syncLabel;
-            const syncClass = syncLabel === 'SYNC' ? 'sync' : 
-                              syncLabel === 'PARTIAL' ? 'partial' : 'async';
+            // Strength stars
+            // (removed - using M1, M2, M3 format now)
             
-            // Build strength/weakness matrix
-            const strengths = [];
-            const weaknesses = [];
+            // Build all criteria - show checkmark for true, blank for false
+            const allCriteria = [
+                { label: 'Daily', ok: smt.criteria.isDaily },
+                { label: 'Weekly', ok: smt.criteria.isWeekly },
+                { label: 'Midnight', ok: smt.criteria.isMidnight },
+                { label: 'Session', ok: smt.criteria.isSession },
+                { label: 'HTF', ok: smt.criteria.isHtf },
+                { label: 'FVG', ok: smt.criteria.hasFvg },
+                { label: 'Sync', ok: smt.criteria.isSync },
+                { label: 'Sweep', ok: smt.criteria.sweepMagnitudeOk },
+                { label: 'Held', ok: smt.criteria.defensiveHeld }
+            ];
             
-            // Timing
-            if (syncLabel === 'SYNC') {
-                strengths.push('SYNC timing');
-            } else if (syncLabel === 'ASYNC') {
-                weaknesses.push('ASYNC timing');
-            } else if (syncLabel === 'PARTIAL') {
-                strengths.push('PARTIAL sync');
-            }
-            
-            // FVG
-            if (hasFvg) {
-                strengths.push('FVG present');
-            } else {
-                weaknesses.push('No FVG');
-            }
-            
-            // Swept level / Category
-            if (sweptLevel) {
-                strengths.push(`Swept ${sweptLevel}`);
-            } else if (category && category !== 'STH/STL') {
-                strengths.push(category);
-            } else {
-                weaknesses.push('No key level');
-            }
-            
-            // Sweep magnitude
-            if (smt.validation.sweepMagnitudeOk) {
-                strengths.push(`Clean sweep (${smt.price.sweepDepthAtr?.toFixed(1) || '-'} ATR)`);
-            } else if (smt.validation.sweepMagnitudeOk === false) {
-                weaknesses.push(`Weak sweep (${smt.price.sweepDepthAtr?.toFixed(1) || '-'} ATR)`);
-            }
-            
-            // Defensive held
-            if (smt.validation.defensiveHeld) {
-                strengths.push('Defensive held');
-            } else if (smt.validation.defensiveHeld === false) {
-                weaknesses.push('Defensive violated');
-            }
-            
-            // HTF
-            if (smt.classification.isHtf) {
-                strengths.push('HTF signal');
-            }
-            
-            // Quality
-            if (smt.quality.score >= 75) {
-                strengths.push(`High quality (${smt.quality.score.toFixed(0)})`);
-            } else if (smt.quality.score < 50) {
-                weaknesses.push(`Low quality (${smt.quality.score.toFixed(0)})`);
-            }
-            
-            // Build matrix HTML
-            const maxRows = Math.max(strengths.length, weaknesses.length, 1);
-            let matrixRows = '';
-            for (let i = 0; i < maxRows; i++) {
-                const s = strengths[i] || '';
-                const w = weaknesses[i] || '';
-                matrixRows += `
-                    <div class="smt-matrix-cell strength">${s ? `<span class="smt-matrix-bullet">✓</span> ${s}` : ''}</div>
-                    <div class="smt-matrix-cell weakness">${w ? `<span class="smt-matrix-bullet">✗</span> ${w}` : ''}</div>
-                `;
-            }
-            
-            // Quality score class
-            const qClass = smt.quality.score >= 75 ? 'high' : smt.quality.score >= 50 ? 'med' : 'low';
+            // Extract detection time from smt_time
+            const smtTimeParts = smt.smtTime.split('T');
+            const detectionTime = smtTimeParts[1] ? smtTimeParts[1].substring(0, 5) : '';
             
             document.getElementById('panel-content').innerHTML = `
-                <div class="detail-section">
-                    <div class="smt-headline ${smt.dir}">${headline}</div>
-                    <div class="smt-story-summary">
-                        ${sweepAsset} ${trapAction}, ${defAsset} ${truthAction}
+                <!-- Status & Quality Header -->
+                <div class="smt-header-row">
+                    <div class="smt-status-pill ${statusClass}">${smt.status}</div>
+                    <div class="smt-quality-score" style="background: ${qualityBgColor}">
+                        <span class="smt-quality-num">${smt.quality.toFixed(1)}</span>
                     </div>
                 </div>
                 
+                <!-- Direction Headline -->
+                <div class="smt-direction-block ${smt.dir}">
+                    <div class="smt-dir-icon">${dirIcon}</div>
+                    <div class="smt-dir-info">
+                        <div class="smt-dir-label">${dirLabel}</div>
+                        <div class="smt-dir-expect">${expectation}</div>
+                    </div>
+                    <div class="smt-dir-methods">
+                        ${smt.methods.map((m, i) => `<span class="smt-method-pill">M${i + 1}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <!-- The Divergence Chart -->
                 <div class="detail-section">
-                    <div class="smt-divergence-grid">
-                        <div class="smt-swing-card trap">
-                            <div class="smt-swing-label">THE TRAP</div>
-                            <div class="smt-swing-asset ${sweepAsset.toLowerCase()}">${sweepAsset}</div>
-                            <div class="smt-swing-timeline">
-                                <div class="smt-swing-point">
-                                    <span class="smt-swing-time">${formatTime(sweepData.prevTime)}</span>
-                                    <span class="smt-swing-price">${formatPrice(sweepAsset, sweepData.prevPrice)}</span>
+                    <div class="smt-section-title">The Divergence ${detectionTime ? `@ ${detectionTime}` : ''}</div>
+                    <div class="smt-div-chart">
+                        <!-- Sweep Panel -->
+                        <div class="smt-div-panel sweep">
+                            <div class="smt-div-header">
+                                <div class="smt-div-title">
+                                    <span class="smt-div-role">Sweep</span>
+                                    <span class="smt-div-asset ${sweepAsset.toLowerCase()}">${sweepAsset}</span>
                                 </div>
-                                <div class="smt-swing-connector ${smt.dir === 'bull' ? 'bearish' : 'bullish'}">
-                                    <span class="smt-swing-arrow">${smt.dir === 'bull' ? '↘' : '↗'}</span>
-                                </div>
-                                <div class="smt-swing-point current">
-                                    <span class="smt-swing-time">${formatTime(sweepData.currTime)}</span>
-                                    <span class="smt-swing-price">${formatPrice(sweepAsset, sweepData.currPrice)}</span>
-                                </div>
+                                <span class="smt-div-structure ${sweepData.structure}">${sweepData.structure}</span>
                             </div>
-                            <div class="smt-swing-result ${smt.dir === 'bull' ? 'bearish' : 'bullish'}">
-                                <span class="smt-swing-structure">${sweepData.structure}</span>
-                                <span class="smt-swing-delta">${formatDelta(sweepDelta)}</span>
+                            <div class="smt-div-chart-area">
+                                ${renderSmtMiniChart('sweep', sweepData, sweepAsset)}
                             </div>
+                            <div class="smt-div-delta ${sweepDelta >= 0 ? 'positive' : 'negative'}">${formatDelta(sweepDelta)}</div>
                         </div>
                         
-                        <div class="smt-divergence-vs">⇄</div>
+                        <!-- VS Divider -->
+                        <div class="smt-div-vs">≠</div>
                         
-                        <div class="smt-swing-card truth">
-                            <div class="smt-swing-label">THE TRUTH</div>
-                            <div class="smt-swing-asset ${defAsset.toLowerCase()}">${defAsset}</div>
-                            <div class="smt-swing-timeline">
-                                <div class="smt-swing-point">
-                                    <span class="smt-swing-time">${formatTime(defData.prevTime)}</span>
-                                    <span class="smt-swing-price">${formatPrice(defAsset, defData.prevPrice)}</span>
+                        <!-- Defender Panel -->
+                        <div class="smt-div-panel defender">
+                            <div class="smt-div-header">
+                                <div class="smt-div-title">
+                                    <span class="smt-div-role">Defender</span>
+                                    <span class="smt-div-asset ${defAsset.toLowerCase()}">${defAsset}</span>
                                 </div>
-                                <div class="smt-swing-connector ${smt.dir === 'bull' ? 'bullish' : 'bearish'}">
-                                    <span class="smt-swing-arrow">${smt.dir === 'bull' ? '↗' : '↘'}</span>
-                                </div>
-                                <div class="smt-swing-point current">
-                                    <span class="smt-swing-time">${formatTime(defData.currTime)}</span>
-                                    <span class="smt-swing-price">${formatPrice(defAsset, defData.currPrice)}</span>
-                                </div>
+                                <span class="smt-div-structure ${defData.structure}">${defData.structure}</span>
                             </div>
-                            <div class="smt-swing-result ${smt.dir === 'bull' ? 'bullish' : 'bearish'}">
-                                <span class="smt-swing-structure">${defData.structure}</span>
-                                <span class="smt-swing-delta">${formatDelta(defDelta)}</span>
+                            <div class="smt-div-chart-area">
+                                ${renderSmtMiniChart('defender', defData, defAsset)}
                             </div>
+                            <div class="smt-div-delta ${defDelta >= 0 ? 'positive' : 'negative'}">${formatDelta(defDelta)}</div>
                         </div>
                     </div>
                 </div>
                 
+                <!-- Criteria - Big Rows -->
                 <div class="detail-section">
-                    <div class="smt-timing-bar">
-                        <div class="smt-timing-endpoint">${sweepAsset} @ ${formatTime(sweepData.currTime)}</div>
-                        <div class="smt-timing-connector">
-                            <div class="smt-timing-line"></div>
-                            <div class="smt-timing-delta ${syncClass}">${syncLabel}</div>
-                            <div class="smt-timing-line"></div>
-                        </div>
-                        <div class="smt-timing-endpoint">${defAsset} @ ${formatTime(defData.currTime)}</div>
+                    <div class="smt-section-title">Signal Criteria</div>
+                    <div class="smt-criteria-list">
+                        ${allCriteria.map(c => `
+                            <div class="smt-criteria-row ${c.ok ? 'ok' : ''}">
+                                <span class="smt-criteria-label">${c.label}</span>
+                                <span class="smt-criteria-status">${c.ok ? '✓' : '—'}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
                 
-                ${(smt.price.defensive || smt.price.sweepDepthAtr) ? `
-                <div class="detail-section">
-                    <div class="smt-entry-section">
-                        ${smt.price.sweepDepthAtr ? `
-                        <div class="smt-entry-row">
-                            <span class="smt-entry-label">Sweep Depth</span>
-                            <span class="smt-entry-value">${smt.price.sweepDepthAtr.toFixed(2)} ATR</span>
-                        </div>
-                        ` : ''}
-                        ${smt.price.defensive ? `
-                        <div class="smt-entry-row">
-                            <span class="smt-entry-label">Defensive Level</span>
-                            <span class="smt-entry-value">${formatPrice(defAsset, smt.price.defensive)} (${defAsset})</span>
-                        </div>
-                        ` : ''}
-                        ${hasFvg ? `
-                        <div class="smt-entry-row">
-                            <span class="smt-entry-label">FVG</span>
-                            <span class="smt-entry-value smt-fvg-present">Present</span>
-                        </div>
-                        ` : ''}
+                <!-- Meta Footer -->
+                <div class="smt-footer-section">
+                    <div class="smt-footer-row">
+                        <span class="smt-footer-label">Signal Time</span>
+                        <span class="smt-footer-value time">${smt.smtTime}</span>
                     </div>
-                </div>
-                ` : ''}
-                
-                <div class="detail-section">
-                    <div class="smt-matrix">
-                        <div class="smt-matrix-header strength">✓ Strengths</div>
-                        <div class="smt-matrix-header weakness">✗ Weaknesses</div>
-                        ${matrixRows}
+                    <div class="smt-footer-row">
+                        <span class="smt-footer-label">Timeframe</span>
+                        <span class="smt-footer-value tf">${smt.tf.toUpperCase()}</span>
                     </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="smt-quality-section">
-                        <div class="smt-quality-main">
-                            <div class="smt-quality-bar">
-                                <div class="smt-quality-track">
-                                    <div class="smt-quality-fill ${qClass}" style="width: ${smt.quality.score || 0}%"></div>
-                                </div>
-                                <div class="smt-quality-value ${qClass}">${smt.quality.score?.toFixed(0) || '-'}</div>
-                            </div>
-                        </div>
-                        <div class="smt-quality-breakdown">
-                            <div class="smt-quality-item">
-                                <span class="smt-quality-item-label">Corr</span>
-                                <span class="smt-quality-item-value">${smt.quality.correspondence?.toFixed(0) || '-'}</span>
-                            </div>
-                            <div class="smt-quality-item">
-                                <span class="smt-quality-item-label">Sweep</span>
-                                <span class="smt-quality-item-value">${smt.quality.sweep?.toFixed(0) || '-'}</span>
-                            </div>
-                            <div class="smt-quality-item">
-                                <span class="smt-quality-item-label">Struct</span>
-                                <span class="smt-quality-item-value">${smt.quality.structure?.toFixed(0) || '-'}</span>
-                            </div>
-                        </div>
+                    <div class="smt-footer-row">
+                        <span class="smt-footer-label">ID</span>
+                        <span class="smt-footer-value id">${smt.smtId}</span>
                     </div>
-                </div>
-                
-                <div class="smt-meta-footer">
-                    <span>${smt.tf.toUpperCase()}</span>
-                    <span>•</span>
-                    <span>${smt.smtId}</span>
                 </div>
             `;
         }
@@ -8513,6 +8864,429 @@
             });
             
             btn.textContent = allExpanded ? '▼ Expand All' : '▲ Collapse All';
+        }
+        
+        // ===== CONFLUENCE MODAL =====
+        const CONFLUENCE_CARD_HEIGHT = 220; // full chart height, no header
+        const CONFLUENCE_CARD_GAP = 8;
+        const CONFLUENCE_PPM = 25; // pixels per minute
+        
+        let confluenceModalOpen = false;
+        let confluenceScrollHandler = null;
+        let confluenceMoveHandler = null;
+        
+        function openConfluenceModal() {
+            const modal = document.getElementById('confluence-modal');
+            modal.classList.add('visible');
+            confluenceModalOpen = true;
+            
+            renderConfluenceModal();
+            setupConfluenceHandlers();
+            
+            // Scroll to show latest content (rightmost)
+            setTimeout(() => {
+                const scroll = document.getElementById('confluence-scroll');
+                scroll.scrollLeft = scroll.scrollWidth - scroll.clientWidth;
+            }, 50);
+            
+            // ESC to close
+            document.addEventListener('keydown', handleConfluenceEscape);
+        }
+        
+        function closeConfluenceModal() {
+            const modal = document.getElementById('confluence-modal');
+            modal.classList.remove('visible');
+            confluenceModalOpen = false;
+            
+            // Clean up cursor labels
+            const labelsContainer = document.getElementById('confluence-labels-container');
+            if (labelsContainer) labelsContainer.innerHTML = '';
+            
+            // Remove handlers
+            document.removeEventListener('keydown', handleConfluenceEscape);
+            
+            const scroll = document.getElementById('confluence-scroll');
+            if (confluenceScrollHandler) scroll.removeEventListener('scroll', confluenceScrollHandler);
+            if (confluenceMoveHandler) scroll.removeEventListener('mousemove', confluenceMoveHandler);
+        }
+        
+        function handleConfluenceEscape(e) {
+            if (e.key === 'Escape') {
+                closeConfluenceModal();
+            }
+        }
+        
+        function renderConfluenceModal() {
+            if (allData.length === 0) {
+                document.getElementById('confluence-chart-inner').innerHTML = 
+                    '<div class="confluence-no-data">No breaker data</div>';
+                return;
+            }
+            
+            // Calculate time range
+            const minTime = Math.min(...allData.map(d => d.startMin));
+            const maxTime = Math.max(...allData.map(d => d.endMin));
+            const chartWidth = (maxTime - minTime + 5) * CONFLUENCE_PPM; // +5 min padding
+            
+            // Render time header
+            renderConfluenceTimeHeader(minTime, maxTime, chartWidth);
+            
+            // Sort breakers by priority (1m→4h, NQ→ES, bull→bear), then by start time
+            // Higher priority breakers get first chance at top rows
+            const tfOrder = { '1m': 1, '5m': 2, '15m': 3, '1h': 4, '1hr': 4, '4h': 5, '4hr': 5 };
+            const symOrder = { 'NQ': 1, 'ES': 2 };
+            
+            const sortedBreakers = [...allData].sort((a, b) => {
+                const tfA = tfOrder[a.tf.replace('hr', 'h')] || 99;
+                const tfB = tfOrder[b.tf.replace('hr', 'h')] || 99;
+                if (tfA !== tfB) return tfA - tfB;
+                const symA = symOrder[a.symbol] || 99;
+                const symB = symOrder[b.symbol] || 99;
+                if (symA !== symB) return symA - symB;
+                if (a.dir !== b.dir) return a.dir === 'bull' ? -1 : 1;
+                return a.startMin - b.startMin;
+            });
+            
+            // Position cards - greedy assignment by priority
+            // Higher priority breakers are processed first and get top rows
+            const cardHeight = CONFLUENCE_CARD_HEIGHT + CONFLUENCE_CARD_GAP;
+            const rowRanges = []; // Track occupied time ranges per row: [{start, end}, ...]
+            
+            const chartInner = document.getElementById('confluence-chart-inner');
+            chartInner.style.width = (chartWidth + 40) + 'px';
+            
+            let html = '';
+            let maxY = 0;
+            
+            sortedBreakers.forEach(breaker => {
+                const startX = (breaker.startMin - minTime) * CONFLUENCE_PPM + 20;
+                const width = Math.max((breaker.endMin - breaker.startMin) * CONFLUENCE_PPM, 100);
+                const endX = startX + width;
+                
+                // Find first row where this breaker fits (no overlap)
+                let row = 0;
+                let foundRow = false;
+                
+                while (!foundRow) {
+                    if (!rowRanges[row]) {
+                        rowRanges[row] = [];
+                        foundRow = true;
+                    } else {
+                        // Check if any existing range in this row overlaps
+                        let overlaps = false;
+                        for (const range of rowRanges[row]) {
+                            if (!(endX <= range.start || startX >= range.end)) {
+                                overlaps = true;
+                                break;
+                            }
+                        }
+                        if (!overlaps) {
+                            foundRow = true;
+                        } else {
+                            row++;
+                        }
+                    }
+                }
+                
+                // Add this breaker's range to the row
+                rowRanges[row].push({ start: startX, end: endX + 10 }); // +10 gap
+                
+                const y = row * cardHeight;
+                maxY = Math.max(maxY, y + cardHeight);
+                
+                html += generateConfluenceCard(breaker, startX, y, width, minTime);
+            });
+            
+            chartInner.innerHTML = html;
+            chartInner.style.minHeight = (maxY + 40) + 'px';
+        }
+        
+        function renderConfluenceTimeHeader(minTime, maxTime, chartWidth) {
+            const timeInner = document.getElementById('confluence-time-inner');
+            timeInner.style.width = (chartWidth + 40) + 'px';
+            
+            let html = '';
+            // Tick every 5 minutes
+            for (let t = Math.ceil(minTime / 5) * 5; t <= maxTime + 5; t += 5) {
+                const x = (t - minTime) * CONFLUENCE_PPM + 20; // +20 to align with cards
+                const timeStr = minToTime(t);
+                html += `<span class="confluence-time-tick" style="left:${x}px">${timeStr}</span>`;
+            }
+            
+            timeInner.innerHTML = html;
+        }
+        
+        function generateConfluenceCard(breaker, x, y, width, globalMinTime) {
+            const tf = breaker.tf.replace('hr', 'h');
+            const tfDisplay = TF_DISPLAY[tf] || breaker.tf;
+            const tfColor = TF_COLORS[breaker.tf] || '#888';
+            const isBull = breaker.dir === 'bull';
+            const dirColor = isBull ? '#4ade80' : '#f87171';
+            const dirArrow = isBull ? '▲' : '▼';
+            const events = breaker.events;
+            
+            if (!events || events.length < 2) {
+                return `
+                    <div class="confluence-card" data-breaker-id="${breaker.id}" style="left:${x}px; top:${y}px; width:${width}px;">
+                        <div class="confluence-card-body">
+                            <div style="display:flex; align-items:center; justify-content:center; height:100%; color:#333;">No data</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            const chart = generateConfluenceChart(breaker, dirColor, width, tfDisplay, tfColor);
+            
+            return `
+                <div class="confluence-card" data-breaker-id="${breaker.id}" style="left:${x}px; top:${y}px; width:${width}px;">
+                    <div class="confluence-card-body">
+                        ${chart}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateConfluenceChart(breaker, dirColor, cardWidth, tfDisplay, tfColor) {
+            const events = breaker.events;
+            const width = cardWidth;
+            const height = 220;
+            // Adjust padding for narrow cards - no bottom padding needed without time labels
+            const padRight = Math.min(50, cardWidth * 0.13);
+            const padLeft = Math.min(32, cardWidth * 0.09);
+            const padding = { top: 12, right: padRight, bottom: 8, left: padLeft };
+            const chartWidth = Math.max(width - padding.left - padding.right, 20);
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            const minTime = events[0].absMin;
+            const maxTime = events[events.length - 1].absMin;
+            const timeRange = maxTime - minTime || 1;
+            
+            const breakerPrice = breaker.price || 0;
+            const isBull = breaker.dir === 'bull';
+            
+            const lastEvent = events[events.length - 1];
+            const currentPrice = lastEvent.price || 0;
+            
+            // Fixed Y-axis: always 0-4
+            const fibCeil = 4;
+            
+            const fibToY = (fib) => {
+                if (isBull) {
+                    return padding.top + chartHeight - (fib / fibCeil) * chartHeight;
+                } else {
+                    return padding.top + (fib / fibCeil) * chartHeight;
+                }
+            };
+            
+            let sampledEvents = events;
+            if (events.length > 100) {
+                const step = Math.ceil(events.length / 80);
+                sampledEvents = events.filter((e, i) => i === 0 || i === events.length - 1 || i % step === 0);
+            }
+            
+            const fibPoints = sampledEvents.map(e => ({
+                x: padding.left + ((e.absMin - minTime) / timeRange) * chartWidth,
+                y: fibToY(e.fib || 0),
+                fib: e.fib || 0
+            }));
+            
+            const peakPoints = sampledEvents.map(e => ({
+                x: padding.left + ((e.absMin - minTime) / timeRange) * chartWidth,
+                y: fibToY(e.maxFib || e.fib || 0),
+                fib: e.maxFib || e.fib || 0
+            }));
+            
+            let peakX = fibPoints[0].x, peakY = fibPoints[0].y, peakFib = 0;
+            fibPoints.forEach(p => {
+                if (p.fib > peakFib) { peakFib = p.fib; peakX = p.x; peakY = p.y; }
+            });
+            
+            const fibPath = fibPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            const peakPath = peakPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            const zeroY = fibToY(0);
+            const areaPath = fibPath + ` L ${fibPoints[fibPoints.length-1].x} ${zeroY} L ${fibPoints[0].x} ${zeroY} Z`;
+            const breakerY = fibToY(1.0);
+            
+            let yGrid = '';
+            const gridVals = [0, 1, 2, 3, 4];
+            gridVals.forEach(val => {
+                const y = fibToY(val);
+                const isBreaker = val === 1;
+                const isFib4 = val === 4;
+                // Fib 4 uses purple to match cursor, subtle like other lines
+                const lineColor = isBreaker ? '#444' : (isFib4 ? '#7c3aed' : '#1e1e21');
+                const lineWidth = 0.5;
+                const textColor = isBreaker ? '#666' : (isFib4 ? '#9d7aed' : '#3a3a3e');
+                const fontWeight = isBreaker ? 500 : 400;
+                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${lineColor}" stroke-width="${lineWidth}"/>`;
+                yGrid += `<text x="${padding.left - 3}" y="${y + 3}" text-anchor="end" fill="${textColor}" font-size="9" font-family="Roboto Mono" font-weight="${fontWeight}">${val.toFixed(1)}</text>`;
+            });
+            
+            const breakerPriceLabel = `<text x="${width - 2}" y="${breakerY + 3}" text-anchor="end" fill="#666" font-size="10" font-family="Roboto Mono">${Math.round(breakerPrice)}</text>`;
+            
+            let dots = '';
+            let dotPoints = peakPoints;
+            if (peakPoints.length > 12) {
+                const step = Math.ceil(peakPoints.length / 10);
+                dotPoints = peakPoints.filter((p, i) => i === 0 || i === peakPoints.length - 1 || i % step === 0);
+            }
+            dotPoints.forEach(p => { dots += `<circle cx="${p.x}" cy="${p.y}" r="2" fill="${dirColor}"/>`; });
+            
+            const lastPoint = fibPoints[fibPoints.length - 1];
+            const lastPointY = lastPoint ? lastPoint.y : 0;
+            const currentPriceLabel = lastPoint && currentPrice > 0 ? 
+                `<text x="${width - 2}" y="${lastPointY + 3}" text-anchor="end" fill="#fb923c" font-size="10" font-family="Roboto Mono" font-weight="500">${Math.round(currentPrice)}</text>` : '';
+            
+            return `
+                <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" style="display:block; width:100%; height:220px;">
+                    ${yGrid}
+                    <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.15"/>
+                    <path d="${peakPath}" fill="none" stroke="${dirColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
+                    <path d="${fibPath}" fill="none" stroke="${dirColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${dots}
+                    <circle cx="${peakX}" cy="${peakY}" r="5" fill="${dirColor}" stroke="#131416" stroke-width="1.5"/>
+                    <text x="${peakX}" y="${peakY + (isBull ? -7 : 14)}" text-anchor="middle" fill="${dirColor}" font-size="11" font-family="Roboto Mono" font-weight="600">${peakFib.toFixed(2)}</text>
+                    ${lastPoint ? `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="#fb923c"/>` : ''}
+                    ${breakerPriceLabel}
+                    ${currentPriceLabel}
+                </svg>
+            `;
+        }
+        
+        function setupConfluenceHandlers() {
+            const scroll = document.getElementById('confluence-scroll');
+            const timeHeader = document.getElementById('confluence-time-header');
+            const cursorLine = document.getElementById('confluence-cursor-line');
+            const cursorTime = document.getElementById('confluence-cursor-time');
+            const labelsContainer = document.getElementById('confluence-labels-container');
+            
+            let lastMouseX = null;
+            let lastMouseY = null;
+            
+            // Function to update cursor labels
+            function updateCursorLabels(x, y) {
+                const rect = scroll.getBoundingClientRect();
+                const timeHeaderRect = timeHeader.getBoundingClientRect();
+                
+                // Clear all existing cursor labels
+                labelsContainer.innerHTML = '';
+                
+                if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                    cursorLine.style.left = x + 'px';
+                    cursorLine.classList.add('visible');
+                    
+                    // Calculate time
+                    const scrollX = scroll.scrollLeft + (x - rect.left) - 20;
+                    const minTime = allData.length > 0 ? Math.min(...allData.map(d => d.startMin)) : 0;
+                    const cursorMin = Math.round(minTime + Math.max(0, scrollX) / CONFLUENCE_PPM);
+                    
+                    // Show time badge - align with time header
+                    cursorTime.textContent = minToTime(cursorMin);
+                    cursorTime.style.left = x + 'px';
+                    cursorTime.style.top = (timeHeaderRect.top + timeHeaderRect.height / 2 - 10) + 'px';
+                    cursorTime.style.display = 'block';
+                    
+                    // Find all cards that the cursor line passes through
+                    const cards = document.querySelectorAll('.confluence-card');
+                    cards.forEach(card => {
+                        const cardRect = card.getBoundingClientRect();
+                        
+                        // Check if cursor X is within this card's horizontal bounds
+                        if (x >= cardRect.left && x <= cardRect.right) {
+                            const breakerId = card.dataset.breakerId;
+                            const breaker = allData.find(b => b.id === breakerId);
+                            
+                            if (breaker && breaker.events && breaker.events.length > 0) {
+                                const tf = breaker.tf.replace('hr', 'h').toUpperCase();
+                                const tfColor = TF_COLORS[breaker.tf] || '#888';
+                                const dirColor = breaker.dir === 'bull' ? '#4ade80' : '#f87171';
+                                const dirArrow = breaker.dir === 'bull' ? '▲' : '▼';
+                                
+                                // Find fib value at cursor time
+                                const events = breaker.events;
+                                let fibAtCursor = 0;
+                                let peakAtCursor = 0;
+                                let priceAtCursor = 0;
+                                
+                                for (let i = 0; i < events.length; i++) {
+                                    if (events[i].absMin <= cursorMin) {
+                                        fibAtCursor = events[i].fib || 0;
+                                        peakAtCursor = events[i].maxFib || events[i].fib || 0;
+                                        priceAtCursor = events[i].price || 0;
+                                    }
+                                }
+                                
+                                const breakerPrice = breaker.price || 0;
+                                
+                                // Create label with fixed positioning
+                                const label = document.createElement('div');
+                                label.className = 'confluence-cursor-label';
+                                label.style.borderRight = `2px solid ${dirColor}`;
+                                
+                                // Format: TF SYM DIR | Fib: x.xx/x.xx | Brkr: xxxxx | Now: xxxxx
+                                label.innerHTML = `<span style="color:${tfColor}">${tf}</span> <span style="color:#666">${breaker.symbol}</span> <span style="color:${dirColor}">${dirArrow}</span> <span style="color:#555">|</span> <span style="color:${dirColor}">${fibAtCursor.toFixed(2)}</span><span style="color:#555">/</span><span style="color:#888">${peakAtCursor.toFixed(2)}</span> <span style="color:#555">|</span> <span style="color:#888">B:</span><span style="color:#aaa">${Math.round(breakerPrice)}</span> <span style="color:#555">|</span> <span style="color:#888">P:</span><span style="color:#fb923c">${Math.round(priceAtCursor)}</span>`;
+                                
+                                // Position label to left of cursor at card's top
+                                // Use fixed positioning relative to viewport
+                                label.style.top = (cardRect.top + 4) + 'px';
+                                
+                                // Temporarily add to measure width
+                                label.style.visibility = 'hidden';
+                                labelsContainer.appendChild(label);
+                                const labelWidth = label.offsetWidth;
+                                label.style.visibility = 'visible';
+                                
+                                // Position to left of cursor
+                                label.style.left = (x - labelWidth - 6) + 'px';
+                            }
+                        }
+                    });
+                } else {
+                    cursorLine.classList.remove('visible');
+                    cursorTime.style.display = 'none';
+                }
+            }
+            
+            // Sync time header scroll AND update cursor labels
+            confluenceScrollHandler = () => {
+                timeHeader.scrollLeft = scroll.scrollLeft;
+                // Update labels on scroll using last known mouse position
+                // Use requestAnimationFrame to ensure DOM has updated
+                if (lastMouseX !== null && lastMouseY !== null) {
+                    requestAnimationFrame(() => {
+                        updateCursorLabels(lastMouseX, lastMouseY);
+                    });
+                }
+            };
+            scroll.addEventListener('scroll', confluenceScrollHandler);
+            
+            // Cursor line and on-card labels
+            confluenceMoveHandler = (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                updateCursorLabels(e.clientX, e.clientY);
+            };
+            scroll.addEventListener('mousemove', confluenceMoveHandler);
+            
+            scroll.addEventListener('mouseleave', () => {
+                lastMouseX = null;
+                lastMouseY = null;
+                cursorLine.classList.remove('visible');
+                cursorTime.style.display = 'none';
+                labelsContainer.innerHTML = '';
+            });
+            
+            // Also update on wheel for Mac trackpad
+            scroll.addEventListener('wheel', () => {
+                if (lastMouseX !== null && lastMouseY !== null) {
+                    // Double requestAnimationFrame for Mac compatibility
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            updateCursorLabels(lastMouseX, lastMouseY);
+                        });
+                    });
+                }
+            }, { passive: true });
         }
         
         function renderZoneChart(dimData, isSupport) {
