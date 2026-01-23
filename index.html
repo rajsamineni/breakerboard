@@ -826,7 +826,7 @@
         }
         
         .breaker-bar.selected {
-            box-shadow: 0 0 0 2px #fff;
+            box-shadow: 0 0 0 2px #00ffff, 0 0 12px #00ffff;
             z-index: 21;
         }
         
@@ -1589,8 +1589,8 @@
         
         /* ===== DETAIL PANEL ===== */
         .detail-panel {
-            width: 320px;
-            min-width: 320px;
+            width: 420px;
+            min-width: 420px;
             background: #1a1a1c;
             border-radius: 8px;
             border: 1px solid #2a2a2e;
@@ -1998,6 +1998,583 @@
         .context-summary-value.good { color: #4ade80; }
         .context-summary-value.bad { color: #f87171; }
         .context-summary-value.neutral { color: #fbbf24; }
+        
+        /* Confluence Fib Tracks */
+        .confluence-fib-tracks {
+            margin-top: 16px;
+        }
+        
+        .confluence-fib-track {
+            background: #151517;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            border-left: 3px solid #333;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .confluence-fib-track:hover {
+            background: #1a1a1c;
+            border-color: #555;
+        }
+        
+        .confluence-fib-track.bull {
+            border-left-color: #4ade80;
+        }
+        
+        .confluence-fib-track.bear {
+            border-left-color: #f87171;
+        }
+        
+        .confluence-fib-track-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            gap: 6px;
+        }
+        
+        .confluence-fib-track-tf {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: #e0e0e0;
+            width: 28px;
+        }
+        
+        .confluence-fib-track-badge {
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        
+        .confluence-fib-track-badge.nq { background: #2563eb20; color: #60a5fa; }
+        .confluence-fib-track-badge.es { background: #7c3aed20; color: #a78bfa; }
+        
+        .confluence-fib-track-fib {
+            margin-left: auto;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #60a5fa;
+            font-weight: 500;
+        }
+        
+        .confluence-fib-track-chart {
+            padding: 0 8px 8px 8px;
+        }
+        
+        /* Stacked view styles */
+        .confluence-stacked-view {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        /* Stacked Breaker Charts */
+        .stack-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .stack-item {
+            background: #111;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: filter 0.15s, box-shadow 0.15s;
+        }
+        
+        .stack-item:hover {
+            filter: brightness(1.15);
+        }
+        
+        .stack-item.selected {
+            box-shadow: 0 0 0 2px #00ffff, 0 0 8px #00ffff;
+        }
+        
+        .stack-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: #0a0a0c;
+            border-left: 4px solid #888;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+        }
+        
+        .stack-tf {
+            font-weight: 700;
+            min-width: 24px;
+        }
+        
+        .stack-sym {
+            color: #777;
+        }
+        
+        .stack-dir {
+            font-weight: 600;
+        }
+        
+        .stack-spacer {
+            flex: 1;
+        }
+        
+        .stack-legend {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            color: #777;
+        }
+        
+        .legend-line {
+            width: 14px;
+            height: 2px;
+            border-radius: 1px;
+        }
+        
+        .legend-line.dashed {
+            height: 0;
+            border-top: 2px dashed;
+        }
+        
+        .stack-charts {
+            display: flex;
+            flex-direction: column;
+            background: #0d0d0f;
+        }
+        
+        .stack-svg {
+            width: 100%;
+            height: 90px;
+            display: block;
+        }
+        
+        .stack-svg-tall {
+            width: 100%;
+            height: 130px;
+            display: block;
+        }
+        
+        .stack-empty {
+            padding: 16px;
+            text-align: center;
+            color: #444;
+            font-size: 10px;
+        }
+        
+        /* Unified Breaker Cards */
+        .confluence-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .confluence-card {
+            display: flex;
+            background: #111;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .confluence-card:hover {
+            background: #1a1a1c;
+        }
+        
+        .card-accent {
+            width: 4px;
+            flex-shrink: 0;
+        }
+        
+        .card-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: #0a0a0a;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+        }
+        
+        .card-tf {
+            font-weight: 700;
+            min-width: 24px;
+        }
+        
+        .card-symbol {
+            color: #888;
+        }
+        
+        .card-dir {
+            font-weight: 600;
+        }
+        
+        .card-spacer {
+            flex: 1;
+        }
+        
+        .card-fib {
+            color: #666;
+        }
+        
+        .card-price {
+            color: #555;
+        }
+        
+        .card-charts {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            padding: 2px;
+        }
+        
+        .card-chart {
+            width: 100%;
+            height: 32px;
+            display: block;
+        }
+        
+        .card-no-data {
+            padding: 8px;
+            text-align: center;
+            color: #444;
+            font-size: 10px;
+        }
+        
+        .confluence-stack-section {
+            background: #111;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .confluence-stack-title {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 12px;
+            background: #0a0a0a;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        
+        .confluence-stack-charts {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .confluence-stack-box {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #1a1a1a;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .confluence-stack-box:last-child {
+            border-bottom: none;
+        }
+        
+        .confluence-stack-box:hover {
+            background: #151515;
+        }
+        
+        /* Standard: bull=green, bear=red */
+        .confluence-stack-box.bull {
+            border-left: 3px solid #4ade80;
+        }
+        
+        .confluence-stack-box.bear {
+            border-left: 3px solid #f87171;
+        }
+        
+        .confluence-stack-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: #0d0d0d;
+        }
+        
+        .stack-tf {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            color: #ccc;
+        }
+        
+        .stack-sym {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            color: #888;
+        }
+        
+        .stack-dir {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            font-weight: 500;
+        }
+        
+        /* Standard: bull=green, bear=red */
+        .stack-dir.bull { color: #4ade80; }
+        .stack-dir.bear { color: #f87171; }
+        
+        .confluence-stack-chart {
+            padding: 2px 4px;
+        }
+        
+        .confluence-stack-item {
+            border-bottom: 1px solid #1a1a1a;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .confluence-stack-item:last-child {
+            border-bottom: none;
+        }
+        
+        .confluence-stack-item:hover {
+            background: #151515;
+        }
+        
+        /* Standard: bull=green, bear=red */
+        .confluence-stack-item.bull {
+            border-left: 3px solid #4ade80;
+        }
+        
+        .confluence-stack-item.bear {
+            border-left: 3px solid #f87171;
+        }
+        
+        .confluence-stack-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            background: #0d0d0d;
+        }
+        
+        .confluence-stack-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            color: #888;
+        }
+        
+        .stack-dir {
+            font-weight: 600;
+        }
+        
+        .stack-dir.bull { color: #4ade80; }
+        .stack-dir.bear { color: #f87171; }
+        
+        .confluence-stack-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .confluence-stack-svg {
+            width: 100%;
+            height: 50px;
+            display: block;
+        }
+        
+        /* Legacy combined view styles (keep for compatibility) */
+        .confluence-combined-view {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .confluence-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            background: #151517;
+            border-radius: 6px;
+        }
+        
+        .confluence-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            background: #1a1a1c;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .confluence-legend-item:hover {
+            background: #252528;
+        }
+        
+        .confluence-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .confluence-legend-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            color: #ccc;
+        }
+        
+        .confluence-chart-section {
+            background: #111;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .confluence-chart-title {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 10px;
+            background: #0a0a0a;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        
+        .confluence-combined-svg {
+            width: 100%;
+            height: 200px;
+            display: block;
+        }
+        
+        .confluence-time-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 8px;
+            fill: #555;
+        }
+        
+        .confluence-price-scale {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 8px;
+            fill: #555;
+        }
+        
+        .confluence-fib-grid {
+            stroke: #2a2a2e;
+            stroke-width: 0.5;
+        }
+        
+        .confluence-fib-scale {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            fill: #666;
+        }
+        
+        .confluence-price-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 8px;
+            fill: #60a5fa;
+        }
+        
+        /* INVERTED: Bulls are RED, Bears are GREEN */
+        .confluence-fib-line.bull { stroke: #f87171; }
+        .confluence-fib-line.bear { stroke: #4ade80; }
+        
+        .confluence-fib-area.bull { fill: rgba(248, 113, 113, 0.15); }
+        .confluence-fib-area.bear { fill: rgba(74, 222, 128, 0.15); }
+        
+        .confluence-fib-dot.bull { fill: #f87171; }
+        .confluence-fib-dot.bear { fill: #4ade80; }
+        
+        /* Track border colors inverted too */
+        .confluence-fib-track.bull {
+            border-left-color: #f87171;
+        }
+        
+        .confluence-fib-track.bear {
+            border-left-color: #4ade80;
+        }
+        
+        /* Badge colors inverted */
+        .confluence-fib-track-badge.bull { background: #dc262615; color: #f87171; }
+        .confluence-fib-track-badge.bear { background: #16a34a15; color: #4ade80; }
+        
+        .confluence-fib-track-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .confluence-fib-ref-line {
+            stroke: #333;
+            stroke-width: 0.5;
+            stroke-dasharray: 2, 3;
+        }
+        
+        .confluence-fib-line {
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .confluence-fib-line.bull { stroke: #4ade80; }
+        .confluence-fib-line.bear { stroke: #f87171; }
+        
+        .confluence-fib-area.bull { fill: rgba(74, 222, 128, 0.15); }
+        .confluence-fib-area.bear { fill: rgba(248, 113, 113, 0.15); }
+        
+        .confluence-fib-dot {
+            stroke: #1a1a1c;
+            stroke-width: 1.5;
+        }
+        
+        .confluence-fib-dot.bull { fill: #4ade80; }
+        .confluence-fib-dot.bear { fill: #f87171; }
+        
+        .confluence-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .confluence-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #2a2a2e;
+        }
+        
+        .confluence-no-active {
+            text-align: center;
+            color: #555;
+            padding: 20px;
+            font-size: 12px;
+        }
         
         /* Fib Chart */
         .fib-chart-container {
@@ -4619,6 +5196,7 @@
         let countdownSecs = 0;
         let selectedEntryMin = null;
         let selectedBreakerId = null;
+        let lockedConfluenceMin = null;
         let entryTimes = [];
         let chartAbortController = null; // For cleaning up event listeners
         let renderedBars = []; // Cached bar elements for fast highlight
@@ -4741,8 +5319,8 @@
                 liveBtn.classList.remove('inactive');
                 exploreBtn.classList.remove('explore-active');
                 exploreBtn.classList.add('inactive');
-                // Show live confluence if data exists and nothing selected
-                if (allData.length > 0 && !selectedBreakerId && !selectedEntryMin) {
+                // Show live confluence if data exists and nothing locked
+                if (allData.length > 0 && lockedConfluenceMin === null) {
                     showLiveConfluence();
                 }
             } else {
@@ -4751,8 +5329,8 @@
                 liveBtn.classList.add('inactive');
                 // Clear live highlights
                 clearLiveHighlight();
-                // Only show empty panel if nothing selected
-                if (!selectedBreakerId && !selectedEntryMin) {
+                // Only show empty panel if nothing locked
+                if (lockedConfluenceMin === null) {
                     showEmptyPanel();
                 }
             }
@@ -4828,11 +5406,11 @@
             setWindow(windowStartMin, windowEndMin, 'Live');
             renderChart();
             
-            // Scroll to right edge and show live confluence (only if nothing selected)
+            // Scroll to right edge and show live confluence (only if nothing locked)
             setTimeout(() => {
                 const container = document.getElementById('scroll-container');
                 container.scrollLeft = container.scrollWidth;
-                if (!selectedBreakerId && !selectedEntryMin) {
+                if (lockedConfluenceMin === null) {
                     showLiveConfluence();
                 }
             }, 50);
@@ -5411,8 +5989,8 @@
                     const container = document.getElementById('scroll-container');
                     container.scrollLeft = container.scrollWidth;
                     updateViewportIndicator();
-                    // Only show live confluence if nothing selected
-                    if (isLive && !selectedBreakerId && !selectedEntryMin) {
+                    // Only show live confluence if nothing locked
+                    if (isLive && lockedConfluenceMin === null) {
                         showLiveConfluence();
                     }
                 }, 50);
@@ -5815,8 +6393,8 @@
                     if (cursorMin !== lastCursorMin && !isScroll) {
                         lastCursorMin = cursorMin;
                         
-                        // Show confluence at cursor position in right panel (only if nothing selected)
-                        if (!selectedBreakerId && !selectedEntryMin && !selectedSmtId) {
+                        // Show confluence at cursor position in right panel (only if not locked)
+                        if (lockedConfluenceMin === null && !selectedSmtId) {
                             showCursorConfluence(cursorMin);
                         }
                         
@@ -5857,11 +6435,10 @@
                 // Clear cursor highlights
                 clearCursorHighlight();
                 
-                // Restore appropriate panel state (selection takes priority over live mode)
-                if (selectedBreakerId) {
-                    showBreakerDetail(selectedBreakerId);
-                } else if (selectedEntryMin) {
-                    showEntryContext(selectedEntryMin);
+                // Restore appropriate panel state
+                if (lockedConfluenceMin !== null) {
+                    // Keep locked confluence view
+                    showCursorConfluence(lockedConfluenceMin);
                 } else if (selectedSmtId) {
                     showSmtDetail(selectedSmtId);
                 } else if (isLive) {
@@ -5903,11 +6480,21 @@
                 document.querySelectorAll(`.breaker-bar[data-breaker-id="${preservedBreakerId}"]`).forEach(el => {
                     el.classList.add('selected');
                 });
-                showBreakerDetail(preservedBreakerId);
+                // Keep confluence view
+                if (lockedConfluenceMin !== null) {
+                    highlightActiveAtEntry(lockedConfluenceMin);
+                    showCursorConfluence(lockedConfluenceMin);
+                } else if (isLive) {
+                    showLiveConfluence();
+                }
+            } else if (lockedConfluenceMin !== null) {
+                highlightActiveAtEntry(lockedConfluenceMin);
+                showCursorConfluence(lockedConfluenceMin);
             } else if (preservedEntryMin) {
                 selectedEntryMin = preservedEntryMin;
+                lockedConfluenceMin = preservedEntryMin;
                 highlightActiveAtEntry(preservedEntryMin);
-                showEntryContext(preservedEntryMin);
+                showCursorConfluence(preservedEntryMin);
                 // Highlight entry line and markers if they exist
                 document.querySelectorAll('.entry-line').forEach(el => {
                     if (parseInt(el.dataset.entryMin) === preservedEntryMin) {
@@ -6116,6 +6703,7 @@
             clearEntryHighlight();
             selectedEntryMin = null;
             selectedBreakerId = null;
+            lockedConfluenceMin = null;
             
             // Toggle selection
             if (selectedSmtId === smtId) {
@@ -6491,195 +7079,286 @@
         }
         
         function showCursorConfluence(cursorMin) {
-            // Find all breakers active at cursor time
-            const activeAtEntry = allData.filter(d => 
+            const activeBreakers = allData.filter(d => 
                 d.startMin <= cursorMin && d.endMin >= cursorMin
             );
             
-            // Build context for each TF/Symbol combination
-            const contextRows = [];
-            let nqBull = 0, nqBear = 0, esBull = 0, esBear = 0;
-            
-            TF_ORDER.forEach(tf => {
-                SYMBOLS.forEach(symbol => {
-                    const breaker = activeAtEntry.find(d => 
-                        d.tf.replace('hr', 'h') === tf && d.symbol === symbol
-                    );
-                    
-                    if (breaker) {
-                        // Count for alignment
-                        if (symbol === 'NQ') {
-                            if (breaker.dir === 'bull') nqBull++; else nqBear++;
-                        } else {
-                            if (breaker.dir === 'bull') esBull++; else esBear++;
-                        }
-                        
-                        // Get fib at entry (first event)
-                        const entryFib = breaker.events[0]?.fib || 1.0;
-                        
-                        // Get current fib (event closest to cursor time)
-                        let currentFib = entryFib;
-                        for (const evt of breaker.events) {
-                            if (evt.absMin <= cursorMin) {
-                                currentFib = evt.fib;
-                            }
-                        }
-                        
-                        // Status indicator
-                        const isBreakerFailed = breaker.status?.startsWith('failed:');
-                        const statusIcon = breaker.status === 'success' ? 'S' : 
-                                          isBreakerFailed ? 'F' : '-';
-                        const statusClass = isBreakerFailed ? 'fail' : breaker.status;
-                        
-                        contextRows.push(`
-                            <div class="context-row active">
-                                <span class="context-tf">${TF_DISPLAY[tf]}</span>
-                                <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <span class="context-dir ${breaker.dir}">${breaker.dir.toUpperCase()}</span>
-                                <span class="context-fib">${entryFib.toFixed(1)} → ${currentFib.toFixed(1)}</span>
-                                <span class="context-status-icon ${statusClass}">${statusIcon}</span>
-                            </div>
-                        `);
-                    } else {
-                        contextRows.push(`
-                            <div class="context-row">
-                                <span class="context-tf">${TF_DISPLAY[tf]}</span>
-                                <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <span class="context-dir none">-</span>
-                                <span class="context-fib">-</span>
-                                <span class="context-status-icon none">-</span>
-                            </div>
-                        `);
-                    }
-                });
+            // Sort: 1m first, then 5m, 15m, 1h, 4h last; within TF: NQ before ES
+            const tfOrder = { '1m': 1, '5m': 2, '15m': 3, '1h': 4, '1hr': 4, '4h': 5, '4hr': 5 };
+            const symOrder = { 'NQ': 1, 'ES': 2 };
+            const sortedActive = [...activeBreakers].sort((a, b) => {
+                const tfA = tfOrder[a.tf.replace('hr', 'h')] || 99;
+                const tfB = tfOrder[b.tf.replace('hr', 'h')] || 99;
+                if (tfA !== tfB) return tfA - tfB;
+                const symA = symOrder[a.symbol] || 99;
+                const symB = symOrder[b.symbol] || 99;
+                if (symA !== symB) return symA - symB;
+                return a.dir === 'bull' ? -1 : 1;
             });
             
             document.getElementById('panel-time').textContent = minToTime(cursorMin);
             document.getElementById('panel-type').textContent = 'Confluence';
             document.getElementById('panel-type').classList.remove('live');
             
-            document.getElementById('panel-content').innerHTML = `
-                <div class="detail-section">
-                    <div class="detail-section-title">Active Breakers</div>
-                    <div class="context-header">
-                        <span>TF</span>
-                        <span>Sym</span>
-                        <span>Dir</span>
-                        <span>Fib</span>
-                        <span>St</span>
-                    </div>
-                    <div class="context-grid">
-                        ${contextRows.join('')}
-                    </div>
-                </div>
-                
-                <div class="context-summary">
-                    <div class="context-summary-row">
-                        <span class="context-summary-label">NQ</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${nqBear}<span class="arrow-down-sm"></span></span></span>
-                    </div>
-                    <div class="context-summary-row">
-                        <span class="context-summary-label">ES</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${esBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${esBear}<span class="arrow-down-sm"></span></span></span>
-                    </div>
-                </div>
-            `;
+            if (sortedActive.length === 0) {
+                document.getElementById('panel-content').innerHTML = `<div class="confluence-no-active">No active breakers at this time</div>`;
+                return;
+            }
+            
+            let html = '<div class="stack-container">';
+            sortedActive.forEach(breaker => {
+                html += generateStackedBreaker(breaker);
+            });
+            html += '</div>';
+            
+            document.getElementById('panel-content').innerHTML = html;
         }
         
         function showLiveConfluence() {
             const currentMin = dataMaxTime;
-            
-            // Highlight active breakers on chart and left panel (green for live)
             highlightLiveActive();
             
-            // Find all breakers active at current time
-            const activeAtEntry = allData.filter(d => 
+            const activeBreakers = allData.filter(d => 
                 d.startMin <= currentMin && d.endMin >= currentMin
             );
             
-            // Build context for each TF/Symbol combination
-            const contextRows = [];
-            let nqBull = 0, nqBear = 0, esBull = 0, esBear = 0;
-            
-            TF_ORDER.forEach(tf => {
-                SYMBOLS.forEach(symbol => {
-                    const breaker = activeAtEntry.find(d => 
-                        d.tf.replace('hr', 'h') === tf && d.symbol === symbol
-                    );
-                    
-                    if (breaker) {
-                        // Count for alignment
-                        if (symbol === 'NQ') {
-                            if (breaker.dir === 'bull') nqBull++; else nqBear++;
-                        } else {
-                            if (breaker.dir === 'bull') esBull++; else esBear++;
-                        }
-                        
-                        // Get fib at entry (first event)
-                        const entryFib = breaker.events[0]?.fib || 1.0;
-                        
-                        // Get current fib (latest event)
-                        const currentFib = breaker.maxFib;
-                        
-                        // Status indicator
-                        const isBreakerFailed = breaker.status?.startsWith('failed:');
-                        const statusIcon = breaker.status === 'success' ? 'S' : 
-                                          isBreakerFailed ? 'F' : '-';
-                        const statusClass = isBreakerFailed ? 'fail' : breaker.status;
-                        
-                        contextRows.push(`
-                            <div class="context-row live-active-row">
-                                <span class="context-tf">${TF_DISPLAY[tf]}</span>
-                                <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <span class="context-dir ${breaker.dir}">${breaker.dir.toUpperCase()}</span>
-                                <span class="context-fib">${entryFib.toFixed(1)} → ${currentFib.toFixed(1)}</span>
-                                <span class="context-status-icon ${statusClass}">${statusIcon}</span>
-                            </div>
-                        `);
-                    } else {
-                        contextRows.push(`
-                            <div class="context-row">
-                                <span class="context-tf">${TF_DISPLAY[tf]}</span>
-                                <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
-                                <span class="context-dir none">-</span>
-                                <span class="context-fib">-</span>
-                                <span class="context-status-icon none">-</span>
-                            </div>
-                        `);
-                    }
-                });
+            // Sort: 1m first, then 5m, 15m, 1h, 4h last; within TF: NQ before ES
+            const tfOrder = { '1m': 1, '5m': 2, '15m': 3, '1h': 4, '1hr': 4, '4h': 5, '4hr': 5 };
+            const symOrder = { 'NQ': 1, 'ES': 2 };
+            const sortedActive = [...activeBreakers].sort((a, b) => {
+                const tfA = tfOrder[a.tf.replace('hr', 'h')] || 99;
+                const tfB = tfOrder[b.tf.replace('hr', 'h')] || 99;
+                if (tfA !== tfB) return tfA - tfB;
+                const symA = symOrder[a.symbol] || 99;
+                const symB = symOrder[b.symbol] || 99;
+                if (symA !== symB) return symA - symB;
+                return a.dir === 'bull' ? -1 : 1;
             });
             
             document.getElementById('panel-time').textContent = minToTime(currentMin);
             document.getElementById('panel-type').textContent = 'Live Confluence';
             document.getElementById('panel-type').classList.add('live');
             
-            document.getElementById('panel-content').innerHTML = `
-                <div class="detail-section">
-                    <div class="detail-section-title">Active Breakers</div>
-                    <div class="context-header">
-                        <span>TF</span>
-                        <span>Sym</span>
-                        <span>Dir</span>
-                        <span>Fib</span>
-                        <span>St</span>
+            if (sortedActive.length === 0) {
+                document.getElementById('panel-content').innerHTML = `<div class="confluence-no-active">No active breakers</div>`;
+                return;
+            }
+            
+            let html = '<div class="stack-container">';
+            sortedActive.forEach(breaker => {
+                html += generateStackedBreaker(breaker);
+            });
+            html += '</div>';
+            
+            document.getElementById('panel-content').innerHTML = html;
+        }
+        
+        // TF colors matching left panel
+        const TF_COLORS = {
+            '4h': '#f87171', '4hr': '#f87171',
+            '1h': '#fbbf24', '1hr': '#fbbf24',
+            '15m': '#4ade80',
+            '5m': '#60a5fa',
+            '1m': '#c084fc'
+        };
+        
+        function generateStackedBreaker(breaker) {
+            const tf = breaker.tf.replace('hr', 'h');
+            const tfDisplay = TF_DISPLAY[tf] || breaker.tf;
+            const tfColor = TF_COLORS[breaker.tf] || '#888';
+            const isBull = breaker.dir === 'bull';
+            const dirColor = isBull ? '#4ade80' : '#f87171';
+            const events = breaker.events;
+            const isSelected = selectedBreakerId === breaker.id ? ' selected' : '';
+            
+            if (events.length < 2) {
+                return `
+                    <div class="stack-item${isSelected}" data-breaker-id="${breaker.id}" onclick="selectBreaker('${breaker.id}')">
+                        <div class="stack-label" style="border-left-color:${tfColor}">
+                            <span class="stack-tf" style="color:${tfColor}">${tfDisplay}</span>
+                            <span class="stack-sym">${breaker.symbol}</span>
+                            <span class="stack-dir" style="color:${dirColor}">${breaker.dir.toUpperCase()}</span>
+                        </div>
+                        <div class="stack-empty">No data</div>
                     </div>
-                    <div class="context-grid">
-                        ${contextRows.join('')}
+                `;
+            }
+            
+            const combinedChart = generateCombinedFibPriceChart(breaker, dirColor);
+            
+            return `
+                <div class="stack-item${isSelected}" data-breaker-id="${breaker.id}" onclick="selectBreaker('${breaker.id}')">
+                    <div class="stack-label" style="border-left-color:${tfColor}">
+                        <span class="stack-tf" style="color:${tfColor}">${tfDisplay}</span>
+                        <span class="stack-sym">${breaker.symbol}</span>
+                        <span class="stack-dir" style="color:${dirColor}">${breaker.dir.toUpperCase()}</span>
+                        <span class="stack-spacer"></span>
+                        <span class="stack-legend">
+                            <span class="legend-item"><span class="legend-line" style="background:#888"></span><span style="color:#888">Brkr</span></span>
+                            <span class="legend-item"><span class="legend-line dashed" style="border-color:${dirColor}"></span><span style="color:${dirColor}">Peak</span></span>
+                            <span class="legend-item"><span class="legend-line" style="background:${dirColor}"></span><span style="color:${dirColor}">Fib</span></span>
+                        </span>
                     </div>
-                </div>
-                
-                <div class="context-summary">
-                    <div class="context-summary-row">
-                        <span class="context-summary-label">NQ</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${nqBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${nqBear}<span class="arrow-down-sm"></span></span></span>
-                    </div>
-                    <div class="context-summary-row">
-                        <span class="context-summary-label">ES</span>
-                        <span class="context-summary-value"><span class="arrow-bull">${esBull}<span class="arrow-up-sm"></span></span> <span class="arrow-bear">${esBear}<span class="arrow-down-sm"></span></span></span>
+                    <div class="stack-charts">
+                        ${combinedChart}
                     </div>
                 </div>
             `;
+        }
+        
+        function generateCombinedFibPriceChart(breaker, dirColor) {
+            const events = breaker.events;
+            const width = 400;
+            const height = 130;
+            const padding = { top: 8, right: 52, bottom: 18, left: 32 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            const minTime = events[0].absMin;
+            const maxTime = events[events.length - 1].absMin;
+            const timeRange = maxTime - minTime || 1;
+            
+            // Get breaker price and current price
+            const breakerPrice = breaker.price || 0;
+            const isBull = breaker.dir === 'bull';
+            
+            // Get current price from last event
+            const lastEvent = events[events.length - 1];
+            const currentPrice = lastEvent.price || 0;
+            const currentFib = lastEvent.fib || 0;
+            
+            // Dynamic fib scale
+            const maxFibCurrent = Math.max(...events.map(e => e.fib || 0), 1);
+            const maxFibPeak = Math.max(...events.map(e => e.maxFib || e.fib || 0), 1);
+            const fibCeil = Math.ceil(Math.max(maxFibCurrent, maxFibPeak) * 1.15);
+            
+            // Y-axis helper: Bulls = 0 bottom, 4 top; Bears = 0 top, 4 bottom
+            const fibToY = (fib) => {
+                if (isBull) {
+                    return padding.top + chartHeight - (fib / fibCeil) * chartHeight;
+                } else {
+                    return padding.top + (fib / fibCeil) * chartHeight;
+                }
+            };
+            
+            let sampledEvents = events;
+            if (events.length > 100) {
+                const step = Math.ceil(events.length / 80);
+                sampledEvents = events.filter((e, i) => i === 0 || i === events.length - 1 || i % step === 0);
+            }
+            
+            // Current fib line (direction colored - solid)
+            const fibPoints = sampledEvents.map(e => ({
+                x: padding.left + ((e.absMin - minTime) / timeRange) * chartWidth,
+                y: fibToY(e.fib || 0),
+                fib: e.fib || 0,
+                price: e.price || 0
+            }));
+            
+            // Peak fib line (direction colored - dashed)
+            const peakPoints = sampledEvents.map(e => ({
+                x: padding.left + ((e.absMin - minTime) / timeRange) * chartWidth,
+                y: fibToY(e.maxFib || e.fib || 0),
+                fib: e.maxFib || e.fib || 0
+            }));
+            
+            // Find peak location
+            let peakX = fibPoints[0].x;
+            let peakY = fibPoints[0].y;
+            let peakFib = 0;
+            fibPoints.forEach(p => {
+                if (p.fib > peakFib) {
+                    peakFib = p.fib;
+                    peakX = p.x;
+                    peakY = p.y;
+                }
+            });
+            
+            const fibPath = fibPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            const peakPath = peakPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            
+            // Area fill - needs to go to the zero line
+            const zeroY = fibToY(0);
+            const areaPath = fibPath + ` L ${fibPoints[fibPoints.length-1].x} ${zeroY} L ${fibPoints[0].x} ${zeroY} Z`;
+            
+            // Breaker line at fib = 1.0 (neutral color)
+            const breakerY = fibToY(1.0);
+            
+            // Y-axis grid and labels
+            let yGrid = '';
+            const gridVals = [0, 1, 2, 3, 4].filter(v => v <= fibCeil);
+            gridVals.forEach(val => {
+                const y = fibToY(val);
+                const isBreaker = val === 1;
+                // Breaker line is neutral gray, others are darker
+                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${isBreaker ? '#888' : '#252528'}" stroke-width="${isBreaker ? 1.5 : 0.5}"/>`;
+                yGrid += `<text x="${padding.left - 3}" y="${y + 3}" text-anchor="end" fill="${isBreaker ? '#aaa' : '#666'}" font-size="9" font-family="Roboto Mono" font-weight="${isBreaker ? 600 : 400}">${val.toFixed(1)}</text>`;
+            });
+            
+            // Time labels
+            const midTime = minTime + Math.floor(timeRange / 2);
+            const timeLabels = `
+                <text x="${padding.left}" y="${height - 2}" text-anchor="start" fill="#555" font-size="8" font-family="Roboto Mono">${minToTime(minTime)}</text>
+                <text x="${padding.left + chartWidth/2}" y="${height - 2}" text-anchor="middle" fill="#555" font-size="8" font-family="Roboto Mono">${minToTime(midTime)}</text>
+                <text x="${padding.left + chartWidth}" y="${height - 2}" text-anchor="end" fill="#555" font-size="8" font-family="Roboto Mono">${minToTime(maxTime)}</text>
+            `;
+            
+            // Breaker price on right at fib=1.0 line
+            const breakerPriceLabel = `
+                <text x="${width - 2}" y="${breakerY + 3}" text-anchor="end" fill="#888" font-size="10" font-family="Roboto Mono">${Math.round(breakerPrice)}</text>
+            `;
+            
+            // Peak dots on maxFib line
+            let dots = '';
+            let dotPoints = peakPoints;
+            if (peakPoints.length > 12) {
+                const step = Math.ceil(peakPoints.length / 10);
+                dotPoints = peakPoints.filter((p, i) => i === 0 || i === peakPoints.length - 1 || i % step === 0);
+            }
+            dotPoints.forEach(p => {
+                dots += `<circle cx="${p.x}" cy="${p.y}" r="2" fill="${dirColor}"/>`;
+            });
+            
+            // Last point marker with current price
+            const lastPoint = fibPoints[fibPoints.length - 1];
+            const lastPointY = lastPoint ? lastPoint.y : 0;
+            const currentPriceLabel = lastPoint && currentPrice > 0 ? `
+                <text x="${width - 2}" y="${lastPointY + 3}" text-anchor="end" fill="#fb923c" font-size="10" font-family="Roboto Mono" font-weight="500">${Math.round(currentPrice)}</text>
+            ` : '';
+            
+            return `
+                <svg class="stack-svg-tall" viewBox="0 0 ${width} ${height}">
+                    ${yGrid}
+                    <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.08"/>
+                    <path d="${peakPath}" fill="none" stroke="${dirColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
+                    <path d="${fibPath}" fill="none" stroke="${dirColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${dots}
+                    <circle cx="${peakX}" cy="${peakY}" r="5" fill="${dirColor}" stroke="#111" stroke-width="1"/>
+                    <text x="${peakX}" y="${peakY + (isBull ? -7 : 14)}" text-anchor="middle" fill="${dirColor}" font-size="11" font-family="Roboto Mono" font-weight="600">${peakFib.toFixed(2)}</text>
+                    ${lastPoint ? `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="#fb923c"/>` : ''}
+                    ${breakerPriceLabel}
+                    ${currentPriceLabel}
+                    ${timeLabels}
+                </svg>
+            `;
+        }
+        
+        function generateStackPriceZone(breaker, dirColor) {
+            // Kept for compatibility but not used in stacked view
+            return '';
+        }
+        
+        function generateStackFibChart(breaker) {
+            // Kept for compatibility but not used in stacked view
+            return '';
+        }
+        
+        function generateCombinedMiniChart(breaker, cursorMin) {
+            return generateStackedBreaker(breaker);
+        }
+        
+        function generateMiniFibChart(breaker) {
+            return generateStackedBreaker(breaker);
         }
         
         function showBreakerDetail(breakerId) {
@@ -7210,6 +7889,9 @@
             document.querySelectorAll('.breaker-bar.selected').forEach(el => {
                 el.classList.remove('selected');
             });
+            document.querySelectorAll('.stack-item.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
             document.querySelectorAll('.smt-marker.selected').forEach(el => {
                 el.classList.remove('selected');
             });
@@ -7220,16 +7902,51 @@
             // Toggle selection
             if (selectedBreakerId === breakerId) {
                 selectedBreakerId = null;
-                showEmptyPanel();
+                // Keep confluence view at locked time or show live
+                if (lockedConfluenceMin !== null) {
+                    showCursorConfluence(lockedConfluenceMin);
+                } else if (isLive) {
+                    showLiveConfluence();
+                } else {
+                    showEmptyPanel();
+                }
             } else {
                 selectedBreakerId = breakerId;
                 
-                // Highlight selected bar
+                // Highlight selected bar on chart
                 document.querySelectorAll(`.breaker-bar[data-breaker-id="${breakerId}"]`).forEach(el => {
                     el.classList.add('selected');
                 });
                 
-                showBreakerDetail(breakerId);
+                // Highlight selected item in confluence panel
+                document.querySelectorAll(`.stack-item[data-breaker-id="${breakerId}"]`).forEach(el => {
+                    el.classList.add('selected');
+                });
+                
+                // Scroll breaker into view
+                const bars = document.querySelectorAll(`.breaker-bar[data-breaker-id="${breakerId}"]`);
+                if (bars.length > 0) {
+                    const bar = bars[0];
+                    const container = document.getElementById('scroll-container');
+                    const barRect = bar.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    
+                    // Check if bar is outside visible area
+                    if (barRect.left < containerRect.left || barRect.right > containerRect.right) {
+                        const breaker = allData.find(d => d.id === breakerId);
+                        if (breaker) {
+                            const targetScroll = (breaker.startMin - windowStartMin) * PIXELS_PER_MINUTE - containerRect.width / 3;
+                            container.scrollLeft = Math.max(0, targetScroll);
+                        }
+                    }
+                }
+                
+                // Keep confluence view - don't show breaker detail
+                if (lockedConfluenceMin !== null) {
+                    showCursorConfluence(lockedConfluenceMin);
+                } else if (isLive) {
+                    showLiveConfluence();
+                }
             }
             
             // Update entry line and marker styling
@@ -7249,15 +7966,21 @@
             selectedBreakerId = null;
             selectedSmtId = null;
             
-            // Toggle selection
-            if (selectedEntryMin === entryMin) {
+            // Toggle selection - use confluence view
+            if (selectedEntryMin === entryMin && lockedConfluenceMin === entryMin) {
                 selectedEntryMin = null;
+                lockedConfluenceMin = null;
                 clearEntryHighlight();
-                showEmptyPanel();
+                if (isLive) {
+                    showLiveConfluence();
+                } else {
+                    showEmptyPanel();
+                }
             } else {
                 selectedEntryMin = entryMin;
+                lockedConfluenceMin = entryMin;
                 highlightActiveAtEntry(entryMin);
-                showEntryContext(entryMin);
+                showCursorConfluence(entryMin);
             }
             
             // Update entry line and marker styling
@@ -7283,16 +8006,23 @@
             });
             selectedBreakerId = null;
             selectedSmtId = null;
+            selectedEntryMin = null;
             
-            // Toggle selection
-            if (selectedEntryMin === clickedMin) {
-                selectedEntryMin = null;
+            // Toggle lock on confluence view
+            if (lockedConfluenceMin === clickedMin) {
+                // Clicking same time unlocks
+                lockedConfluenceMin = null;
                 clearEntryHighlight();
-                showEmptyPanel();
+                if (isLive) {
+                    showLiveConfluence();
+                } else {
+                    showEmptyPanel();
+                }
             } else {
-                selectedEntryMin = clickedMin;
+                // Lock confluence at clicked time
+                lockedConfluenceMin = clickedMin;
                 highlightActiveAtEntry(clickedMin);
-                showEntryContext(clickedMin);
+                showCursorConfluence(clickedMin);
             }
         }
         
@@ -8880,7 +9610,15 @@
             
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    if (selectedEntryMin !== null) {
+                    if (lockedConfluenceMin !== null) {
+                        lockedConfluenceMin = null;
+                        clearEntryHighlight();
+                        if (isLive) {
+                            showLiveConfluence();
+                        } else {
+                            showEmptyPanel();
+                        }
+                    } else if (selectedEntryMin !== null) {
                         selectEntry(selectedEntryMin);
                     } else if (selectedBreakerId !== null) {
                         selectBreaker(selectedBreakerId);
