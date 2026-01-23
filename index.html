@@ -7455,7 +7455,15 @@
         }
         
         function showLiveConfluence() {
-            const currentMin = dataMaxTime;
+            // Use actual current time, not last data time
+            const now = new Date();
+            const currentMin = Math.floor(now.getTime() / 60000);
+            
+            // Extend dataMaxTime to current time if behind (so chart shows current time)
+            if (currentMin > dataMaxTime && dataMaxTime > 0) {
+                dataMaxTime = currentMin;
+            }
+            
             highlightLiveActive();
             
             const activeBreakers = allData.filter(d => 
@@ -8433,7 +8441,10 @@
         // Live highlighting (green) - for live mode current time
         function highlightLiveActive() {
             clearLiveHighlight();
-            const currentMin = dataMaxTime;
+            
+            // Use actual current time, not last data time
+            const now = new Date();
+            const currentMin = Math.floor(now.getTime() / 60000);
             
             const activeLanes = new Set();
             
