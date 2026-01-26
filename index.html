@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow</title>
+    <title>SigXFlow v3.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -863,22 +863,22 @@
         /* Fib label */
         .bar-fib {
             flex-shrink: 0;
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.95;
             font-weight: 600;
-            letter-spacing: -0.2px;
+            letter-spacing: -0.3px;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         
         .bar-fib-value {
             background: rgba(255, 255, 255, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 3px;
-            padding: 2px 5px;
-            font-size: 10px;
+            border-radius: 2px;
+            padding: 1px 3px;
+            font-size: 9px;
             font-weight: 700;
             color: #000;
         }
@@ -886,18 +886,19 @@
         .bar-points {
             background: rgba(255, 255, 255, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 3px;
-            padding: 2px 5px;
-            font-size: 10px;
+            border-radius: 2px;
+            padding: 1px 3px;
+            font-size: 9px;
             font-weight: 700;
             color: #000;
         }
         
         /* Status dot */
         .status-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 2px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -908,12 +909,32 @@
             color: #fff;
         }
         
-        .status-dot.success {
+        .status-dot.success, .status-dot.success-t1, .status-dot.success-t2 {
             background: #16a34a;
         }
         
         .status-dot.fail {
             background: #dc2626;
+        }
+        
+        /* T1/T2 milestone markers on breaker bars */
+        .milestone-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .milestone-marker.t1 {
+            background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow: 0 0 4px rgba(251, 191, 36, 0.6);
+        }
+        
+        .milestone-marker.t2 {
+            background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+            box-shadow: 0 0 4px rgba(74, 222, 128, 0.6);
         }
         
         /* Active at entry highlight (for selection - yellow crisp) */
@@ -1898,9 +1919,339 @@
             color: #ef4444;
         }
         
+        /* Detail grid for organized info display */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .detail-grid-item {
+            background: #1a1a1c;
+            border-radius: 4px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .detail-grid-label {
+            font-size: 9px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .detail-grid-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+        
+        .detail-grid-value.success {
+            color: #4ade80;
+        }
+        
+        .detail-grid-value.warn {
+            color: #fbbf24;
+        }
+        
+        .detail-grid-value.fail {
+            color: #f87171;
+        }
+        
+        .detail-grid-value.highlight {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
         .detail-badge.tf {
             background: #374151;
             color: #9ca3af;
+        }
+        
+        /* ===== BREAKER DETAIL v3.4 ===== */
+        /* ===== BREAKER DETAIL v3.7 - Elegant Header ===== */
+        .bd-header-new {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2a2a2e;
+            margin-bottom: 12px;
+        }
+        
+        .bd-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .bd-symbol-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .bd-symbol {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        
+        .bd-symbol.nq { background: #1e40af; color: #93c5fd; }
+        .bd-symbol.es { background: #0e7490; color: #67e8f9; }
+        
+        .bd-dir { font-size: 18px; font-weight: 700; }
+        .bd-dir.bull { color: #60a5fa; }
+        .bd-dir.bear { color: #fb923c; }
+        
+        .bd-outcome {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .bd-outcome.active { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .bd-outcome.success { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .bd-outcome.fail { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        
+        .bd-info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .bd-tf {
+            background: #1f1f23;
+            padding: 2px 8px;
+            border-radius: 3px;
+            color: #e0e0e0;
+        }
+        
+        .bd-separator {
+            color: #4b5563;
+        }
+        
+        .bd-timerange {
+            color: #9ca3af;
+        }
+        
+        .bd-dur {
+            color: #6b7280;
+        }
+        
+        /* Metrics Row - 4 columns */
+        .bd-metrics-row {
+            display: flex;
+            justify-content: space-between;
+            background: #1a1a1c;
+            border-radius: 8px;
+            padding: 10px 8px;
+            margin-bottom: 10px;
+        }
+        
+        .bd-metric {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .bd-metric-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #e0e0e0;
+            display: block;
+            line-height: 1.2;
+        }
+        
+        .bd-metric-value.good {
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+        
+        .bd-metric-label {
+            font-size: 9px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+            display: block;
+        }
+        
+        /* Zone Entry */
+        .bd-zone-entry {
+            background: #1a1a1c;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .bd-zone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .bd-zone-title {
+            font-size: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .bd-zone-pct {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .bd-zone-pct.good { color: #4ade80; }
+        .bd-zone-pct.partial { color: #fbbf24; }
+        .bd-zone-pct.none { color: #4b5563; }
+        
+        .bd-zone-bar {
+            height: 8px;
+            background: #2a2a2e;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        
+        .bd-zone-fill {
+            height: 100%;
+            background: #4b5563;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .bd-zone-fill.good {
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+        
+        .bd-zone-fill.partial {
+            background: linear-gradient(90deg, #d97706, #fbbf24);
+        }
+        
+        .bd-zone-levels {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #6b7280;
+        }
+        
+        .bd-zone-levels {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bd-level {
+            text-align: center;
+        }
+        
+        .bd-level-label {
+            font-size: 8px;
+            color: #4b5563;
+            text-transform: uppercase;
+            display: block;
+        }
+        
+        .bd-level-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+        
+        .bd-level-size {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #6b7280;
+            background: #2a2a2e;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        /* Chart Sections */
+        .bd-chart-section {
+            margin-bottom: 8px;
+        }
+        
+        .bd-chart-title {
+            font-size: 9px;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bd-chart-legend {
+            font-size: 8px;
+            color: #6b7280;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .bd-chart-legend .leg-p,
+        .bd-chart-legend .leg-c {
+            display: inline-block;
+            width: 12px;
+            height: 2px;
+            margin-right: 3px;
+            vertical-align: middle;
+        }
+        
+        .bd-chart-legend .leg-p { background: #60a5fa; }
+        .bd-chart-legend .leg-c { background: #fb923c; }
+        
+        /* Breaker ID footer */
+        .bd-breaker-id {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #9ca3af;
+            text-align: center;
+            padding: 10px 8px;
+            background: #1a1a1c;
+            border-radius: 4px;
+            margin-top: 10px;
+            word-break: break-all;
+            letter-spacing: 0.3px;
+        }
+
+        /* Analysis Button */
+        .bd-analysis-btn {
+            margin-top: 8px;
+            padding: 8px;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 11px;
+            color: #60a5fa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .bd-analysis-btn:hover {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(139, 92, 246, 0.2));
+            border-color: rgba(96, 165, 250, 0.4);
         }
         
         .compact-info {
@@ -1942,7 +2293,8 @@
         
         .price-chart {
             width: 100%;
-            height: 100px;
+            height: 140px;
+            cursor: crosshair;
         }
         
         .price-chart-breaker-zone {
@@ -1972,6 +2324,71 @@
             font-family: 'Roboto Mono', monospace;
             font-size: 10px;
             fill: #60a5fa;
+        }
+        
+        .price-chart-price-label.zone-label {
+            fill: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .price-chart-current {
+            fill: #4ade80;
+            stroke: #1a1a1c;
+            stroke-width: 2;
+        }
+        
+        .price-chart-current-line {
+            stroke: #4ade80;
+            stroke-width: 1;
+            opacity: 0.5;
+        }
+        
+        .price-chart-current-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            fill: #4ade80;
+            font-weight: 600;
+        }
+        
+        .price-chart-cursor {
+            stroke: #888;
+            stroke-width: 1;
+            stroke-dasharray: 2,2;
+        }
+        
+        .price-chart-hover-dot {
+            fill: #f97316;
+            stroke: #1a1a1c;
+            stroke-width: 2;
+        }
+        
+        .price-chart-time-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            fill: #666;
+        }
+        
+        .price-chart-container {
+            position: relative;
+        }
+        
+        .price-chart-hover-info {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #e0e0e0;
+            padding: 4px 0;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        
+        .price-chart-hover-info .hover-price {
+            color: #f97316;
+            font-weight: 600;
+        }
+        
+        .price-chart-hover-info .hover-time {
+            color: #9ca3af;
         }
         
         /* Entry Context View */
@@ -2073,7 +2490,7 @@
         }
         
         .context-status-icon.active { color: #60a5fa; }
-        .context-status-icon.success { color: #4ade80; }
+        .context-status-icon.success, .context-status-icon.success-t1, .context-status-icon.success-t2 { color: #4ade80; }
         .context-status-icon.fail { color: #f87171; }
         .context-status-icon.none { color: #444; }
         
@@ -3055,6 +3472,13 @@
             box-shadow: 0 0 40px rgba(248, 113, 113, 0.15);
         }
         
+        .analysis-decision-badge.pending {
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(148, 163, 184, 0.08) 100%);
+            color: #94a3b8;
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 0 40px rgba(148, 163, 184, 0.15);
+        }
+        
         .analysis-hero-id {
             font-family: 'Roboto Mono', monospace;
             font-size: 13px;
@@ -3204,6 +3628,764 @@
         .analysis-card.error-card {
             border: 1px solid rgba(248, 113, 113, 0.5);
             background: rgba(248, 113, 113, 0.05);
+        }
+        
+        /* Narrative bullets in dimension cards */
+        .analysis-card-narrative {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            margin: 12px 0;
+        }
+        
+        .narrative-line {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #b0b0b0;
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .narrative-line::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #666;
+        }
+        
+        .narrative-line:first-child {
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+        
+        /* Summary panel */
+        .analysis-summary {
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .summary-line {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #ccc;
+            padding: 6px 0;
+        }
+        
+        .summary-line:first-child {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        /* Analysis sections in Summary tab */
+        .analysis-section {
+            background: rgba(30, 30, 34, 0.6);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .analysis-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        /* Levels grid */
+        .levels-grid {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .level-item {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .level-item.entry {
+            border-left: 3px solid #60a5fa;
+        }
+        
+        .level-item.stop {
+            border-left: 3px solid #f87171;
+        }
+        
+        .level-item.target {
+            border-left: 3px solid #4ade80;
+        }
+        
+        .level-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #888;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .level-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        /* Fib levels */
+        .fib-levels {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .fib-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        .fib-item span:first-child {
+            font-size: 9px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        
+        .fib-item span:last-child {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #aaa;
+        }
+        
+        /* Zone display */
+        .zone-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+        
+        .zone-high, .zone-low {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .zone-high {
+            color: #4ade80;
+        }
+        
+        .zone-low {
+            color: #f87171;
+        }
+        
+        .zone-bar {
+            flex: 1;
+            height: 24px;
+            background: linear-gradient(180deg, rgba(74, 222, 128, 0.3) 0%, rgba(248, 113, 113, 0.3) 100%);
+            border-radius: 4px;
+            border-top: 2px solid #4ade80;
+            border-bottom: 2px solid #f87171;
+        }
+        
+        /* Pattern points */
+        .pattern-points {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+        
+        .pattern-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(40, 40, 44, 0.6);
+            border-radius: 6px;
+            min-width: 70px;
+        }
+        
+        .pattern-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 4px;
+        }
+        
+        .pattern-price {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .pattern-time {
+            font-size: 10px;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        .pattern-arrow {
+            color: #444;
+            font-size: 14px;
+        }
+        
+        /* ===== OVERVIEW PANEL STYLES ===== */
+        .overview-section {
+            background: rgba(20, 20, 24, 0.6);
+            border: 1px solid #2a2a2e;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .overview-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        /* Pattern Flow */
+        .pattern-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .pattern-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(30, 30, 34, 0.8);
+            border-radius: 6px;
+            border: 1px solid #333;
+            min-width: 65px;
+        }
+        
+        .pattern-point.start { border-top: 2px solid #60a5fa; }
+        .pattern-point.low { border-top: 2px solid #f87171; }
+        .pattern-point.breaker { border-top: 2px solid #4ade80; }
+        .pattern-point.sweep { border-top: 2px solid #fbbf24; }
+        .pattern-point.confirm { border-top: 2px solid #c084fc; }
+        
+        .pattern-point-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        
+        .pattern-point-price {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .pattern-point-time {
+            font-size: 9px;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .pattern-connector {
+            color: #444;
+            font-size: 16px;
+            font-weight: 300;
+        }
+        
+        /* Price Ladder */
+        .price-ladder {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .price-ladder-row {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: rgba(30, 30, 34, 0.5);
+            border-radius: 4px;
+        }
+        
+        .price-ladder-row.target {
+            background: rgba(74, 222, 128, 0.1);
+            border-left: 3px solid #4ade80;
+        }
+        
+        .price-ladder-row.entry {
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 3px solid #60a5fa;
+        }
+        
+        .price-ladder-row.stop {
+            background: rgba(248, 113, 113, 0.1);
+            border-left: 3px solid #f87171;
+        }
+        
+        .price-ladder-row.fib {
+            opacity: 0.6;
+        }
+        
+        .ladder-label {
+            font-size: 11px;
+            color: #888;
+            width: 80px;
+            flex-shrink: 0;
+        }
+        
+        .price-ladder-row.target .ladder-label { color: #4ade80; font-weight: 600; }
+        .price-ladder-row.entry .ladder-label { color: #60a5fa; font-weight: 600; }
+        .price-ladder-row.stop .ladder-label { color: #f87171; font-weight: 600; }
+        
+        .ladder-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #333 0%, transparent 100%);
+            margin: 0 12px;
+        }
+        
+        .ladder-price {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #ccc;
+            min-width: 70px;
+            text-align: right;
+        }
+        
+        .price-ladder-zone {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            margin: 4px 0;
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.15) 0%, rgba(248, 113, 113, 0.15) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .zone-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #888;
+        }
+        
+        .zone-range {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #aaa;
+        }
+        
+        /* Trade Decision Tree */
+        .trade-decision-tree {
+            padding: 8px;
+        }
+        
+        .decision-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        
+        .decision-tree-empty {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 12px;
+        }
+        
+        .tree-entry-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .tree-node {
+            background: rgba(30, 30, 34, 0.8);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px 16px;
+            text-align: center;
+            min-width: 85px;
+        }
+        
+        .node-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        
+        .node-price {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .node-meta {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .node-fib {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+        }
+        
+        .node-rr {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            margin-top: 6px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .node-rr.stop {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+        
+        .node-rr.target {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+        
+        /* Entry Node */
+        .entry-node {
+            border-color: #60a5fa;
+            border-width: 2px;
+            background: linear-gradient(180deg, rgba(96, 165, 250, 0.15) 0%, rgba(96, 165, 250, 0.05) 100%);
+        }
+        
+        .entry-node .node-label {
+            color: #60a5fa;
+        }
+        
+        /* SVG Connector */
+        .tree-connector-svg {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        /* Branches */
+        .tree-branches {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            gap: 16px;
+        }
+        
+        /* Stop Node */
+        .stop-node {
+            border-color: #f87171;
+            background: linear-gradient(180deg, rgba(248, 113, 113, 0.15) 0%, rgba(248, 113, 113, 0.05) 100%);
+            flex-shrink: 0;
+        }
+        
+        .stop-node .node-label {
+            color: #f87171;
+        }
+        
+        .stop-node .node-fib {
+            color: #f87171;
+            opacity: 0.7;
+        }
+        
+        /* Targets Container */
+        .targets-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex: 1;
+        }
+        
+        .target-arrow {
+            color: #4ade80;
+            font-size: 14px;
+            opacity: 0.4;
+        }
+        
+        /* Target Nodes */
+        .target-node {
+            border-color: #333;
+            min-width: 75px;
+            padding: 8px 10px;
+        }
+        
+        .target-node .node-label {
+            color: #666;
+            font-size: 8px;
+        }
+        
+        .target-node .node-price {
+            font-size: 12px;
+        }
+        
+        .target-node .node-fib {
+            font-size: 9px;
+            color: #666;
+        }
+        
+        .target-node.f1 { opacity: 0.5; }
+        .target-node.f2 { opacity: 0.7; }
+        .target-node.f4 { opacity: 0.6; }
+        
+        .target-node.primary {
+            border-color: #4ade80;
+            border-width: 2px;
+            background: linear-gradient(180deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%);
+            opacity: 1;
+        }
+        
+        .target-node.primary .node-label {
+            color: #4ade80;
+        }
+        
+        .target-node.primary .node-fib {
+            color: #4ade80;
+            opacity: 0.8;
+        }
+        
+        /* Summary Row */
+        .tree-summary {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #2a2a2e;
+            width: 100%;
+        }
+        
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .summary-label {
+            font-size: 9px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .summary-item.risk .summary-value {
+            color: #f87171;
+        }
+        
+        .summary-item.reward .summary-value {
+            color: #4ade80;
+        }
+        
+        .summary-item.rr .summary-value {
+            color: #60a5fa;
+        }
+        
+        /* Formation Metrics */
+        .formation-metrics {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .formation-metric {
+            flex: 1;
+            background: rgba(30, 30, 34, 0.6);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .formation-metric-label {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .formation-metric-bar {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        
+        .formation-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .formation-bar-fill.sweep {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+        
+        .formation-metric-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .formation-metric.smt {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .formation-smt-status {
+            font-size: 11px;
+            color: #666;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        .formation-smt-status.active {
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        
+        /* Confluence List */
+        .confluence-count {
+            font-size: 10px;
+            color: #4ade80;
+            font-weight: 400;
+        }
+        
+        .confluence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .confluence-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(30, 30, 34, 0.6);
+            border-radius: 4px;
+            border-left: 3px solid #4ade80;
+        }
+        
+        .confluence-item.bear {
+            border-left-color: #f87171;
+        }
+        
+        .confluence-id {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #ccc;
+            flex: 1;
+        }
+        
+        .confluence-fib {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #60a5fa;
+            margin-right: 16px;
+        }
+        
+        .confluence-energy {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #fbbf24;
+            min-width: 35px;
+            text-align: right;
+        }
+        
+        .confluence-empty {
+            text-align: center;
+            padding: 16px;
+            color: #555;
+            font-size: 12px;
+        }
+        
+        /* Verdict */
+        .overview-section.verdict {
+            background: rgba(30, 30, 34, 0.8);
+            border-color: #333;
+        }
+        
+        .verdict-lines {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .verdict-line {
+            font-size: 12px;
+            color: #aaa;
+            padding-left: 12px;
+            position: relative;
+        }
+        
+        .verdict-line::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #555;
+        }
+        
+        .verdict-line.primary {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            padding-left: 0;
+        }
+        
+        .verdict-line.primary::before {
+            display: none;
         }
         
         /* Visual breakdown section */
@@ -5452,7 +6634,7 @@
                     </div>
                     <div class="analysis-hero-score">
                         <div class="analysis-score-big" id="analysis-score-big">18/21</div>
-                        <div class="analysis-score-label">Dimensions Passed</div>
+                        <div class="analysis-score-label">Quality Score</div>
                     </div>
                 </div>
             </div>
@@ -5647,8 +6829,8 @@
                 liveBtn.classList.remove('inactive');
                 exploreBtn.classList.remove('explore-active');
                 exploreBtn.classList.add('inactive');
-                // Show live confluence if data exists and nothing locked
-                if (allData.length > 0 && lockedConfluenceMin === null) {
+                // Show live confluence if data exists and nothing selected/locked
+                if (allData.length > 0 && lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                     showLiveConfluence();
                 }
             } else {
@@ -5657,8 +6839,8 @@
                 liveBtn.classList.add('inactive');
                 // Clear live highlights
                 clearLiveHighlight();
-                // Only show empty panel if nothing locked
-                if (lockedConfluenceMin === null) {
+                // Only show empty panel if nothing selected/locked
+                if (lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                     showEmptyPanel();
                 }
             }
@@ -5734,11 +6916,11 @@
             setWindow(windowStartMin, windowEndMin, 'Live');
             renderChart();
             
-            // Scroll to right edge and show live confluence (only if nothing locked)
+            // Scroll to right edge and show live confluence (only if nothing selected/locked)
             setTimeout(() => {
                 const container = document.getElementById('scroll-container');
                 container.scrollLeft = container.scrollWidth;
-                if (lockedConfluenceMin === null) {
+                if (lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                     showLiveConfluence();
                 }
             }, 50);
@@ -6017,16 +7199,25 @@
                     if (id === 'observation_time' || typeof b !== 'object' || !b) return;
                     
                     // Parse all fields from breaker ID
-                    // Format: ES-15m-260120T1000-260121T0715-6865-24p-S
+                    // Format: NQ-1m-260121T1548-260121T1600-25446-25492-15z-39r-L
+                    // [0]symbol-[1]tf-[2]detection-[3]confirmation-[4]L2-[5]H2-[6]zone-[7]range-[8]dir
                     const idParts = id.split('-');
                     const symbol = idParts[0] || 'ES';
                     const tf = idParts[1] || '1m';
                     const dir = idParts[idParts.length - 1] === 'S' ? 'bear' : 'bull';
-                    const formationTime = idParts[2] || ''; // e.g., "260120T1000"
-                    const confirmationTime = idParts[3] || ''; // e.g., "260121T0715"
-                    const price = parseInt(idParts[4]) || 0; // e.g., "6865"
-                    const pointsStr = idParts[5] || ''; // e.g., "24p"
-                    const points = parseInt(pointsStr.replace('p', '')) || 0;
+                    const formationTime = idParts[2] || ''; // detection time
+                    const confirmationTime = idParts[3] || ''; // MSS confirmation time
+                    
+                    // Parse price levels from ID
+                    const sweepLow = parseInt(idParts[4]) || 0;   // L2: Sweep low price
+                    const breakerHigh = parseInt(idParts[5]) || 0; // H2: Breaker high price
+                    const zoneStr = idParts[6] || '0z';
+                    const rangeStr = idParts[7] || '0r';
+                    const zoneSize = parseInt(zoneStr.replace('z', '')) || 0;
+                    const fibRange = parseInt(rangeStr.replace('r', '')) || 0;
+                    
+                    // For display, use H2 as the main price
+                    const price = breakerHigh;
                     
                     if (!breakerCache[id]) {
                         breakerCache[id] = {
@@ -6035,11 +7226,17 @@
                             symbol: symbol.toUpperCase(),
                             tf: tf.toLowerCase(),
                             dir: dir.toLowerCase(),
+                            sweepLow: sweepLow,       // L2
+                            breakerHigh: breakerHigh, // H2
                             price: price,
-                            points: points,
+                            zoneSize: zoneSize,
+                            fibRange: fibRange,
                             formationTime: formationTime,
                             confirmationTime: confirmationTime,
-                            status: 'active',
+                            status: 'ACTIVE',
+                            zonePct: 0,
+                            t1Time: null,
+                            t2Time: null,
                             events: [],
                             currentFib: 0,
                             maxFib: 0
@@ -6051,15 +7248,14 @@
                         breakerCache[id].displayId = b.display_id;
                     }
                     
-                    // Parse fib - "current/max" string format
-                    let currentFib = 0, maxFib = 0;
-                    try {
-                        const fibStr = String(b.fib || '0/0');
-                        const [curr, max] = fibStr.split('/').map(parseFloat);
-                        currentFib = curr || 0;
-                        maxFib = max || curr || 0;
-                    } catch (e) {
+                    // Update zone_pct
+                    if (b.zone_pct !== undefined) {
+                        breakerCache[id].zonePct = parseFloat(b.zone_pct) || 0;
                     }
+                    
+                    // Parse fib - current_fib and max_fib fields
+                    const currentFib = parseFloat(b.current_fib) || 0;
+                    const maxFib = parseFloat(b.max_fib) || 0;
                     
                     // Get snapshot price
                     const snapshotPrice = b.price || 0;
@@ -6071,8 +7267,24 @@
                     breakerCache[id].currentFib = currentFib;
                     breakerCache[id].maxFib = Math.max(breakerCache[id].maxFib, maxFib);
                     
-                    if (b.status === 'success' || b.status?.startsWith('failed:')) {
-                        breakerCache[id].status = b.status;
+                    // Update status if present (new format: SUCCESS_T1, SUCCESS_T2_TERMINATED, FAILURE_TERMINATED, etc.)
+                    if (b.status) {
+                        const upperStatus = b.status.toUpperCase();
+                        if (upperStatus !== 'ACTIVE') {
+                            breakerCache[id].status = b.status;
+                            
+                            // Track T1 and T2 milestone times
+                            if (upperStatus.startsWith('SUCCESS_T1') && !breakerCache[id].t1Time) {
+                                breakerCache[id].t1Time = absMin;
+                            }
+                            if (upperStatus.startsWith('SUCCESS_T2') && !breakerCache[id].t2Time) {
+                                // Also set T1 time if not already set (T2 implies T1 was reached)
+                                if (!breakerCache[id].t1Time) {
+                                    breakerCache[id].t1Time = absMin;
+                                }
+                                breakerCache[id].t2Time = absMin;
+                            }
+                        }
                     }
                 });
             });
@@ -6126,16 +7338,24 @@
                     if (id === 'observation_time' || typeof b !== 'object' || !b) return;
                     
                     // Parse all fields from breaker ID
-                    // Format: ES-15m-260120T1000-260121T0715-6865-24p-S
+                    // Format: NQ-1m-260121T1548-260121T1600-25446-25492-15z-39r-L
+                    // [0]symbol-[1]tf-[2]detection-[3]confirmation-[4]L2-[5]H2-[6]zone-[7]range-[8]dir
                     const idParts = id.split('-');
                     const symbol = idParts[0] || 'ES';
                     const tf = idParts[1] || '1m';
                     const dir = idParts[idParts.length - 1] === 'S' ? 'bear' : 'bull';
                     const formationTime = idParts[2] || '';
                     const confirmationTime = idParts[3] || '';
-                    const price = parseInt(idParts[4]) || 0;
-                    const pointsStr = idParts[5] || '';
-                    const points = parseInt(pointsStr.replace('p', '')) || 0;
+                    
+                    // Parse price levels from ID
+                    const sweepLow = parseInt(idParts[4]) || 0;   // L2: Sweep low price
+                    const breakerHigh = parseInt(idParts[5]) || 0; // H2: Breaker high price
+                    const zoneStr = idParts[6] || '0z';
+                    const rangeStr = idParts[7] || '0r';
+                    const zoneSize = parseInt(zoneStr.replace('z', '')) || 0;
+                    const fibRange = parseInt(rangeStr.replace('r', '')) || 0;
+                    
+                    const price = breakerHigh;
                     
                     if (!breakerCache[id]) {
                         breakerCache[id] = {
@@ -6144,11 +7364,17 @@
                             symbol: symbol.toUpperCase(),
                             tf: tf.toLowerCase(),
                             dir: dir.toLowerCase(),
+                            sweepLow: sweepLow,
+                            breakerHigh: breakerHigh,
                             price: price,
-                            points: points,
+                            zoneSize: zoneSize,
+                            fibRange: fibRange,
                             formationTime: formationTime,
                             confirmationTime: confirmationTime,
-                            status: 'active',
+                            status: 'ACTIVE',
+                            zonePct: 0,
+                            t1Time: null,
+                            t2Time: null,
                             events: [],
                             currentFib: 0,
                             maxFib: 0
@@ -6161,15 +7387,14 @@
                         breakerCache[id].displayId = b.display_id;
                     }
                     
-                    // Parse fib - "current/max" string format
-                    let currentFib = 0, maxFib = 0;
-                    try {
-                        const fibStr = String(b.fib || '0/0');
-                        const [curr, max] = fibStr.split('/').map(parseFloat);
-                        currentFib = curr || 0;
-                        maxFib = max || curr || 0;
-                    } catch (e) {
+                    // Update zone_pct
+                    if (b.zone_pct !== undefined) {
+                        breakerCache[id].zonePct = parseFloat(b.zone_pct) || 0;
                     }
+                    
+                    // Parse fib - current_fib and max_fib fields
+                    const currentFib = parseFloat(b.current_fib) || 0;
+                    const maxFib = parseFloat(b.max_fib) || 0;
                     
                     // Get snapshot price
                     const snapshotPrice = b.price || 0;
@@ -6181,8 +7406,24 @@
                     breakerCache[id].currentFib = currentFib;
                     breakerCache[id].maxFib = Math.max(breakerCache[id].maxFib, maxFib);
                     
-                    if (b.status === 'success' || b.status?.startsWith('failed:')) {
-                        breakerCache[id].status = b.status;
+                    // Update status if present (new format: SUCCESS_T1, SUCCESS_T2_TERMINATED, FAILURE_TERMINATED, etc.)
+                    if (b.status) {
+                        const upperStatus = b.status.toUpperCase();
+                        if (upperStatus !== 'ACTIVE') {
+                            breakerCache[id].status = b.status;
+                            
+                            // Track T1 and T2 milestone times
+                            if (upperStatus.startsWith('SUCCESS_T1') && !breakerCache[id].t1Time) {
+                                breakerCache[id].t1Time = absMin;
+                            }
+                            if (upperStatus.startsWith('SUCCESS_T2') && !breakerCache[id].t2Time) {
+                                // Also set T1 time if not already set (T2 implies T1 was reached)
+                                if (!breakerCache[id].t1Time) {
+                                    breakerCache[id].t1Time = absMin;
+                                }
+                                breakerCache[id].t2Time = absMin;
+                            }
+                        }
                     }
                 });
             });
@@ -6337,13 +7578,55 @@
                     const container = document.getElementById('scroll-container');
                     container.scrollLeft = container.scrollWidth;
                     updateViewportIndicator();
-                    // Only show live confluence if nothing locked
-                    if (isLive && lockedConfluenceMin === null) {
+                    // Only show live confluence if nothing selected/locked
+                    if (isLive && lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                         showLiveConfluence();
                     }
                 }, 50);
                 isFirstLoad = false;
             }
+        }
+        
+        // ===== STATUS PARSING =====
+        // Parse new status format: ACTIVE, SUCCESS_T1, SUCCESS_T1_TERMINATED, SUCCESS_T2_TERMINATED, FAILURE_TERMINATED
+        function parseStatus(status) {
+            if (!status) return { icon: '-', cssClass: 'none', isSuccess: false, isFail: false, isTerminated: false };
+            
+            const s = status.toUpperCase();
+            
+            // Handle legacy 'success' format
+            if (s === 'SUCCESS') {
+                return { icon: 'T2', cssClass: 'success', isSuccess: true, isFail: false, isTerminated: true };
+            }
+            
+            // SUCCESS_T2_TERMINATED - full win
+            if (s.startsWith('SUCCESS_T2')) {
+                return { icon: 'T2', cssClass: 'success', isSuccess: true, isFail: false, isTerminated: true };
+            }
+            
+            // SUCCESS_T1_TERMINATED - partial win (hit T1, stopped before T2)
+            if (s === 'SUCCESS_T1_TERMINATED' || s.startsWith('SUCCESS_T1_TERMINATED:')) {
+                return { icon: 'T1', cssClass: 'success', isSuccess: true, isFail: false, isTerminated: true };
+            }
+            
+            // SUCCESS_T1 - hit T1 milestone, still tracking toward T2
+            if (s === 'SUCCESS_T1') {
+                return { icon: 'T1', cssClass: 'success', isSuccess: true, isFail: false, isTerminated: false };
+            }
+            
+            // FAILURE_TERMINATED - terminated before T1
+            if (s.startsWith('FAILURE_TERMINATED') || s.startsWith('FAILED:')) {
+                const reason = s.includes(':') ? s.split(':')[1] : '';
+                return { icon: 'F', cssClass: 'fail', isSuccess: false, isFail: true, isTerminated: true, reason };
+            }
+            
+            // ACTIVE - still monitoring
+            if (s === 'ACTIVE') {
+                return { icon: '-', cssClass: 'active', isSuccess: false, isFail: false, isTerminated: false };
+            }
+            
+            // Unknown/default
+            return { icon: '-', cssClass: 'none', isSuccess: false, isFail: false, isTerminated: false };
         }
         
         // ===== STATS =====
@@ -6362,21 +7645,20 @@
             });
             
             allData.forEach(d => {
-                const status = d.status.toLowerCase();
+                const parsed = parseStatus(d.status);
                 const tf = d.tf.replace('hr', 'h');
                 const key = `${tf}-${d.symbol}-${d.dir}`;
-                const isFailed = status?.startsWith('failed:');
                 
                 // Primary stats: NQ Bull 1M only
                 if (tf === '1m' && d.symbol === 'NQ' && d.dir === 'bull') {
-                    if (status === 'success') primary.success++;
-                    else if (isFailed) primary.fail++;
+                    if (parsed.isSuccess && parsed.isTerminated) primary.success++;
+                    else if (parsed.isFail) primary.fail++;
                 }
                 
                 // Per-lane stats
                 if (laneStats[key]) {
-                    if (status === 'success') laneStats[key].success++;
-                    else if (isFailed) laneStats[key].fail++;
+                    if (parsed.isSuccess && parsed.isTerminated) laneStats[key].success++;
+                    else if (parsed.isFail) laneStats[key].fail++;
                 }
             });
             
@@ -6741,8 +8023,8 @@
                     if (cursorMin !== lastCursorMin && !isScroll) {
                         lastCursorMin = cursorMin;
                         
-                        // Show confluence at cursor position in right panel (only if not locked)
-                        if (lockedConfluenceMin === null && !selectedSmtId) {
+                        // Show confluence at cursor position in right panel (only if not locked and no selection)
+                        if (lockedConfluenceMin === null && !selectedSmtId && !selectedBreakerId) {
                             showCursorConfluence(cursorMin);
                         }
                         
@@ -6784,7 +8066,10 @@
                 clearCursorHighlight();
                 
                 // Restore appropriate panel state
-                if (lockedConfluenceMin !== null) {
+                if (selectedBreakerId) {
+                    // Keep breaker detail view
+                    showBreakerDetail(selectedBreakerId);
+                } else if (lockedConfluenceMin !== null) {
                     // Keep locked confluence view
                     showCursorConfluence(lockedConfluenceMin);
                 } else if (selectedSmtId) {
@@ -6828,13 +8113,8 @@
                 document.querySelectorAll(`.breaker-bar[data-breaker-id="${preservedBreakerId}"]`).forEach(el => {
                     el.classList.add('selected');
                 });
-                // Keep confluence view
-                if (lockedConfluenceMin !== null) {
-                    highlightActiveAtEntry(lockedConfluenceMin);
-                    showCursorConfluence(lockedConfluenceMin);
-                } else if (isLive) {
-                    showLiveConfluence();
-                }
+                // Show breaker detail panel
+                showBreakerDetail(preservedBreakerId);
             } else if (lockedConfluenceMin !== null) {
                 highlightActiveAtEntry(lockedConfluenceMin);
                 showCursorConfluence(lockedConfluenceMin);
@@ -7336,7 +8616,7 @@
             const bar = document.createElement('div');
             bar.className = 'breaker-bar ' + b.symbol.toLowerCase() + ' ' + b.dir;
             
-            if (b.status !== 'active') {
+            if (b.status.toUpperCase() !== 'ACTIVE') {
                 bar.classList.add('completed');
             }
             
@@ -7359,7 +8639,7 @@
                 
                 const currFib = (b.currentFib || b.maxFib || 0).toFixed(1);
                 const maxFib = (b.maxFib || 0).toFixed(1);
-                const points = b.points || 0;
+                const fibRange = b.fibRange || 0;
                 
                 // Fib text
                 const fibText = document.createElement('span');
@@ -7367,31 +8647,55 @@
                 fibText.textContent = `${currFib}/${maxFib}`;
                 fibSpan.appendChild(fibText);
                 
-                // Points in box
-                if (points > 0) {
-                    const pointsBox = document.createElement('span');
-                    pointsBox.className = 'bar-points';
-                    pointsBox.textContent = `${points}p`;
-                    fibSpan.appendChild(pointsBox);
+                // Fib range in box
+                if (fibRange > 0) {
+                    const rangeBox = document.createElement('span');
+                    rangeBox.className = 'bar-points';
+                    rangeBox.textContent = `${fibRange}r`;
+                    fibSpan.appendChild(rangeBox);
                 }
                 
                 rightGroup.appendChild(fibSpan);
             }
             
-            // Status dot - only for completed
-            const isFailed = b.status?.startsWith('failed:');
-            if (b.status === 'success' || isFailed) {
-                const dot = document.createElement('div');
-                dot.className = 'status-dot ' + (isFailed ? 'fail' : 'success');
-                dot.textContent = b.status === 'success' ? 'S' : 'F';
-                // Add tooltip for failure reason
-                if (isFailed) {
-                    dot.title = b.status.replace('failed:', '');
+            // Status badges - show highest milestone reached: T2 > T1, or F on failure
+            if (b.t2Time) {
+                // T2 reached - show T2 badge only
+                const t2Dot = document.createElement('div');
+                t2Dot.className = 'status-dot success';
+                t2Dot.textContent = 'T2';
+                rightGroup.appendChild(t2Dot);
+            } else if (b.t1Time) {
+                // T1 reached but not T2 - show T1 badge only
+                const t1Dot = document.createElement('div');
+                t1Dot.className = 'status-dot success';
+                t1Dot.textContent = 'T1';
+                rightGroup.appendChild(t1Dot);
+            }
+            
+            // Failure badge
+            const parsed = parseStatus(b.status);
+            if (parsed.isFail) {
+                const fDot = document.createElement('div');
+                fDot.className = 'status-dot fail';
+                fDot.textContent = 'F';
+                if (parsed.reason) {
+                    fDot.title = parsed.reason;
                 }
-                rightGroup.appendChild(dot);
+                rightGroup.appendChild(fDot);
             }
             
             bar.appendChild(rightGroup);
+            
+            // T1 milestone marker on timeline
+            if (b.t1Time && b.t1Time >= b.startMin && b.t1Time <= b.endMin) {
+                const t1X = (b.t1Time - b.startMin) * PIXELS_PER_MINUTE;
+                const t1Marker = document.createElement('div');
+                t1Marker.className = 'milestone-marker t1';
+                t1Marker.style.left = t1X + 'px';
+                t1Marker.title = 'T1 reached';
+                bar.appendChild(t1Marker);
+            }
             
             // Click to show details
             bar.addEventListener('click', (e) => {
@@ -7575,10 +8879,8 @@
             const currentPrice = lastEvent.price || 0;
             const currentFib = lastEvent.fib || 0;
             
-            // Dynamic fib scale
-            const maxFibCurrent = Math.max(...events.map(e => e.fib || 0), 1);
-            const maxFibPeak = Math.max(...events.map(e => e.maxFib || e.fib || 0), 1);
-            const fibCeil = Math.ceil(Math.max(maxFibCurrent, maxFibPeak) * 1.15);
+            // Fixed fib scale 0-4
+            const fibCeil = 4;
             
             // Y-axis helper: Bulls = 0 bottom, 4 top; Bears = 0 top, 4 bottom
             const fibToY = (fib) => {
@@ -7713,91 +9015,164 @@
             const b = allData.find(d => d.id === breakerId);
             if (!b) return;
             
-            const duration = minToDuration(b.startMin, b.endMin);
-            const isFailed = b.status?.startsWith('failed:');
-            const statusClass = isFailed ? 'fail' : b.status.toLowerCase();
-            let statusText = b.status.charAt(0).toUpperCase() + b.status.slice(1);
-            let failureReason = '';
-            if (isFailed) {
-                failureReason = b.status.replace('failed:', '');
-                statusText = 'Failed';
-            }
-            
-            // Parse confirmation time for display
-            function formatIdTime(timeStr) {
-                if (!timeStr || timeStr.length < 10) return '—';
-                const match = timeStr.match(/^(\d{2})(\d{2})(\d{2})T(\d{2})(\d{2})$/);
-                if (!match) return timeStr;
-                const [_, yy, mm, dd, hh, min] = match;
-                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                return `${months[parseInt(mm)-1]} ${parseInt(dd)} ${hh}:${min}`;
-            }
-            
-            // Generate fib chart
-            const fibChart = generateFibChart(b);
-            
-            // Generate price zone visualization
-            const priceZone = generatePriceZone(b);
-            
-            document.getElementById('panel-time').textContent = minToTime(b.startMin);
-            document.getElementById('panel-type').textContent = 'Breaker Detail';
-            document.getElementById('panel-type').classList.remove('live');
-            
-            document.getElementById('panel-content').innerHTML = `
-                <div class="detail-section">
-                    <div class="detail-id">${b.displayId || b.id}</div>
-                    <div class="detail-badges">
-                        <span class="detail-badge ${b.symbol.toLowerCase()}">${b.symbol}</span>
-                        <span class="detail-badge ${b.dir}">${b.dir.toUpperCase()}</span>
-                        <span class="detail-badge tf">${TF_DISPLAY[b.tf] || b.tf.toUpperCase()}</span>
-                        <span class="detail-badge ${statusClass}">${statusText}</span>
-                    </div>
-                    ${failureReason ? `<div class="failure-reason">Reason: ${failureReason}</div>` : ''}
-                </div>
+            try {
+                const duration = minToDuration(b.startMin || 0, b.endMin || 0);
+                const parsed = parseStatus(b.status);
                 
-                <div class="detail-section compact-info">
-                    <div class="info-item">
-                        <span class="info-value">${b.price || '—'}</span>
-                        <span class="info-label">Price</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-value">${b.points}p</span>
-                        <span class="info-label">Range</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-value">${b.currentFib.toFixed(1)}/${b.maxFib.toFixed(1)}</span>
-                        <span class="info-label">Fib C/P</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-value">${duration}</span>
-                        <span class="info-label">Duration</span>
-                    </div>
-                </div>
+                // Status
+                let statusClass = parsed.cssClass || 'active';
+                let statusText = 'ACTIVE';
+                let statusIcon = '◉';
                 
-                <div class="detail-section">
-                    <div class="detail-section-title">Price Zone</div>
-                    <div class="price-zone-container">
+                if (parsed.isFail) {
+                    statusClass = 'fail';
+                    statusText = 'FAILED';
+                    statusIcon = '✗';
+                } else if (parsed.isSuccess) {
+                    statusClass = 'success';
+                    statusText = parsed.icon === 'T2' ? 'T2 WIN' : 'T1 WIN';
+                    statusIcon = '✓';
+                }
+                
+                // Generate charts
+                let fibChart = '';
+                try {
+                    fibChart = generateFibChart(b);
+                } catch (chartErr) {
+                    fibChart = '<div style="color:#666;text-align:center;padding:20px;">Chart unavailable</div>';
+                }
+                
+                let priceZone = '';
+                try {
+                    priceZone = generatePriceZone(b);
+                } catch (zoneErr) {
+                    priceZone = '<div style="color:#666;text-align:center;padding:20px;">Zone unavailable</div>';
+                }
+                
+                // Values
+                const symbolLower = (b.symbol || 'ES').toLowerCase();
+                const symbolUpper = (b.symbol || 'ES').toUpperCase();
+                const dirLower = (b.dir || 'bull').toLowerCase();
+                const isBull = dirLower === 'bull';
+                const tfDisplay = TF_DISPLAY[b.tf] || (b.tf || '1m').toUpperCase();
+                
+                const currentFib = (b.currentFib || 0).toFixed(2);
+                const maxFib = (b.maxFib || 0).toFixed(2);
+                const zoneSize = b.zoneSize || 0;
+                const fibRange = b.fibRange || 0;
+                
+                // Current price from latest event
+                const latestEvent = b.events && b.events.length > 0 ? b.events[b.events.length - 1] : null;
+                const currentPrice = latestEvent ? latestEvent.price : 0;
+                
+                // Zone values from data
+                const breakerPrice = b.breakerHigh || 0;
+                const sweepPrice = b.sweepLow || 0;
+                const zoneTop = breakerPrice;
+                const zoneBottom = breakerPrice - zoneSize;
+                const zonePct = Math.min(b.zonePct || 0, 100);
+                
+                // Time window
+                const startTime = minToTime(b.startMin || 0);
+                const endTime = minToTime(b.endMin || 0);
+                
+                document.getElementById('panel-time').textContent = startTime;
+                document.getElementById('panel-type').textContent = 'Breaker Detail';
+                document.getElementById('panel-type').classList.remove('live');
+                
+                document.getElementById('panel-content').innerHTML = `
+                    <div class="bd-header-new">
+                        <div class="bd-top-row">
+                            <div class="bd-symbol-group">
+                                <span class="bd-symbol ${symbolLower}">${symbolUpper}</span>
+                                <span class="bd-dir ${dirLower}">${isBull ? '▲' : '▼'}</span>
+                            </div>
+                            <div class="bd-outcome ${statusClass}">
+                                <span class="bd-outcome-icon">${statusIcon}</span>
+                                <span class="bd-outcome-text">${statusText}</span>
+                            </div>
+                        </div>
+                        <div class="bd-info-row">
+                            <span class="bd-tf">${tfDisplay}</span>
+                            <span class="bd-separator">·</span>
+                            <span class="bd-timerange">${startTime} → ${endTime}</span>
+                            <span class="bd-separator">·</span>
+                            <span class="bd-dur">${duration}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bd-metrics-row">
+                        <div class="bd-metric">
+                            <span class="bd-metric-value">${currentPrice || '—'}</span>
+                            <span class="bd-metric-label">Price</span>
+                        </div>
+                        <div class="bd-metric">
+                            <span class="bd-metric-value">${currentFib}</span>
+                            <span class="bd-metric-label">Fib</span>
+                        </div>
+                        <div class="bd-metric">
+                            <span class="bd-metric-value ${parseFloat(maxFib) >= 2 ? 'good' : ''}">${maxFib}</span>
+                            <span class="bd-metric-label">Peak</span>
+                        </div>
+                        <div class="bd-metric">
+                            <span class="bd-metric-value">${fibRange}r</span>
+                            <span class="bd-metric-label">Range</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bd-zone-entry">
+                        <div class="bd-zone-header">
+                            <span class="bd-zone-title">Zone Entry</span>
+                            <span class="bd-zone-pct ${zonePct >= 50 ? 'good' : zonePct > 0 ? 'partial' : 'none'}">${zonePct}%</span>
+                        </div>
+                        <div class="bd-zone-bar">
+                            <div class="bd-zone-fill ${zonePct >= 50 ? 'good' : zonePct > 0 ? 'partial' : ''}" style="width: ${zonePct}%"></div>
+                        </div>
+                        <div class="bd-zone-levels">
+                            <span>H2: ${breakerPrice}</span>
+                            <span>${zoneSize}z</span>
+                            <span>L2: ${sweepPrice}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bd-chart-section">
+                        <div class="bd-chart-title">Price Action</div>
                         ${priceZone}
                     </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-section-title">Fib Progression</div>
-                    <div class="fib-chart-legend">
-                        <span class="fib-legend-item"><span class="fib-legend-line max"></span>Peak</span>
-                        <span class="fib-legend-item"><span class="fib-legend-line current"></span>Current</span>
-                    </div>
-                    <div class="fib-chart-container">
+                    
+                    <div class="bd-chart-section">
+                        <div class="bd-chart-title">
+                            Fib Journey
+                            <span class="bd-chart-legend"><span class="leg-p"></span>Peak <span class="leg-c"></span>Current</span>
+                        </div>
                         ${fibChart}
                     </div>
-                </div>
+                    
+                    <div class="bd-breaker-id">${b.id}</div>
+                    
+                    <!-- Analysis button - not ready for production
+                    ${(b.tf === '1m' && b.dir === 'bull' && b.symbol === 'NQ') ? `
+                    <div class="bd-analysis-btn" onclick="showAnalysisModal('${b.id}')">
+                        View Full Analysis →
+                    </div>
+                    ` : ''}
+                    -->
+                `;
                 
-                ${(b.tf === '1m' && b.dir === 'bull' && b.symbol === 'NQ') ? `
-                <div class="analysis-link" onclick="showAnalysisModal('${b.id}')" title="View 21-dimension confirmation analysis">
-                    📊 View Full Analysis
-                </div>
-                ` : ''}
-            `;
+                // Setup price chart hover after DOM update
+                setTimeout(() => {
+                    const priceChartContainer = document.querySelector('.price-chart-container');
+                    if (priceChartContainer) {
+                        setupPriceChartHover(priceChartContainer);
+                    }
+                }, 0);
+                
+            } catch (e) {
+                console.error('Error showing breaker detail:', e);
+                document.getElementById('panel-content').innerHTML = `
+                    <div style="color:#f87171;padding:20px;">Error loading details</div>
+                `;
+            }
         }
         
         function generateFibChart(breaker) {
@@ -7954,36 +9329,38 @@
         }
         
         function generatePriceZone(breaker) {
-            const events = breaker.events;
-            if (events.length < 2 || !breaker.price || !breaker.points) {
-                return '<div style="color:#666;text-align:center;padding:20px;">Not enough data</div>';
+            const events = breaker.events || [];
+            if (events.length < 2) {
+                return '<div style="color:#666;text-align:center;padding:20px;">Not enough events</div>';
+            }
+            if (breaker.breakerHigh === undefined || breaker.sweepLow === undefined || breaker.zoneSize === undefined) {
+                return '<div style="color:#666;text-align:center;padding:20px;">Zone data not available</div>';
+            }
+            if (!breaker.zoneSize || breaker.zoneSize <= 0) {
+                return '<div style="color:#666;text-align:center;padding:20px;">Zone size is zero</div>';
             }
             
             // Check if we have price data in events
             const hasPrice = events.some(e => e.price > 0);
             if (!hasPrice) {
-                return '<div style="color:#666;text-align:center;padding:20px;">No price data</div>';
+                return '<div style="color:#666;text-align:center;padding:20px;">No price data in events</div>';
             }
             
-            const width = 280;
-            const height = 100;
-            const padding = { top: 10, right: 45, bottom: 20, left: 10 };
+            const width = 300;
+            const height = 140;
+            const padding = { top: 15, right: 50, bottom: 25, left: 10 };
             const chartWidth = width - padding.left - padding.right;
             const chartHeight = height - padding.top - padding.bottom;
             
-            const breakerLevel = breaker.price; // Confirmation price from ID
-            const range = breaker.points;
-            const isBull = breaker.dir === 'bull';
+            const isBull = (breaker.dir || '').toLowerCase() === 'bull';
             
-            // Breaker zone:
-            // Bull: zone is support BELOW price. Top = breakerLevel, Bottom = breakerLevel - range
-            // Bear: zone is resistance ABOVE price. Bottom = breakerLevel, Top = breakerLevel + range
-            const zoneTop = isBull ? breakerLevel : breakerLevel + range;
-            const zoneBottom = isBull ? breakerLevel - range : breakerLevel;
+            // Zone calculation
+            const zoneTop = breaker.breakerHigh;
+            const zoneBottom = breaker.breakerHigh - breaker.zoneSize;
             
             // Find time range
-            const minTime = events[0].absMin;
-            const maxTime = events[events.length - 1].absMin;
+            const minTime = events[0]?.absMin || 0;
+            const maxTime = events[events.length - 1]?.absMin || minTime;
             const timeRange = maxTime - minTime || 1;
             
             // Get actual prices from events
@@ -7996,9 +9373,12 @@
                 return '<div style="color:#666;text-align:center;padding:20px;">Not enough price data</div>';
             }
             
+            // Current price (last data point)
+            const currentPrice = priceData[priceData.length - 1].price;
+            
             // Find price range for scale
             const allPrices = priceData.map(p => p.price);
-            allPrices.push(zoneTop, zoneBottom);
+            allPrices.push(zoneTop, zoneBottom, currentPrice);
             const minPrice = Math.min(...allPrices);
             const maxPrice = Math.max(...allPrices);
             const priceRange = maxPrice - minPrice || 1;
@@ -8023,7 +9403,7 @@
             const pricePoints = sampledData.map(d => {
                 const x = padding.left + ((d.time - minTime) / timeRange) * chartWidth;
                 const y = priceToY(d.price);
-                return { x, y };
+                return { x, y, price: d.price, time: d.time };
             });
             
             // Create price line path
@@ -8032,35 +9412,125 @@
             // Zone Y coordinates
             const zoneTopY = priceToY(zoneTop);
             const zoneBottomY = priceToY(zoneBottom);
-            const zoneHeight = zoneBottomY - zoneTopY;
+            const zoneHeight = Math.max(0, zoneBottomY - zoneTopY);
             
-            // Breaker level line (top of zone for bull, bottom for bear)
-            const breakerLineY = priceToY(breakerLevel);
+            // Current price Y
+            const currentPriceY = priceToY(currentPrice);
+            const currentPriceX = pricePoints[pricePoints.length - 1].x;
             
-            // Price labels
-            const priceLabels = `
-                <text class="price-chart-price-label" x="${width - 3}" y="${zoneTopY + 3}" text-anchor="end">${Math.round(zoneTop)}</text>
-                <text class="price-chart-price-label" x="${width - 3}" y="${zoneBottomY + 3}" text-anchor="end">${Math.round(zoneBottom)}</text>
-            `;
+            // Time labels
+            const midTime = minTime + Math.floor(timeRange / 2);
+            
+            // Generate unique ID for this chart
+            const chartId = 'price-chart-' + breaker.id.replace(/[^a-zA-Z0-9]/g, '');
+            
+            // Store points data for hover in global map
+            if (!window.priceChartData) window.priceChartData = {};
+            window.priceChartData[chartId] = pricePoints.map(p => ({x: p.x, y: p.y, price: p.price, time: p.time}));
             
             return `
-                <svg class="price-chart" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
-                    <!-- Breaker zone (shaded) -->
-                    <rect class="price-chart-breaker-zone" x="${padding.left}" y="${zoneTopY}" width="${chartWidth}" height="${zoneHeight}"/>
-                    
-                    <!-- Breaker level line (solid blue) -->
-                    <line class="price-chart-breaker-line" x1="${padding.left}" y1="${breakerLineY}" x2="${padding.left + chartWidth}" y2="${breakerLineY}"/>
-                    
-                    <!-- Zone bottom line (dashed) -->
-                    <line class="price-chart-level" x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}"/>
-                    
-                    <!-- Price line (orange) -->
-                    <path class="price-chart-price-line" d="${pricePath}"/>
-                    
-                    <!-- Price labels -->
-                    ${priceLabels}
-                </svg>
+                <div class="price-chart-container" data-chart-id="${chartId}">
+                    <svg id="${chartId}" class="price-chart" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
+                        <!-- Breaker zone (shaded) -->
+                        <rect class="price-chart-breaker-zone" x="${padding.left}" y="${zoneTopY}" width="${chartWidth}" height="${zoneHeight}"/>
+                        
+                        <!-- Zone top line (H2) -->
+                        <line class="price-chart-breaker-line" x1="${padding.left}" y1="${zoneTopY}" x2="${padding.left + chartWidth}" y2="${zoneTopY}"/>
+                        
+                        <!-- Zone bottom line (dashed) -->
+                        <line class="price-chart-level" x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}"/>
+                        
+                        <!-- Price line (orange) -->
+                        <path class="price-chart-price-line" d="${pricePath}"/>
+                        
+                        <!-- Current price marker -->
+                        <circle class="price-chart-current" cx="${currentPriceX}" cy="${currentPriceY}" r="4"/>
+                        <line class="price-chart-current-line" x1="${currentPriceX}" y1="${currentPriceY}" x2="${width - padding.right + 5}" y2="${currentPriceY}" stroke-dasharray="2,2"/>
+                        
+                        <!-- Hover cursor line -->
+                        <line id="${chartId}-cursor" class="price-chart-cursor" x1="0" y1="${padding.top}" x2="0" y2="${height - padding.bottom}" style="opacity:0"/>
+                        
+                        <!-- Hover dot -->
+                        <circle id="${chartId}-dot" class="price-chart-hover-dot" cx="0" cy="0" r="4" style="opacity:0"/>
+                        
+                        <!-- Price labels -->
+                        <text class="price-chart-price-label zone-label" x="${width - 3}" y="${zoneTopY + 4}" text-anchor="end">H2 ${Math.round(zoneTop)}</text>
+                        <text class="price-chart-price-label" x="${width - 3}" y="${zoneBottomY + 4}" text-anchor="end">${Math.round(zoneBottom)}</text>
+                        <text class="price-chart-current-label" x="${width - 3}" y="${currentPriceY + 4}" text-anchor="end">${Math.round(currentPrice)}</text>
+                        
+                        <!-- Time labels -->
+                        <text class="price-chart-time-label" x="${padding.left}" y="${height - 5}" text-anchor="start">${minToTime(minTime)}</text>
+                        <text class="price-chart-time-label" x="${padding.left + chartWidth/2}" y="${height - 5}" text-anchor="middle">${minToTime(midTime)}</text>
+                        <text class="price-chart-time-label" x="${padding.left + chartWidth}" y="${height - 5}" text-anchor="end">${minToTime(maxTime)}</text>
+                    </svg>
+                    <div id="${chartId}-hover" class="price-chart-hover-info"></div>
+                </div>
             `;
+        }
+        
+        // Setup price chart hover after rendering
+        function setupPriceChartHover(container) {
+            if (!container) return;
+            const chartId = container.dataset.chartId;
+            if (!chartId || !window.priceChartData || !window.priceChartData[chartId]) return;
+            
+            try {
+                const points = window.priceChartData[chartId];
+                const svg = document.getElementById(chartId);
+                const cursor = document.getElementById(chartId + '-cursor');
+                const dot = document.getElementById(chartId + '-dot');
+                const hoverInfo = document.getElementById(chartId + '-hover');
+                
+                if (!svg || !cursor || !dot || !hoverInfo) return;
+                if (svg.dataset.hoverSetup) return;
+                svg.dataset.hoverSetup = 'true';
+                
+                const width = 300;
+                const paddingLeft = 10;
+                const chartWidth = 240;
+                
+                svg.addEventListener('mousemove', (e) => {
+                    const rect = svg.getBoundingClientRect();
+                    const scaleX = width / rect.width;
+                    const mouseX = (e.clientX - rect.left) * scaleX;
+                    
+                    if (mouseX < paddingLeft || mouseX > paddingLeft + chartWidth) {
+                        cursor.style.opacity = '0';
+                        dot.style.opacity = '0';
+                        hoverInfo.style.opacity = '0';
+                        return;
+                    }
+                    
+                    let closest = points[0];
+                    let closestDist = Math.abs(points[0].x - mouseX);
+                    for (const p of points) {
+                        const dist = Math.abs(p.x - mouseX);
+                        if (dist < closestDist) {
+                            closestDist = dist;
+                            closest = p;
+                        }
+                    }
+                    
+                    cursor.setAttribute('x1', closest.x);
+                    cursor.setAttribute('x2', closest.x);
+                    cursor.style.opacity = '1';
+                    
+                    dot.setAttribute('cx', closest.x);
+                    dot.setAttribute('cy', closest.y);
+                    dot.style.opacity = '1';
+                    
+                    hoverInfo.innerHTML = '<span class="hover-price">' + closest.price + '</span> @ <span class="hover-time">' + minToTime(closest.time) + '</span>';
+                    hoverInfo.style.opacity = '1';
+                });
+                
+                svg.addEventListener('mouseleave', () => {
+                    cursor.style.opacity = '0';
+                    dot.style.opacity = '0';
+                    hoverInfo.style.opacity = '0';
+                });
+            } catch (e) {
+                console.error('Error setting up price chart hover:', e);
+            }
         }
         
         function setupFibChartCursor(chartId, points, padding, chartWidth, chartHeight, fibCeil, minTime, timeRange) {
@@ -8171,10 +9641,7 @@
                         }
                         
                         // Status indicator
-                        const isBreakerFailed = breaker.status?.startsWith('failed:');
-                        const statusIcon = breaker.status === 'success' ? 'S' : 
-                                          isBreakerFailed ? 'F' : '-';
-                        const statusClass = isBreakerFailed ? 'fail' : breaker.status;
+                        const parsedStatus = parseStatus(breaker.status);
                         
                         contextRows.push(`
                             <div class="context-row active">
@@ -8182,7 +9649,7 @@
                                 <span class="context-symbol ${symbol.toLowerCase()}">${symbol}</span>
                                 <span class="context-dir ${breaker.dir}">${breaker.dir.toUpperCase()}</span>
                                 <span class="context-fib">${startFib.toFixed(1)} → ${fibAtEntry.toFixed(1)}</span>
-                                <span class="context-status-icon ${statusClass}">${statusIcon}</span>
+                                <span class="context-status-icon ${parsedStatus.cssClass}">${parsedStatus.icon}</span>
                             </div>
                         `);
                     } else {
@@ -8289,12 +9756,8 @@
                     }
                 }
                 
-                // Keep confluence view - don't show breaker detail
-                if (lockedConfluenceMin !== null) {
-                    showCursorConfluence(lockedConfluenceMin);
-                } else if (isLive) {
-                    showLiveConfluence();
-                }
+                // Show breaker detail panel
+                showBreakerDetail(breakerId);
             }
             
             // Update entry line and marker styling
@@ -8666,46 +10129,47 @@
         }
         
         // ===== ANALYSIS MODAL =====
+        // New schema: dims.g1, dims.d1, etc. with {name, status, narrative[]}
         const ANALYSIS_DIMENSIONS = {
+            gate: [
+                { code: 'G1', key: 'g1' },
+                { code: 'G2', key: 'g2' },
+                { code: 'G3', key: 'g3' },
+                { code: 'G4', key: 'g4' },
+                { code: 'G5', key: 'g5' },
+                { code: 'G6', key: 'g6' },
+                { code: 'G7', key: 'g7' }
+            ],
             direction: [
-                { code: 'D1', name: 'NQ Alignment', key: 'd1_nq_alignment' },
-                { code: 'D2', name: 'ES Alignment', key: 'd2_es_alignment' },
-                { code: 'D3', name: 'Bearish Inversion', key: 'd3_bearish_inversion' }
+                { code: 'D1', key: 'd1' },
+                { code: 'D2', key: 'd2' },
+                { code: 'D3', key: 'd3' }
             ],
             support: [
-                { code: 'S1', name: 'Premium/Discount', key: 's1_premium_discount' },
-                { code: 'S2', name: 'Stacked Breakers', key: 's2_stacked_breakers' },
-                { code: 'S3', name: 'Stacked FVGs', key: 's3_stacked_fvgs' }
+                { code: 'S1', key: 's1' },
+                { code: 'S2', key: 's2' },
+                { code: 'S3', key: 's3' }
             ],
             resistance: [
-                { code: 'R1', name: 'Blocking Breakers', key: 'r1_blocking_breakers' },
-                { code: 'R2', name: 'Blocking FVGs', key: 'r2_blocking_fvgs' }
+                { code: 'R1', key: 'r1' },
+                { code: 'R2', key: 'r2' }
             ],
             energy: [
-                { code: 'E1', name: 'Formation FVG', key: 'e1_formation_fvg' },
-                { code: 'E2', name: 'Formation Sweep', key: 'e2_formation_sweep' },
-                { code: 'E3', name: 'Formation SMT', key: 'e3_formation_smt' },
-                { code: 'E4', name: 'Bullish Attraction', key: 'e4_bullish_attraction' },
-                { code: 'E5', name: 'Bearish Attraction', key: 'e5_bearish_attraction' },
-                { code: 'E6', name: 'Daily Burn', key: 'e6_daily_burn' }
-            ],
-            gate: [
-                { code: 'G1', name: 'Trading Hours', key: 'g1_trading_hours' },
-                { code: 'G2', name: 'News Blackout', key: 'g2_news_blackout' },
-                { code: 'G3', name: 'Price Volatility', key: 'g3_price_volatility' },
-                { code: 'G4', name: 'Market Volatility', key: 'g4_market_volatility' },
-                { code: 'G5', name: 'Risk/Reward', key: 'g5_risk_reward' },
-                { code: 'G6', name: 'Consecutive Losses', key: 'g6_consecutive_losses' },
-                { code: 'G7', name: 'SPY Trend', key: 'g7_spy_trend' }
+                { code: 'E1', key: 'e1' },
+                { code: 'E2', key: 'e2' },
+                { code: 'E3', key: 'e3' },
+                { code: 'E4', key: 'e4' },
+                { code: 'E5', key: 'e5' },
+                { code: 'E6', key: 'e6' }
             ]
         };
         
         const CATEGORY_LABELS = {
+            gate: 'Gate',
             direction: 'Direction',
             support: 'Support',
             resistance: 'Resistance',
-            energy: 'Energy',
-            gate: 'Gate (All Must Pass)'
+            energy: 'Energy'
         };
         
         function showAnalysisModal(breakerId = null) {
@@ -8761,8 +10225,6 @@
             const breaker = allData.find(d => d.id === breakerId);
             const displayId = breaker?.displayId || breakerId;
             
-            console.log(`📊 Fetching confirmation for key: ${breakerId}`);
-            
             // Show loading state
             document.getElementById('analysis-hero-id').textContent = displayId + ' · Loading...';
             
@@ -8773,7 +10235,6 @@
                 .then(r => r.json())
                 .then(data => {
                     if (!data || Object.keys(data).length === 0) {
-                        console.warn('No confirmations found');
                         document.getElementById('analysis-hero-id').textContent = displayId;
                         showAnalysisError(`No confirmations in database`);
                         return;
@@ -8781,16 +10242,11 @@
                     
                     // Find confirmation matching this breaker_id
                     let confirmationData = null;
-                    const allBreakderIds = [];
                     
                     for (const [confKey, conf] of Object.entries(data)) {
-                        if (conf && conf.breaker_id) {
-                            allBreakderIds.push(conf.breaker_id);
-                            if (conf.breaker_id === breakerId) {
-                                confirmationData = conf;
-                                console.log('✓ Found confirmation data:', confirmationData);
-                                break;
-                            }
+                        if (conf && conf.breaker_id && conf.breaker_id === breakerId) {
+                            confirmationData = conf;
+                            break;
                         }
                     }
                     
@@ -8798,10 +10254,6 @@
                         document.getElementById('analysis-hero-id').textContent = displayId;
                         renderAnalysisContent(transformConfirmationData(confirmationData, displayId));
                     } else {
-                        console.warn('No confirmation found for this breaker');
-                        console.log('📊 Looking for:', breakerId);
-                        console.log('📊 Available breaker_ids:', allBreakderIds);
-                        
                         document.getElementById('analysis-hero-id').textContent = displayId;
                         showAnalysisError(`No confirmation found for this breaker`);
                     }
@@ -8814,23 +10266,22 @@
         }
         
         function transformConfirmationData(conf, displayId) {
-            // Transform Firebase confirmation structure to analysis modal format
-            // Firebase stores confirmation with: breaker_id, confirmation_time, decision, decision_score, dimensions
-            // dimensions contains: gate, direction, support, resistance, energy
-            const dims = conf.dimensions || {};
-            
+            // New schema passes through directly
+            // dims contains: g1-g7, d1-d3, s1-s3, r1-r2, e1-e6
+            // Each has: name, status, narrative[]
             return {
-                breaker_id: displayId,  // Use displayId for UI
-                confirmation_time: conf.confirmation_time || new Date().toISOString(),
-                decision: conf.decision || 'PENDING',
-                decision_score: conf.decision_score || 0,
-                dimensions: {
-                    gate: dims.gate || {},
-                    direction: dims.direction || {},
-                    support: dims.support || {},
-                    resistance: dims.resistance || {},
-                    energy: dims.energy || {}
-                }
+                breaker_id: conf.breaker_id,
+                display_id: conf.display_id || displayId,
+                time: conf.time,
+                pattern: conf.pattern,
+                zone: conf.zone,
+                levels: conf.levels,
+                formation: conf.formation,
+                confluence: conf.confluence,
+                dims: conf.dims,
+                summary: conf.summary,
+                decision: conf.decision,
+                score: conf.score
             };
         }
         
@@ -9646,107 +11097,115 @@
             const heroMeta = document.getElementById('analysis-hero-meta');
             const scoreBig = document.getElementById('analysis-score-big');
             
-            // Get nested dimensions
-            const dims = data.dimensions || data;
+            // New schema: data.dims contains g1-g7, d1-d3, s1-s3, r1-r2, e1-e6
+            const dims = data.dims || {};
             
             // Update hero section
-            const decision = data.decision || 'EXECUTE';
+            const decision = data.decision || 'PENDING';
             decisionBadge.textContent = decision;
             decisionBadge.className = 'analysis-decision-badge ' + decision.toLowerCase();
             
-            heroId.textContent = data.breaker_id || 'NQ_1m_bull';
+            heroId.textContent = data.display_id || data.breaker_id || 'Unknown';
             
-            // Extract time from confirmation_time
-            if (data.confirmation_time) {
-                const time = data.confirmation_time.split('T')[1] || '';
-                heroMeta.textContent = time + ' ET';
+            // Extract time
+            if (data.time) {
+                const timePart = data.time.split('T')[1] || '';
+                heroMeta.textContent = timePart.substring(0, 5) + ' ET';
             }
             
-            const score = data.decision_score || 18;
-            scoreBig.textContent = score + '/21';
+            // Score is -4 to +4, display appropriately
+            const score = data.score !== undefined ? data.score : 0;
+            scoreBig.textContent = (score >= 0 ? '+' : '') + score + '/4';
             
-            // Build tabs
-            let tabsHtml = '';
-            let contentHtml = '';
-            let isFirst = true;
+            // Build tabs and content - start with Overview tab
+            let tabsHtml = `
+                <div class="analysis-tab active" onclick="switchTab('overview')">
+                    Overview
+                </div>
+            `;
             
-            console.log('📊 Dimensions data:', dims);
+            // Overview panel content
+            let contentHtml = `
+                <div class="analysis-panel active" id="panel-overview">
+                    ${renderOverviewPanel(data)}
+                </div>
+            `;
             
+            // Status value mappings for pass/warn/fail classification
+            const statusClasses = {
+                // Gate
+                'PASS': 'pass', 'FAIL': 'fail',
+                // Direction
+                'WITH': 'pass', 'NEUTRAL': 'warn', 'AGAINST': 'fail',
+                // Support
+                'SUPPORTED': 'pass', 'PARTIAL': 'warn', 'NAKED': 'fail',
+                // Resistance
+                'CLEAR': 'pass', 'FRICTION': 'warn', 'BLOCKED': 'fail',
+                // Energy
+                'POWERED': 'pass', 'MODERATE': 'warn', 'EXHAUSTED': 'fail'
+            };
+            
+            // Add dimension category tabs
             Object.entries(ANALYSIS_DIMENSIONS).forEach(([category, dimensions]) => {
-                const categoryData = dims[category] || {};
-                const categoryMissing = !dims[category];
-                
-                console.log(`📊 Category ${category}:`, categoryMissing ? 'MISSING' : categoryData);
-                console.log(`📊 Expected keys:`, dimensions.map(d => d.key));
-                console.log(`📊 Available keys:`, Object.keys(categoryData));
-                
                 // Count pass/warn/fail for tab indicator
-                let passCount = 0, warnCount = 0, failCount = 0, missingCount = 0;
+                let passCount = 0, warnCount = 0, failCount = 0;
                 dimensions.forEach(dim => {
-                    const dimData = categoryData[dim.key];
-                    if (dimData) {
-                        const val = (dimData.value || dimData.status || '').toUpperCase();
-                        const cls = getValueClass(val);
+                    const dimData = dims[dim.key];
+                    if (dimData && dimData.status) {
+                        const cls = statusClasses[dimData.status.toUpperCase()] || 'warn';
                         if (cls === 'pass') passCount++;
                         else if (cls === 'warn') warnCount++;
                         else if (cls === 'fail') failCount++;
-                    } else {
-                        missingCount++;
                     }
                 });
                 
-                const countClass = missingCount > 0 ? 'has-error' : failCount > 0 ? 'has-fail' : warnCount > 0 ? 'has-warn' : 'all-pass';
-                const countText = missingCount > 0 ? `${passCount}/${dimensions.length} (${missingCount} missing)` : `${passCount}/${dimensions.length}`;
+                const countClass = failCount > 0 ? 'has-fail' : warnCount > 0 ? 'has-warn' : 'all-pass';
+                const countText = `${passCount}/${dimensions.length}`;
                 
                 // Tab
                 tabsHtml += `
-                    <div class="analysis-tab ${isFirst ? 'active' : ''}" onclick="switchTab('${category}')">
+                    <div class="analysis-tab" onclick="switchTab('${category}')">
                         ${CATEGORY_LABELS[category]}
                         <span class="analysis-tab-count ${countClass}">${countText}</span>
                     </div>
                 `;
                 
-                // Content panel
-                const categoryMissingMsg = categoryMissing ? 
-                    `<div style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);padding:12px;border-radius:8px;margin-bottom:16px;color:#f87171;">
-                        <strong>⚠️ Category "${category}" not found in confirmation data</strong><br>
-                        <span style="font-size:12px;color:#888;">Available categories: ${Object.keys(dims).join(', ') || 'none'}</span>
-                    </div>` : '';
-                
+                // Content panel with dimension cards
                 contentHtml += `
-                    <div class="analysis-panel ${isFirst ? 'active' : ''}" id="panel-${category}">
-                        ${categoryMissingMsg}
+                    <div class="analysis-panel" id="panel-${category}">
                         <div class="analysis-cards">
                             ${dimensions.map(dim => {
-                                const dimData = categoryData[dim.key];
-                                let value = '—';
-                                let valueClass = '';
-                                let errorMsg = '';
-                                
-                                if (dimData) {
-                                    value = dimData.value || dimData.status || '—';
-                                    valueClass = getValueClass(value);
-                                } else {
-                                    value = 'KEY NOT FOUND';
-                                    valueClass = 'error';
-                                    errorMsg = `<div style="color:#f87171;font-size:11px;margin-top:8px;">Expected key: <code style="background:#2a2a2a;padding:2px 6px;border-radius:3px;">${dim.key}</code><br>In category: <code style="background:#2a2a2a;padding:2px 6px;border-radius:3px;">${category}</code><br>Available: ${Object.keys(categoryData).join(', ') || 'none'}</div>`;
+                                const dimData = dims[dim.key];
+                                if (!dimData) {
+                                    return `
+                                        <div class="analysis-card error-card">
+                                            <div class="analysis-card-header">
+                                                <div class="analysis-card-title">
+                                                    <span class="analysis-card-code">${dim.code}</span>
+                                                    <span class="analysis-card-name">Missing</span>
+                                                </div>
+                                                <span class="analysis-card-value error">—</span>
+                                            </div>
+                                        </div>
+                                    `;
                                 }
                                 
+                                const status = dimData.status || '—';
+                                const statusClass = statusClasses[status.toUpperCase()] || 'warn';
+                                const name = dimData.name || dim.code;
+                                const narrative = dimData.narrative || [];
+                                
                                 return `
-                                    <div class="analysis-card ${dimData ? '' : 'error-card'}">
+                                    <div class="analysis-card">
                                         <div class="analysis-card-header">
                                             <div class="analysis-card-title">
                                                 <span class="analysis-card-code">${dim.code}</span>
-                                                <span class="analysis-card-name">${dim.name}</span>
+                                                <span class="analysis-card-name">${name}</span>
                                             </div>
-                                            <span class="analysis-card-value ${valueClass}">${value}</span>
+                                            <span class="analysis-card-value ${statusClass}">${status}</span>
                                         </div>
-                                        <div class="analysis-card-visual">
-                                            ${dimData ? renderDimensionVisual(dim.key, dimData) : errorMsg}
-                                        </div>
-                                        <div class="analysis-card-calc">
-                                            <div class="analysis-calc-title">How it's calculated</div>
-                                            <div class="analysis-calc-text">${dimData?.reason || 'No calculation data'}</div>
+                                        <div class="analysis-card-narrative">
+                                            ${narrative.map(line => `<div class="narrative-line">${line}</div>`).join('')}
                                         </div>
                                     </div>
                                 `;
@@ -9754,12 +11213,253 @@
                         </div>
                     </div>
                 `;
-                
-                isFirst = false;
             });
             
             tabsContainer.innerHTML = tabsHtml;
             contentContainer.innerHTML = contentHtml;
+        }
+        
+        function renderOverviewPanel(data) {
+            const pattern = data.pattern || {};
+            const zone = data.zone || {};
+            const levels = data.levels || {};
+            const formation = data.formation || {};
+            const confluence = data.confluence || {};
+            const summary = data.summary || [];
+            
+            return `
+                <!-- Pattern Structure -->
+                <div class="overview-section">
+                    <div class="overview-section-title">Pattern Structure</div>
+                    <div class="pattern-flow">
+                        ${renderPatternPoint('H1', pattern.h1, 'start')}
+                        <span class="pattern-connector">→</span>
+                        ${renderPatternPoint('L1', pattern.l1, 'low')}
+                        <span class="pattern-connector">→</span>
+                        ${renderPatternPoint('BR', pattern.br, 'breaker')}
+                        <span class="pattern-connector">→</span>
+                        ${renderPatternPoint('L2', pattern.l2, 'sweep')}
+                        <span class="pattern-connector">→</span>
+                        ${renderPatternPoint('MSS', pattern.mss, 'confirm')}
+                    </div>
+                </div>
+                
+                <!-- Trade Setup - Decision Tree -->
+                <div class="overview-section">
+                    <div class="overview-section-title">Trade Setup</div>
+                    <div class="trade-decision-tree">
+                        ${renderTradeDecisionTree(zone, levels)}
+                    </div>
+                </div>
+                
+                <!-- Formation Quality -->
+                <div class="overview-section">
+                    <div class="overview-section-title">Formation Quality</div>
+                    <div class="formation-metrics">
+                        <div class="formation-metric">
+                            <div class="formation-metric-label">FVG Size</div>
+                            <div class="formation-metric-bar">
+                                <div class="formation-bar-fill" style="width: ${formation.fvg?.size_pct || 0}%"></div>
+                            </div>
+                            <div class="formation-metric-value">${formation.fvg?.size_pct?.toFixed(0) || 0}%</div>
+                        </div>
+                        <div class="formation-metric">
+                            <div class="formation-metric-label">Sweep Depth</div>
+                            <div class="formation-metric-bar">
+                                <div class="formation-bar-fill sweep" style="width: ${formation.sweep?.depth_pct || 0}%"></div>
+                            </div>
+                            <div class="formation-metric-value">${formation.sweep?.depth_pct?.toFixed(0) || 0}%</div>
+                        </div>
+                        <div class="formation-metric smt">
+                            <div class="formation-metric-label">SMT Divergence</div>
+                            <div class="formation-smt-status ${formation.smt_id ? 'active' : ''}">
+                                ${formation.smt_id ? '✓ ' + formation.smt_id.split('-').slice(0,3).join('-') : '— None'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Confluence -->
+                <div class="overview-section">
+                    <div class="overview-section-title">Confluence <span class="confluence-count">${Object.keys(confluence).length} active</span></div>
+                    <div class="confluence-list">
+                        ${Object.entries(confluence).length > 0 ? 
+                            Object.entries(confluence).slice(0, 5).map(([id, c]) => {
+                                const parts = id.split('-');
+                                const symbol = parts[0] || '';
+                                const tf = parts[1] || '';
+                                const dir = parts[parts.length - 1] === 'L' ? 'bull' : 'bear';
+                                return `
+                                    <div class="confluence-item ${dir}">
+                                        <span class="confluence-id">${symbol}-${tf}</span>
+                                        <span class="confluence-fib">Fib ${c.fib?.toFixed(1) || '—'}</span>
+                                        <span class="confluence-energy">${((c.energy || 0) * 100).toFixed(0)}%</span>
+                                    </div>
+                                `;
+                            }).join('') : 
+                            '<div class="confluence-empty">No other active breakers</div>'
+                        }
+                    </div>
+                </div>
+                
+                <!-- Verdict Summary -->
+                <div class="overview-section verdict">
+                    <div class="overview-section-title">Verdict</div>
+                    <div class="verdict-lines">
+                        ${summary.map((line, i) => `
+                            <div class="verdict-line ${i === 0 ? 'primary' : ''}">${line}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderPatternPoint(label, point, type) {
+            if (!point) {
+                return `
+                    <div class="pattern-point ${type}">
+                        <span class="pattern-point-label">${label}</span>
+                        <span class="pattern-point-price">—</span>
+                        <span class="pattern-point-time">—</span>
+                    </div>
+                `;
+            }
+            return `
+                <div class="pattern-point ${type}">
+                    <span class="pattern-point-label">${label}</span>
+                    <span class="pattern-point-price">${point.price?.toFixed(2) || '—'}</span>
+                    <span class="pattern-point-time">${point.time || '—'}</span>
+                </div>
+            `;
+        }
+        
+        function renderPriceLadderRow(label, price, type) {
+            return `
+                <div class="price-ladder-row ${type}">
+                    <span class="ladder-label">${label}</span>
+                    <span class="ladder-line"></span>
+                    <span class="ladder-price">${price?.toFixed(2) || '—'}</span>
+                </div>
+            `;
+        }
+        
+        function renderTradeDecisionTree(zone, levels) {
+            if (!levels?.entry) {
+                return '<div class="decision-tree-empty">No trade levels available</div>';
+            }
+            
+            const entry = levels.entry;
+            const stop = levels.stop;
+            const target = levels.target || levels.f3;
+            
+            // Calculate risk (entry to stop)
+            const risk = stop ? Math.abs(entry - stop) : 0;
+            
+            // Calculate RR for each fib level
+            const calcRR = (price) => {
+                if (!risk || !price) return null;
+                const reward = Math.abs(price - entry);
+                return (reward / risk).toFixed(1);
+            };
+            
+            // Standard fib extension ratios
+            const fibRatios = {
+                f0: '0.0',
+                f1: '-0.5',
+                f2: '-1.0', 
+                f3: '-1.618',
+                f4: '-2.0'
+            };
+            
+            return `
+                <div class="decision-tree">
+                    <!-- Entry Node -->
+                    <div class="tree-entry-row">
+                        <div class="tree-node entry-node">
+                            <div class="node-label">ENTRY</div>
+                            <div class="node-price">${entry.toFixed(2)}</div>
+                            <div class="node-meta">
+                                ${zone?.high && zone?.low ? `Zone: ${zone.high.toFixed(0)} — ${zone.low.toFixed(0)}` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Connector SVG -->
+                    <div class="tree-connector-svg">
+                        <svg width="100%" height="40" viewBox="0 0 400 40" preserveAspectRatio="xMidYMid meet">
+                            <path d="M 200 0 L 200 15 L 60 15 L 60 40" stroke="#444" stroke-width="2" fill="none"/>
+                            <path d="M 200 0 L 200 15 L 340 15 L 340 40" stroke="#444" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Stop and Targets Row -->
+                    <div class="tree-branches">
+                        <!-- Stop Loss -->
+                        <div class="tree-node stop-node">
+                            <div class="node-label">STOP</div>
+                            <div class="node-price">${stop?.toFixed(2) || '—'}</div>
+                            <div class="node-fib">Fib ${fibRatios.f0}</div>
+                            <div class="node-rr stop">−1.0 R</div>
+                        </div>
+                        
+                        <!-- Targets -->
+                        <div class="targets-container">
+                            ${levels.f1 ? `
+                                <div class="tree-node target-node f1">
+                                    <div class="node-label">F1</div>
+                                    <div class="node-price">${levels.f1.toFixed(2)}</div>
+                                    <div class="node-fib">Fib ${fibRatios.f1}</div>
+                                    <div class="node-rr target">+${calcRR(levels.f1) || '?'} R</div>
+                                </div>
+                            ` : ''}
+                            
+                            ${levels.f2 ? `
+                                <div class="target-arrow">→</div>
+                                <div class="tree-node target-node f2">
+                                    <div class="node-label">F2</div>
+                                    <div class="node-price">${levels.f2.toFixed(2)}</div>
+                                    <div class="node-fib">Fib ${fibRatios.f2}</div>
+                                    <div class="node-rr target">+${calcRR(levels.f2) || '?'} R</div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="target-arrow">→</div>
+                            <div class="tree-node target-node primary">
+                                <div class="node-label">TARGET</div>
+                                <div class="node-price">${target?.toFixed(2) || '—'}</div>
+                                <div class="node-fib">Fib ${fibRatios.f3}</div>
+                                <div class="node-rr target">+${calcRR(target) || '?'} R</div>
+                            </div>
+                            
+                            ${levels.f4 ? `
+                                <div class="target-arrow">→</div>
+                                <div class="tree-node target-node f4">
+                                    <div class="node-label">F4</div>
+                                    <div class="node-price">${levels.f4.toFixed(2)}</div>
+                                    <div class="node-fib">Fib ${fibRatios.f4}</div>
+                                    <div class="node-rr target">+${calcRR(levels.f4) || '?'} R</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <!-- Risk/Reward Summary -->
+                    <div class="tree-summary">
+                        <div class="summary-item risk">
+                            <span class="summary-label">Risk</span>
+                            <span class="summary-value">${risk.toFixed(2)} pts</span>
+                        </div>
+                        <div class="summary-item reward">
+                            <span class="summary-label">Reward (F3)</span>
+                            <span class="summary-value">${target ? Math.abs(target - entry).toFixed(2) : '—'} pts</span>
+                        </div>
+                        <div class="summary-item rr">
+                            <span class="summary-label">R:R</span>
+                            <span class="summary-value">${calcRR(target) ? '1:' + calcRR(target) : '—'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
         // Helper function to render price ladder for support/resistance zones
@@ -10331,7 +12031,11 @@
             // Update tabs
             document.querySelectorAll('.analysis-tab').forEach(tab => {
                 tab.classList.remove('active');
-                if (tab.textContent.includes(CATEGORY_LABELS[category])) {
+            });
+            // Find and activate the correct tab
+            document.querySelectorAll('.analysis-tab').forEach(tab => {
+                const label = category === 'overview' ? 'Overview' : (CATEGORY_LABELS[category] || category);
+                if (tab.textContent.trim().startsWith(label)) {
                     tab.classList.add('active');
                 }
             });
@@ -10340,7 +12044,10 @@
             document.querySelectorAll('.analysis-panel').forEach(panel => {
                 panel.classList.remove('active');
             });
-            document.getElementById('panel-' + category).classList.add('active');
+            const targetPanel = document.getElementById('panel-' + category);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
         }
         
         function getBiasClass(bias) {
@@ -10387,7 +12094,12 @@
                     if (lockedConfluenceMin !== null) {
                         lockedConfluenceMin = null;
                         clearEntryHighlight();
-                        if (isLive) {
+                        // Restore appropriate view based on what's selected
+                        if (selectedBreakerId) {
+                            showBreakerDetail(selectedBreakerId);
+                        } else if (selectedSmtId) {
+                            showSmtDetail(selectedSmtId);
+                        } else if (isLive) {
                             showLiveConfluence();
                         } else {
                             showEmptyPanel();
