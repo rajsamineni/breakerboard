@@ -2128,32 +2128,34 @@
             display: block;
         }
         
-        /* Zone Entry */
+        /* Zone Entry - Clean Elegant Design */
         .bd-zone-entry {
-            background: #1a1a1c;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
+            background: linear-gradient(135deg, #18181b 0%, #1c1c20 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #2a2a2e;
         }
         
         .bd-zone-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 16px;
         }
         
         .bd-zone-title {
-            font-size: 10px;
-            color: #6b7280;
+            font-size: 11px;
+            color: #9ca3af;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
         
         .bd-zone-pct {
             font-family: 'Roboto Mono', monospace;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px;
         }
         
         .bd-zone-pct.good { color: #4ade80; }
@@ -2161,47 +2163,191 @@
         .bd-zone-pct.bad { color: #f87171; }
         .bd-zone-pct.none { color: #4b5563; }
         
-        .bd-zone-bar {
-            height: 8px;
-            background: #2a2a2e;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 6px;
+        /* Zone Bar Container */
+        .bd-zone-bar-container {
+            position: relative;
+            margin-bottom: 8px;
         }
         
-        .bd-zone-fill {
+        .bd-zone-bar-track {
+            display: flex;
+            height: 12px;
+            border-radius: 0;
+            overflow: hidden;
+            background: #252528;
+        }
+        
+        .bd-zone-bar-segment {
+            position: relative;
             height: 100%;
-            background: #4b5563;
-            border-radius: 4px;
+        }
+        
+        .bd-zone-bar-segment.zone {
+            background: #2a2a2e;
+        }
+        
+        .bd-zone-bar-segment.zone.bull {
+            background: rgba(74, 222, 128, 0.15);
+            border-right: 2px solid rgba(74, 222, 128, 0.4);
+        }
+        
+        .bd-zone-bar-segment.zone.bear {
+            background: rgba(248, 113, 113, 0.15);
+            border-left: 2px solid rgba(248, 113, 113, 0.4);
+        }
+        
+        .bd-zone-bar-segment.gray {
+            background: #1a1a1c;
+        }
+        
+        .bd-zone-bar-segment.blank {
+            background: transparent;
+            position: relative;
+        }
+        
+        .bd-zone-bar-fill {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-radius: 0;
             transition: width 0.3s ease;
         }
         
-        .bd-zone-fill.good {
+        .bd-zone-bar-fill.bull {
+            left: 0;
             background: linear-gradient(90deg, #22c55e, #4ade80);
-            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
         }
         
-        .bd-zone-fill.partial {
-            background: linear-gradient(90deg, #d97706, #fbbf24);
+        .bd-zone-bar-fill.bear {
+            right: 0;
+            background: linear-gradient(90deg, #f87171, #ef4444);
+            box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
         }
         
-        .bd-zone-fill.bad {
-            background: linear-gradient(90deg, #dc2626, #f87171);
-            box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
-        }
-        
-        .bd-zone-levels {
-            display: flex;
-            justify-content: space-between;
+        /* Zone Size Badge - Centered on bar */
+        .bd-zone-size-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-family: 'Roboto Mono', monospace;
-            font-size: 10px;
-            color: #6b7280;
+            font-size: 9px;
+            font-weight: 700;
+            color: #9ca3af;
+            background: #252528;
+            padding: 1px 6px;
+            border-radius: 0;
+            border: 1px solid #3a3a3e;
+            z-index: 2;
         }
         
-        .bd-zone-levels {
+        /* Price Levels Grid - 3 columns */
+        .bd-zone-levels-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .bd-zone-levels-grid.two-col {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .bd-zone-level-col {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bd-zone-level-col.left {
+            align-items: flex-start;
+        }
+        
+        .bd-zone-level-col.center {
+            align-items: center;
+        }
+        
+        .bd-zone-level-col.right {
+            align-items: flex-end;
+        }
+        
+        /* Legacy relative positioning (keeping for compatibility) */
+        .bd-zone-levels-relative {
+            position: relative;
+            height: 65px;
+            margin-top: 12px;
+        }
+        
+        .bd-zone-level-abs {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translateX(-50%);
+        }
+        
+        .bd-zone-level-abs.level-start {
+            transform: translateX(0);
+            align-items: flex-start;
+        }
+        
+        .bd-zone-level-abs.level-mid {
+            transform: translateX(-50%);
+            align-items: center;
+        }
+        
+        .bd-zone-level-abs.level-end {
+            transform: translateX(-100%);
+            align-items: flex-end;
+        }
+        
+        .bd-zone-levels-row {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 12px;
+        }
+        
+        .bd-zone-level {
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            flex: 1;
+        }
+        
+        .bd-zone-level.left { align-items: flex-start; }
+        .bd-zone-level.right { align-items: flex-end; }
+        
+        .bd-zone-level-label {
+            font-size: 9px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+            font-weight: 500;
+        }
+        
+        .bd-zone-level-fib {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        
+        .bd-zone-level-fib.bull { color: #4ade80; }
+        .bd-zone-level-fib.bear { color: #f87171; }
+        .bd-zone-level-fib.neutral { color: #6b7280; }
+        
+        .bd-zone-level-price {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+        
+        .bd-zone-level-price.muted {
+            color: #6b7280;
+            font-size: 14px;
         }
         
         .bd-level {
@@ -9233,8 +9379,9 @@
             const lastEvent = events[events.length - 1];
             const currentPrice = lastEvent.price || 0;
             
-            // Fixed Y-axis: always 0-4
-            const fibCeil = 4;
+            // Dynamic Y-axis: 0-3.2 (T2) unless fib exceeds 3.2
+            const maxFibInData = Math.max(...events.map(e => Math.max(e.fib || 0, e.maxFib || 0)));
+            const fibCeil = maxFibInData > 3.2 ? Math.ceil(maxFibInData) : 3.2;
             
             const fibToY = (fib) => {
                 if (isBull) {
@@ -9337,16 +9484,19 @@
             
             // Y-axis grid and labels
             let yGrid = '';
-            const gridVals = [0, 1, 2, 3, 4];
+            // Generate grid values: 0, 1, 2, 3, and fibCeil (3.2 for T2 or higher if exceeded)
+            const gridVals = [0, 1, 2, 3];
+            if (fibCeil > 3) gridVals.push(fibCeil);
             gridVals.forEach(val => {
                 const y = fibToY(val);
                 const isBreaker = val === 1;
-                const isFib4 = val === 4;
-                const lineColor = isBreaker ? '#555' : (isFib4 ? '#7c3aed' : '#1e1e21');
+                const isTop = val === fibCeil && val > 3;
+                const lineColor = isBreaker ? '#555' : (isTop ? '#7c3aed' : '#1e1e21');
                 const lineWidth = isBreaker ? 1 : 0.5;
-                const textColor = isBreaker ? '#888' : (isFib4 ? '#9d7aed' : '#444');
+                const textColor = isBreaker ? '#888' : (isTop ? '#9d7aed' : '#444');
                 const fontWeight = isBreaker ? 600 : 400;
-                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${lineColor}" stroke-width="${lineWidth}"/>`;
+                const dashArray = isTop ? ' stroke-dasharray="4,3"' : '';
+                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${lineColor}" stroke-width="${lineWidth}"${dashArray}/>`;
                 yGrid += `<text x="${padding.left - 4}" y="${y + 4}" text-anchor="end" fill="${textColor}" font-size="10" font-family="Roboto Mono" font-weight="${fontWeight}">${val.toFixed(1)}</text>`;
             });
             
@@ -9357,6 +9507,11 @@
                 <text x="${padding.left + chartWidth/2}" y="${height - 4}" text-anchor="middle" fill="#555" font-size="9" font-family="Roboto Mono">${minToTime(midTime)}</text>
                 <text x="${padding.left + chartWidth}" y="${height - 4}" text-anchor="end" fill="#555" font-size="9" font-family="Roboto Mono">${minToTime(maxTime)}</text>
             `;
+            
+            // Fib 0 price label (sweep price)
+            const sweepPrice = isBull ? Math.min(price1, price2) : Math.max(price1, price2);
+            const fib0Y = fibToY(0);
+            const fib0PriceLabel = `<text x="${width - 2}" y="${fib0Y + 4}" text-anchor="end" fill="#6b7280" font-size="10" font-family="Roboto Mono" font-weight="500">${Math.round(sweepPrice)}</text>`;
             
             // Price labels
             const breakerPriceLabel = `<text x="${width - 2}" y="${breakerY + 4}" text-anchor="end" fill="#888" font-size="11" font-family="Roboto Mono" font-weight="500">${Math.round(breakerPrice)}</text>`;
@@ -9391,6 +9546,7 @@
                     <text x="${peakX}" y="${peakY + (isBull ? -10 : 16)}" text-anchor="middle" fill="${dirColor}" font-size="12" font-family="Roboto Mono" font-weight="700">${peakFib.toFixed(2)}</text>
                     ${lastPoint ? `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="4" fill="#fb923c"/>` : ''}
                     ${breakerPriceLabel}
+                    ${fib0PriceLabel}
                     ${currentPriceLabel}
                     ${timeLabels}
                 </svg>
@@ -9471,9 +9627,36 @@
                 // Zone values from data
                 const breakerPrice = b.breakerHigh || 0;
                 const sweepPrice = b.sweepLow || 0;
-                const zoneTop = breakerPrice;
-                const zoneBottom = breakerPrice - zoneSize;
+                
+                // Calculate actual zone high/low and fib values based on direction
+                let zoneHigh, zoneLow, l2Price, l2Fib;
+                let zoneHighFib, zoneLowFib;
+                
+                if (isBull) {
+                    // Bullish: L2 (sweepLow) is fib 0, zone is at the top
+                    l2Price = sweepPrice;
+                    l2Fib = 0;
+                    zoneHigh = breakerPrice;
+                    zoneLow = breakerPrice - zoneSize;
+                    zoneHighFib = fibRange > 0 ? ((zoneHigh - l2Price) / fibRange) : 0;
+                    zoneLowFib = fibRange > 0 ? ((zoneLow - l2Price) / fibRange) : 0;
+                } else {
+                    // Bearish: H2 (sweepLow field contains higher price for bear) is fib 0
+                    // Zone is at the bottom (breakerPrice field contains lower price)
+                    l2Price = sweepPrice; // This is actually the higher price for bearish
+                    l2Fib = 0;
+                    zoneLow = breakerPrice;
+                    zoneHigh = breakerPrice + zoneSize;
+                    // For bearish, fib increases as price decreases from l2Price
+                    zoneLowFib = fibRange > 0 ? ((l2Price - zoneLow) / fibRange) : 0;
+                    zoneHighFib = fibRange > 0 ? ((l2Price - zoneHigh) / fibRange) : 0;
+                }
                 const zonePct = Math.min(b.zonePct || 0, 100);
+                
+                // Calculate bar widths for visual
+                // Zone portion is zoneSize/fibRange of the total
+                const zonePortion = fibRange > 0 ? (zoneSize / fibRange) * 100 : 0;
+                const grayPortion = 100 - zonePortion;
                 
                 // Time window
                 const startTime = minToTime(b.startMin || 0);
@@ -9526,13 +9709,53 @@
                             <span class="bd-zone-title">Zone Entry</span>
                             <span class="bd-zone-pct ${zonePct >= 50 ? 'bad' : zonePct > 0 ? 'partial' : 'none'}">${zonePct}%</span>
                         </div>
-                        <div class="bd-zone-bar">
-                            <div class="bd-zone-fill ${zonePct >= 50 ? 'bad' : zonePct > 0 ? 'partial' : ''}" style="width: ${zonePct}%"></div>
+                        
+                        <!-- Visual Bar -->
+                        <div class="bd-zone-bar-container">
+                            <div class="bd-zone-bar-track">
+                                ${isBull ? `
+                                <!-- Bullish: Zone fills entire bar -->
+                                <div class="bd-zone-bar-segment zone bull" style="width: 100%;">
+                                    <div class="bd-zone-bar-fill bull" style="width: ${zonePct}%;"></div>
+                                    <span class="bd-zone-size-center">${zoneSize}z</span>
+                                </div>
+                                ` : `
+                                <!-- Bearish: Zone fills entire bar -->
+                                <div class="bd-zone-bar-segment zone bear" style="width: 100%;">
+                                    <div class="bd-zone-bar-fill bear" style="width: ${zonePct}%;"></div>
+                                    <span class="bd-zone-size-center">${zoneSize}z</span>
+                                </div>
+                                `}
+                            </div>
                         </div>
-                        <div class="bd-zone-levels">
-                            <span>H2: ${breakerPrice}</span>
-                            <span>${zoneSize}z</span>
-                            <span>L2: ${sweepPrice}</span>
+                        
+                        <!-- Price Levels - 2 columns -->
+                        <div class="bd-zone-levels-grid two-col">
+                            ${isBull ? `
+                            <!-- Bullish: Breaker | Zone Low -->
+                            <div class="bd-zone-level-col left">
+                                <span class="bd-zone-level-label">Breaker</span>
+                                <span class="bd-zone-level-fib bull">${zoneHighFib.toFixed(2)}</span>
+                                <span class="bd-zone-level-price">${zoneHigh}</span>
+                            </div>
+                            <div class="bd-zone-level-col right">
+                                <span class="bd-zone-level-label">Zone Low</span>
+                                <span class="bd-zone-level-fib bull">${zoneLowFib.toFixed(2)}</span>
+                                <span class="bd-zone-level-price">${zoneLow}</span>
+                            </div>
+                            ` : `
+                            <!-- Bearish: Zone High | Breaker -->
+                            <div class="bd-zone-level-col left">
+                                <span class="bd-zone-level-label">Zone High</span>
+                                <span class="bd-zone-level-fib bear">${zoneHighFib.toFixed(2)}</span>
+                                <span class="bd-zone-level-price">${zoneHigh}</span>
+                            </div>
+                            <div class="bd-zone-level-col right">
+                                <span class="bd-zone-level-label">Breaker</span>
+                                <span class="bd-zone-level-fib bear">${zoneLowFib.toFixed(2)}</span>
+                                <span class="bd-zone-level-price">${zoneLow}</span>
+                            </div>
+                            `}
                         </div>
                     </div>
                     
@@ -9662,7 +9885,8 @@
             const maxFibCurrent = Math.max(...events.map(e => e.fib || 0), 1);
             const maxFibPeak = Math.max(...events.map(e => e.maxFib || e.fib || 0), 1);
             const maxFibVal = Math.max(maxFibCurrent, maxFibPeak);
-            const fibCeil = Math.ceil(maxFibVal * 1.1); // Add 10% padding
+            // Dynamic Y-axis: 0-3.2 (T2) unless fib exceeds 3.2
+            const fibCeil = maxFibVal > 3.2 ? Math.ceil(maxFibVal) : 3.2;
             
             // Find peak point (first occurrence of max fib in maxFib line)
             const peakVal = Math.max(...events.map(e => e.maxFib || e.fib || 0));
@@ -11058,8 +11282,9 @@
             const lastEvent = events[events.length - 1];
             const currentPrice = lastEvent.price || 0;
             
-            // Fixed Y-axis: always 0-4
-            const fibCeil = 4;
+            // Dynamic Y-axis: 0-3.2 (T2) unless fib exceeds 3.2
+            const maxFibInData = Math.max(...events.map(e => Math.max(e.fib || 0, e.maxFib || 0)));
+            const fibCeil = maxFibInData > 3.2 ? Math.ceil(maxFibInData) : 3.2;
             
             const fibToY = (fib) => {
                 if (isBull) {
@@ -11161,17 +11386,20 @@
             `;
             
             let yGrid = '';
-            const gridVals = [0, 1, 2, 3, 4];
+            // Generate grid values: 0, 1, 2, 3, and fibCeil (3.2 for T2 or higher if exceeded)
+            const gridVals = [0, 1, 2, 3];
+            if (fibCeil > 3) gridVals.push(fibCeil);
             gridVals.forEach(val => {
                 const y = fibToY(val);
                 const isBreaker = val === 1;
-                const isFib4 = val === 4;
-                // Fib 4 uses purple to match cursor, subtle like other lines
-                const lineColor = isBreaker ? '#444' : (isFib4 ? '#7c3aed' : '#1e1e21');
+                const isTop = val === fibCeil && val > 3;
+                // Top fib uses purple dotted line to match T2
+                const lineColor = isBreaker ? '#444' : (isTop ? '#7c3aed' : '#1e1e21');
                 const lineWidth = 0.5;
-                const textColor = isBreaker ? '#666' : (isFib4 ? '#9d7aed' : '#3a3a3e');
+                const textColor = isBreaker ? '#666' : (isTop ? '#9d7aed' : '#3a3a3e');
                 const fontWeight = isBreaker ? 500 : 400;
-                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${lineColor}" stroke-width="${lineWidth}"/>`;
+                const dashArray = isTop ? ' stroke-dasharray="4,3"' : '';
+                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${lineColor}" stroke-width="${lineWidth}"${dashArray}/>`;
                 yGrid += `<text x="${padding.left - 3}" y="${y + 3}" text-anchor="end" fill="${textColor}" font-size="9" font-family="Roboto Mono" font-weight="${fontWeight}">${val.toFixed(1)}</text>`;
             });
             
