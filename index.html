@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v3.7</title>
+    <title>SigXFlow v6.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -426,6 +426,7 @@
             border: 1px solid #2a2a2e;
             overflow: hidden;
             min-width: 0;
+            position: relative;
         }
         
         /* Fixed Header Row */
@@ -469,11 +470,46 @@
         .scroll-container {
             flex-grow: 1;
             overflow: auto;
+            position: relative;
+        }
+        
+        /* Main chart live cursor */
+        .main-cursor-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(74, 222, 128, 0.85);
+            pointer-events: none;
+            z-index: 90;
+            display: none;
+            box-shadow: 0 0 4px rgba(74, 222, 128, 0.4);
+        }
+        
+        .main-cursor-line.visible {
+            display: block;
+        }
+        
+        .main-cursor-time {
+            position: fixed;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+            white-space: nowrap;
+            box-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
         }
         
         .scroll-inner {
             display: flex;
             min-width: fit-content;
+            min-height: 100%;
         }
         
         /* Left Panel - labels */
@@ -708,6 +744,7 @@
         .right-panel {
             flex-grow: 1;
             position: relative;
+            min-height: 100%;
         }
         
         .time-tick-label {
@@ -725,25 +762,25 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, #60a5fa 0%, rgba(96, 165, 250, 0.3) 100%);
+            width: 1px;
+            background: rgba(96, 165, 250, 0.15);
             z-index: 5;
         }
         
         .date-separator-label {
             position: absolute;
             font-family: 'Roboto Mono', monospace;
-            font-size: 10px;
-            font-weight: 600;
-            color: #60a5fa;
-            background: rgba(15, 15, 18, 0.95);
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(96, 165, 250, 0.4);
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(96, 165, 250, 0.5);
+            background: rgba(15, 15, 18, 0.8);
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
             top: 2px;
             transform: translateX(-50%);
             white-space: nowrap;
-            z-index: 10;
+            z-index: 5;
         }
         
         /* Sticky date indicator */
@@ -773,6 +810,7 @@
         .chart-inner {
             position: relative;
             overflow: visible;
+            min-height: 100%;
         }
         
         /* Swimlane row */
@@ -980,6 +1018,7 @@
         .entry-line {
             position: absolute;
             top: 0;
+            bottom: 0;
             width: 2px;
             background: rgba(251, 191, 36, 0.4);
             z-index: 15;
@@ -1016,6 +1055,7 @@
         .cursor-line {
             position: absolute;
             top: 0;
+            bottom: 0;
             width: 1px;
             border-left: 1px dashed rgba(255, 255, 255, 0.5);
             z-index: 10;
@@ -2118,6 +2158,7 @@
         
         .bd-zone-pct.good { color: #4ade80; }
         .bd-zone-pct.partial { color: #fbbf24; }
+        .bd-zone-pct.bad { color: #f87171; }
         .bd-zone-pct.none { color: #4b5563; }
         
         .bd-zone-bar {
@@ -2142,6 +2183,11 @@
         
         .bd-zone-fill.partial {
             background: linear-gradient(90deg, #d97706, #fbbf24);
+        }
+        
+        .bd-zone-fill.bad {
+            background: linear-gradient(90deg, #dc2626, #f87171);
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
         }
         
         .bd-zone-levels {
@@ -2597,6 +2643,13 @@
             gap: 16px;
         }
         
+        /* Live cursor styling */
+        .cursor-line.live-cursor {
+            background: linear-gradient(180deg, rgba(74, 222, 128, 0.8) 0%, rgba(74, 222, 128, 0.3) 100%);
+            width: 2px;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+        }
+        
         /* Stacked Breaker Charts */
         .stack-container {
             display: flex;
@@ -2676,7 +2729,50 @@
         .stack-charts {
             display: flex;
             flex-direction: column;
-            background: #0d0d0f;
+            background: #0c0c0f;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .stack-charts-wrapper {
+            position: relative;
+        }
+        
+        .detail-cursor-line {
+            position: absolute;
+            top: 0;
+            bottom: 24px;
+            width: 2px;
+            background: rgba(74, 255, 150, 0.95);
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.8), 0 0 25px rgba(74, 222, 128, 0.5);
+        }
+        
+        .detail-cursor-line.visible {
+            display: block;
+        }
+        
+        .detail-cursor-time {
+            position: absolute;
+            bottom: 2px;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 600;
+            pointer-events: none;
+            z-index: 11;
+            display: none;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+        }
+        
+        .detail-cursor-time.visible {
+            display: block;
         }
         
         .stack-svg {
@@ -2687,7 +2783,7 @@
         
         .stack-svg-tall {
             width: 100%;
-            height: 130px;
+            height: 200px;
             display: block;
         }
         
@@ -3417,18 +3513,19 @@
             position: absolute;
             top: 16px;
             right: 16px;
-            background: rgba(255,255,255,0.08);
-            border: none;
-            color: #666;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
             width: 36px;
             height: 36px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: bold;
             transition: all 0.2s;
         }
         
-        .analysis-hero-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .analysis-hero-close:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
         
         .analysis-hero-top {
             display: flex;
@@ -4626,19 +4723,21 @@
         }
         
         .analysis-modal-close {
-            background: none;
-            border: none;
-            color: #888;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
             font-size: 24px;
+            font-weight: bold;
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
             transition: all 0.2s;
         }
         
         .analysis-modal-close:hover {
-            background: #333;
+            background: #ef4444;
             color: #fff;
+            border-color: #ef4444;
         }
         
         .analysis-modal-body {
@@ -6321,14 +6420,14 @@
             background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
         }
         
-        /* Confluence Modal */
+        /* Confluence Modal - Enterprise Design */
         .confluence-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: #0a0a0c;
+            background: #08080a;
             z-index: 10000;
             display: none;
         }
@@ -6342,42 +6441,75 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 20px;
-            background: #0a0a0c;
-            border-bottom: 1px solid #18181a;
+            padding: 14px 24px;
+            background: linear-gradient(180deg, #0f0f12 0%, #0a0a0c 100%);
+            border-bottom: 1px solid #1f1f24;
         }
         
         .confluence-modal-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            color: #fff;
+            color: #e0e0e0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            letter-spacing: 0.3px;
         }
         
         .confluence-modal-title span {
             color: #a78bfa;
+            font-size: 18px;
+        }
+        
+        .confluence-live-badge {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-left: 16px;
+            animation: livePulse 2s ease-in-out infinite;
+            display: none;
+            letter-spacing: 0.5px;
+        }
+        
+        .confluence-live-badge.visible {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; border-color: rgba(74, 222, 128, 0.4); }
+            50% { opacity: 0.7; border-color: rgba(74, 222, 128, 0.15); }
         }
         
         .confluence-modal-close {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 28px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            font-size: 20px;
+            font-weight: bold;
             cursor: pointer;
-            padding: 0 8px;
+            padding: 6px 14px;
+            border-radius: 4px;
             line-height: 1;
+            transition: all 0.15s;
         }
         
         .confluence-modal-close:hover {
             color: #fff;
+            background: #ef4444;
+            border-color: #ef4444;
         }
         
         .confluence-modal-time-header {
-            height: 28px;
-            background: #0a0a0c;
-            border-bottom: 1px solid #18181a;
+            height: 32px;
+            background: #0c0c0e;
+            border-bottom: 1px solid #1a1a1e;
             position: relative;
             overflow: hidden;
         }
@@ -6392,16 +6524,17 @@
         .confluence-time-tick {
             position: absolute;
             font-size: 10px;
-            color: #555;
+            color: #4a4a52;
             font-family: 'Roboto Mono', monospace;
             transform: translateX(-50%);
+            letter-spacing: 0.3px;
         }
         
         .confluence-modal-body {
             flex: 1;
             overflow: hidden;
             position: relative;
-            background: #030304;
+            background: #050506;
         }
         
         .confluence-scroll-container {
@@ -6409,60 +6542,154 @@
             overflow-x: auto;
             overflow-y: auto;
             position: relative;
-            background: #030304;
+            background: #050506;
         }
         
         .confluence-chart-inner {
             position: relative;
             min-height: 100%;
-            padding-left: 20px;
-            padding-top: 10px;
-            background: #030304;
+            padding-left: 24px;
+            padding-top: 16px;
+            padding-bottom: 16px;
+            background: #050506;
         }
         
         .confluence-cursor-line {
             position: fixed;
             top: 0;
             bottom: 0;
-            width: 1px;
-            background: rgba(168, 85, 247, 0.7);
+            width: 2px;
+            background: rgba(180, 150, 255, 0.95);
             pointer-events: none;
             z-index: 10001;
             display: none;
+            box-shadow: 0 0 12px rgba(180, 150, 255, 0.8), 0 0 25px rgba(168, 140, 255, 0.5);
         }
         
         .confluence-cursor-line.visible {
             display: block;
         }
         
+        .confluence-cursor-line.live {
+            background: rgba(74, 222, 128, 0.85);
+            width: 2px;
+            box-shadow: 0 0 4px rgba(74, 222, 128, 0.4);
+        }
+        
         .confluence-cursor-time {
             position: fixed;
-            background: #7c3aed;
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
             color: #fff;
-            padding: 3px 8px;
-            border-radius: 3px;
+            padding: 5px 12px;
+            border-radius: 4px;
             font-size: 11px;
             font-family: 'Roboto Mono', monospace;
+            font-weight: 600;
             pointer-events: none;
             z-index: 10004;
             display: none;
             transform: translateX(-50%);
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.7), 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+        
+        .confluence-cursor-time.live {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            box-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
         }
         
         .confluence-card {
             position: absolute;
-            background: #131416;
+            background: #0c0c0f;
             border-radius: 6px;
             overflow: hidden;
             min-width: 100px;
-            height: 220px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1a1a1e;
+            transition: all 0.2s ease;
+        }
+        
+        .confluence-card.cursor-highlight {
+            border-color: rgba(180, 150, 255, 0.8);
+            background: #12121a;
+            box-shadow: 
+                0 0 0 2px rgba(180, 150, 255, 0.4),
+                0 0 25px rgba(180, 150, 255, 0.3),
+                0 0 50px rgba(168, 140, 255, 0.15);
+        }
+        
+        .confluence-card.cursor-highlight-live {
+            border-color: rgba(74, 222, 128, 0.8);
+            background: #0c1410;
+            box-shadow: 
+                0 0 0 2px rgba(74, 222, 128, 0.4),
+                0 0 25px rgba(74, 222, 128, 0.35),
+                0 0 50px rgba(74, 222, 128, 0.2);
+        }
+        
+        .ccard-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: linear-gradient(180deg, #131316 0%, #0c0c0f 100%);
+            border-left: 3px solid #888;
+            border-bottom: 1px solid #1a1a1e;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            min-height: 35px;
+            box-sizing: border-box;
+        }
+        
+        .ccard-tf { font-weight: 700; letter-spacing: 0.3px; }
+        .ccard-sym { color: #9ca3af; }
+        .ccard-dir { font-weight: 700; font-size: 13px; }
+        .ccard-spacer { flex: 1; }
+        
+        .ccard-zone-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: #6b7280;
+        }
+        
+        .ccard-zone-pct {
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: rgba(107, 114, 128, 0.15);
+        }
+        .ccard-zone-pct.good { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .ccard-zone-pct.partial { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .ccard-zone-pct.bad { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        
+        .ccard-status {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .ccard-status.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .ccard-status.fail {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
         
         .confluence-card-body {
             height: 220px;
             position: relative;
-            background: #131416;
+            background: #0c0c0f;
+        }
+        
+        .confluence-card.cursor-highlight .confluence-card-body,
+        .confluence-card.cursor-highlight-live .confluence-card-body {
+            background: #0f0f14;
         }
         
         .confluence-card-body svg {
@@ -6471,19 +6698,26 @@
             height: 100%;
         }
         
-        /* Cursor label that appears at top of each card */
+        /* Cursor label - Light Glow Style */
         .confluence-cursor-label {
             position: fixed;
-            background: rgba(19, 20, 22, 0.98);
-            border-radius: 2px 0 0 2px;
-            padding: 4px 8px 4px 6px;
+            background: rgba(240, 235, 255, 0.92);
+            border: 1px solid rgba(168, 140, 255, 0.6);
+            border-radius: 4px;
+            padding: 5px 8px;
             font-family: 'Roboto Mono', monospace;
-            font-size: 12px;
-            color: #fff;
+            font-size: 10px;
+            color: #1a1a2e;
             pointer-events: none;
             z-index: 10003;
             white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(180, 160, 255, 0.5), 0 0 40px rgba(168, 140, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .confluence-cursor-label.live {
+            background: rgba(230, 255, 240, 0.92);
+            border-color: rgba(74, 222, 128, 0.7);
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5), 0 0 40px rgba(74, 222, 128, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .confluence-labels-container {
@@ -6501,8 +6735,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #555;
+            color: #4a4a52;
             font-size: 14px;
+            font-family: 'Roboto Mono', monospace;
         }
     </style>
 </head>
@@ -6594,6 +6829,8 @@
                         <div class="chart-inner" id="chart-inner"></div>
                     </div>
                 </div>
+                <!-- Main chart live cursor line -->
+                <div class="main-cursor-line" id="main-cursor-line"></div>
             </div>
             <div class="sticky-date" id="sticky-date"></div>
         </div>
@@ -6601,7 +6838,6 @@
         <!-- Detail Panel -->
         <div class="detail-panel">
             <div class="panel-header">
-                <span class="panel-time" id="panel-time"></span>
                 <span class="panel-type" id="panel-type">Details</span>
             </div>
             <div class="panel-content" id="panel-content">
@@ -6617,6 +6853,9 @@
     
     <!-- Toast -->
     <div class="toast" id="toast"></div>
+    
+    <!-- Main chart live cursor time badge -->
+    <div class="main-cursor-time" id="main-cursor-time"></div>
     
     <!-- Analysis Modal -->
     <div class="analysis-modal-overlay" id="analysis-modal" onclick="closeAnalysisModal(event)">
@@ -6654,7 +6893,7 @@
     <!-- Confluence Modal -->
     <div class="confluence-modal-overlay" id="confluence-modal">
         <div class="confluence-modal-header">
-            <div class="confluence-modal-title"><span>◈</span> Confluence View</div>
+            <div class="confluence-modal-title"><span>◈</span> Confluence View <span class="confluence-live-badge" id="confluence-live-badge">● LIVE</span></div>
             <button class="confluence-modal-close" onclick="closeConfluenceModal()">&times;</button>
         </div>
         <div class="confluence-modal-time-header" id="confluence-time-header">
@@ -6676,7 +6915,7 @@
         // ===== CONFIG =====
         const FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/snapshots.json";
         const SMT_FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/smt_signals.json";
-        const PIXELS_PER_MINUTE = 30;
+        const PIXELS_PER_MINUTE = 35;
         const BAR_HEIGHT = 26;  // Height of breaker bars
         const BAR_GAP = 3;      // Gap between stacked bars
         const LANE_PADDING = 6; // Top/bottom padding in swimlanes
@@ -6712,6 +6951,8 @@
         let renderedBars = []; // Cached bar elements for fast highlight
         let renderedLaneLabels = []; // Cached lane labels
         let laneStats = {}; // Stats per tf/symbol/direction
+        let detailCursorInterval = null; // For detail panel live cursor
+        let mainCursorInterval = null; // For main chart live cursor
         
         const filters = {
             nq: true, es: true,
@@ -6833,12 +7074,23 @@
                 if (allData.length > 0 && lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                     showLiveConfluence();
                 }
+                // Start main cursor
+                startMainCursor();
             } else {
                 exploreBtn.classList.remove('inactive');
                 exploreBtn.classList.add('explore-active');
                 liveBtn.classList.add('inactive');
                 // Clear live highlights
                 clearLiveHighlight();
+                // Clear main cursor
+                if (mainCursorInterval) {
+                    clearInterval(mainCursorInterval);
+                    mainCursorInterval = null;
+                }
+                const cursorLine = document.getElementById('main-cursor-line');
+                const cursorTime = document.getElementById('main-cursor-time');
+                if (cursorLine) cursorLine.classList.remove('visible');
+                if (cursorTime) cursorTime.style.display = 'none';
                 // Only show empty panel if nothing selected/locked
                 if (lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                     showEmptyPanel();
@@ -6903,15 +7155,15 @@
             const now = new Date();
             const nowMin = Math.floor(now.getTime() / 60000);
             
-            // Extend dataMaxTime to now if it's behind
+            // In live mode, always extend window to current time (even if data hasn't arrived yet)
+            const windowSize = windowEndMin - windowStartMin;
+            windowEndMin = Math.max(dataMaxTime, nowMin); // extend to current time
+            windowStartMin = Math.max(dataMinTime, windowEndMin - windowSize);
+            
+            // Also update dataMaxTime for other calculations
             if (nowMin > dataMaxTime) {
                 dataMaxTime = nowMin;
             }
-            
-            // In live mode, keep window at the latest edge
-            const windowSize = windowEndMin - windowStartMin;
-            windowEndMin = dataMaxTime;
-            windowStartMin = Math.max(dataMinTime, dataMaxTime - windowSize);
             
             setWindow(windowStartMin, windowEndMin, 'Live');
             renderChart();
@@ -6920,6 +7172,8 @@
             setTimeout(() => {
                 const container = document.getElementById('scroll-container');
                 container.scrollLeft = container.scrollWidth;
+                // Update cursor after scroll
+                updateMainCursor();
                 if (lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                     showLiveConfluence();
                 }
@@ -7182,8 +7436,16 @@
             console.log(`📊 Time range: ${minToDateTime(minTime)} to ${minToDateTime(maxTime)}`);
             console.log(`📊 Duration: ${((maxTime - minTime) / 60).toFixed(1)} hours`);
             
-            // Show all loaded data (use load limit, not hardcoded 8hr)
-            windowEndMin = dataMaxTime;
+            // In live mode, extend window to current time
+            const now = new Date();
+            const nowMin = Math.floor(now.getTime() / 60000);
+            
+            if (isLive && nowMin > dataMaxTime) {
+                windowEndMin = nowMin; // extend to current time
+                dataMaxTime = nowMin;
+            } else {
+                windowEndMin = dataMaxTime;
+            }
             windowStartMin = dataMinTime;
             
             setWindow(windowStartMin, windowEndMin, 'Latest');
@@ -7429,11 +7691,14 @@
             });
             
             // Update window to include new data
-            // In live mode, keep window size fixed and slide it
+            // In live mode, keep window size fixed and slide it, extending to current time
             if (isLive) {
+                const now = new Date();
+                const nowMin = Math.floor(now.getTime() / 60000);
                 const windowSize = windowEndMin - windowStartMin;
-                windowEndMin = dataMaxTime;
-                windowStartMin = Math.max(dataMinTime, dataMaxTime - windowSize);
+                // Extend to current time if ahead of latest data
+                windowEndMin = Math.max(dataMaxTime, nowMin);
+                windowStartMin = Math.max(dataMinTime, windowEndMin - windowSize);
             } else {
                 windowEndMin = dataMaxTime;
             }
@@ -7578,6 +7843,10 @@
                     const container = document.getElementById('scroll-container');
                     container.scrollLeft = container.scrollWidth;
                     updateViewportIndicator();
+                    // Update cursor position after scroll
+                    if (isLive) {
+                        updateMainCursor();
+                    }
                     // Only show live confluence if nothing selected/locked
                     if (isLive && lockedConfluenceMin === null && !selectedBreakerId && !selectedSmtId) {
                         showLiveConfluence();
@@ -7710,7 +7979,7 @@
             selectedSmtId = null;
             
             // Calculate chart width based on data, add padding for future fade effect
-            const chartWidth = (windowEndMin - windowStartMin) * PIXELS_PER_MINUTE + (PIXELS_PER_MINUTE * 2);
+            const chartWidth = (windowEndMin - windowStartMin) * PIXELS_PER_MINUTE + PIXELS_PER_MINUTE;
             
             chartInner.style.width = chartWidth + 'px';
             timeHeader.style.width = chartWidth + 'px';
@@ -7965,7 +8234,6 @@
                 const entryLine = document.createElement('div');
                 entryLine.className = 'entry-line';
                 entryLine.style.left = x + 'px';
-                entryLine.style.height = totalHeight + 'px';
                 entryLine.dataset.entryMin = entryMin;
                 entryLine.title = 'Entry: ' + minToTime(entryMin);
                 entryLine.onclick = () => selectEntry(entryMin);
@@ -7976,7 +8244,6 @@
             const cursorLine = document.createElement('div');
             cursorLine.className = 'cursor-line';
             cursorLine.id = 'cursor-line';
-            cursorLine.style.height = totalHeight + 'px';
             chartInner.appendChild(cursorLine);
             
             // Set chart inner height so absolute positioned elements span correctly
@@ -8008,6 +8275,7 @@
                 if (mouseOverChart && x >= 0 && x <= chartWidth) {
                     cursorLine.style.left = x + 'px';
                     cursorLine.classList.add('visible');
+                    cursorLine.classList.remove('live-cursor'); // Switch from live to user cursor
                     
                     // Calculate cursor time
                     const cursorMin = Math.round(windowStartMin + x / PIXELS_PER_MINUTE);
@@ -8146,6 +8414,71 @@
             
             // Update viewport indicator after DOM is ready
             setTimeout(updateViewportIndicator, 50);
+            
+            // Start main chart live cursor in live mode
+            if (isLive) {
+                startMainCursor();
+            }
+        }
+        
+        // Main chart live cursor
+        function startMainCursor() {
+            if (mainCursorInterval) {
+                clearInterval(mainCursorInterval);
+            }
+            updateMainCursor();
+            // Update every 200ms for smoother tracking
+            mainCursorInterval = setInterval(updateMainCursor, 200);
+        }
+        
+        function updateMainCursor() {
+            const cursorLine = document.getElementById('main-cursor-line');
+            const cursorTime = document.getElementById('main-cursor-time');
+            
+            if (!isLive) {
+                if (cursorLine) cursorLine.classList.remove('visible');
+                if (cursorTime) cursorTime.style.display = 'none';
+                return;
+            }
+            
+            const container = document.getElementById('scroll-container');
+            if (!container || !cursorLine || !cursorTime) return;
+            
+            const now = new Date();
+            const currentMin = Math.floor(now.getTime() / 60000);
+            
+            // Calculate chart X position for current time
+            const leftPanelWidth = 195;
+            const chartX = (currentMin - windowStartMin) * PIXELS_PER_MINUTE;
+            
+            // Position within scroll-container (absolute)
+            const posX = chartX + leftPanelWidth;
+            
+            // Show cursor if current time is within window range
+            if (currentMin >= windowStartMin && currentMin <= windowEndMin) {
+                // Cursor line - absolute position in scroll-container
+                cursorLine.style.left = posX + 'px';
+                cursorLine.classList.add('visible');
+                
+                // Check if visible in viewport for time badge
+                const scrollLeft = container.scrollLeft;
+                const containerWidth = container.clientWidth;
+                const visibleX = posX - scrollLeft;
+                
+                if (visibleX >= leftPanelWidth && visibleX <= containerWidth) {
+                    // Time badge - fixed position above chart
+                    const scrollRect = container.getBoundingClientRect();
+                    cursorTime.textContent = minToTime(currentMin);
+                    cursorTime.style.display = 'block';
+                    cursorTime.style.left = (scrollRect.left + visibleX - 30) + 'px';
+                    cursorTime.style.top = (scrollRect.top - 30) + 'px';
+                } else {
+                    cursorTime.style.display = 'none';
+                }
+            } else {
+                cursorLine.classList.remove('visible');
+                cursorTime.style.display = 'none';
+            }
         }
         
         // ===== SMT DATA LOADING =====
@@ -8401,7 +8734,7 @@
             const smt = smtData.find(s => s.smtId === smtId);
             if (!smt) return;
             
-            document.getElementById('panel-time').textContent = minToTime(smt.smtMin);
+            const pt = document.getElementById('panel-time'); if (pt) pt.textContent = minToTime(smt.smtMin);
             document.getElementById('panel-type').textContent = 'SMT Signal';
             document.getElementById('panel-type').classList.remove('live');
             
@@ -8607,8 +8940,17 @@
         
         function createBreakerBar(b, laneHeight) {
             const startX = Math.max(0, (b.startMin - windowStartMin) * PIXELS_PER_MINUTE);
-            const endX = (b.endMin - windowStartMin) * PIXELS_PER_MINUTE;
-            const barWidth = Math.max(endX - startX + PIXELS_PER_MINUTE, 6);
+            
+            // In live mode, cap active breaker end at current time
+            let effectiveEndMin = b.endMin;
+            if (isLive && b.status.toUpperCase() === 'ACTIVE') {
+                const now = new Date();
+                const currentMin = Math.floor(now.getTime() / 60000);
+                effectiveEndMin = Math.min(b.endMin, currentMin);
+            }
+            
+            const endX = (effectiveEndMin - windowStartMin) * PIXELS_PER_MINUTE;
+            const barWidth = Math.max(endX - startX, 6); // minimum 6px width
             
             // Calculate vertical position - top aligned with padding
             const topOffset = LANE_PADDING + b.stackIdx * (BAR_HEIGHT + BAR_GAP);
@@ -8708,7 +9050,7 @@
         
         // ===== DETAIL PANEL =====
         function showEmptyPanel() {
-            document.getElementById('panel-time').textContent = '';
+            const pt = document.getElementById('panel-time'); if (pt) pt.textContent = '';
             document.getElementById('panel-type').textContent = 'Details';
             document.getElementById('panel-type').classList.remove('live');
             
@@ -8740,7 +9082,7 @@
                 return a.dir === 'bull' ? -1 : 1;
             });
             
-            document.getElementById('panel-time').textContent = minToTime(cursorMin);
+            const pt = document.getElementById('panel-time'); if (pt) pt.textContent = minToTime(cursorMin);
             document.getElementById('panel-type').textContent = 'Confluence';
             document.getElementById('panel-type').classList.remove('live');
             
@@ -8770,6 +9112,16 @@
             
             highlightLiveActive();
             
+            // Position cursor line at current time (if chart is rendered)
+            const cursorLine = document.getElementById('cursor-line');
+            if (cursorLine && windowStartMin) {
+                const xPos = (currentMin - windowStartMin) * PIXELS_PER_MINUTE;
+                if (xPos >= 0) {
+                    cursorLine.style.left = xPos + 'px';
+                    cursorLine.classList.add('visible', 'live-cursor');
+                }
+            }
+            
             const activeBreakers = allData.filter(d => 
                 d.startMin <= currentMin && d.endMin >= currentMin
             );
@@ -8787,7 +9139,7 @@
                 return a.dir === 'bull' ? -1 : 1;
             });
             
-            document.getElementById('panel-time').textContent = minToTime(currentMin);
+            const pt = document.getElementById('panel-time'); if (pt) pt.textContent = minToTime(currentMin);
             document.getElementById('panel-type').textContent = 'Live Confluence';
             document.getElementById('panel-type').classList.add('live');
             
@@ -8838,6 +9190,10 @@
             
             const combinedChart = generateCombinedFibPriceChart(breaker, dirColor);
             
+            // Get time range for cursor positioning
+            const minTime = events[0].absMin;
+            const maxTime = events[events.length - 1].absMin;
+            
             return `
                 <div class="stack-item${isSelected}" data-breaker-id="${breaker.id}" onclick="selectBreaker('${breaker.id}')">
                     <div class="stack-label" style="border-left-color:${tfColor}">
@@ -8846,23 +9202,24 @@
                         <span class="stack-dir" style="color:${dirColor}">${breaker.dir.toUpperCase()}</span>
                         <span class="stack-spacer"></span>
                         <span class="stack-legend">
-                            <span class="legend-item"><span class="legend-line" style="background:#888"></span><span style="color:#888">Brkr</span></span>
                             <span class="legend-item"><span class="legend-line dashed" style="border-color:${dirColor}"></span><span style="color:${dirColor}">Peak</span></span>
                             <span class="legend-item"><span class="legend-line" style="background:${dirColor}"></span><span style="color:${dirColor}">Fib</span></span>
                         </span>
                     </div>
-                    <div class="stack-charts">
-                        ${combinedChart}
+                    <div class="stack-charts-wrapper" data-min-time="${minTime}" data-max-time="${maxTime}">
+                        <div class="stack-charts">
+                            ${combinedChart}
+                        </div>
                     </div>
                 </div>
             `;
         }
         
-        function generateCombinedFibPriceChart(breaker, dirColor) {
+        function generateCombinedFibPriceChart(breaker, dirColor, svgHeight = 200) {
             const events = breaker.events;
-            const width = 400;
-            const height = 130;
-            const padding = { top: 8, right: 52, bottom: 18, left: 32 };
+            const width = 420;
+            const height = svgHeight;
+            const padding = { top: 12, right: 52, bottom: 24, left: 36 };
             const chartWidth = width - padding.left - padding.right;
             const chartHeight = height - padding.top - padding.bottom;
             
@@ -8870,19 +9227,15 @@
             const maxTime = events[events.length - 1].absMin;
             const timeRange = maxTime - minTime || 1;
             
-            // Get breaker price and current price
             const breakerPrice = breaker.price || 0;
             const isBull = breaker.dir === 'bull';
             
-            // Get current price from last event
             const lastEvent = events[events.length - 1];
             const currentPrice = lastEvent.price || 0;
-            const currentFib = lastEvent.fib || 0;
             
-            // Fixed fib scale 0-4
+            // Fixed Y-axis: always 0-4
             const fibCeil = 4;
             
-            // Y-axis helper: Bulls = 0 bottom, 4 top; Bears = 0 top, 4 bottom
             const fibToY = (fib) => {
                 if (isBull) {
                     return padding.top + chartHeight - (fib / fibCeil) * chartHeight;
@@ -8897,95 +9250,107 @@
                 sampledEvents = events.filter((e, i) => i === 0 || i === events.length - 1 || i % step === 0);
             }
             
-            // Current fib line (direction colored - solid)
             const fibPoints = sampledEvents.map(e => ({
                 x: padding.left + ((e.absMin - minTime) / timeRange) * chartWidth,
                 y: fibToY(e.fib || 0),
-                fib: e.fib || 0,
-                price: e.price || 0
+                fib: e.fib || 0
             }));
             
-            // Peak fib line (direction colored - dashed)
             const peakPoints = sampledEvents.map(e => ({
                 x: padding.left + ((e.absMin - minTime) / timeRange) * chartWidth,
                 y: fibToY(e.maxFib || e.fib || 0),
                 fib: e.maxFib || e.fib || 0
             }));
             
-            // Find peak location
-            let peakX = fibPoints[0].x;
-            let peakY = fibPoints[0].y;
-            let peakFib = 0;
+            let peakX = fibPoints[0].x, peakY = fibPoints[0].y, peakFib = 0;
             fibPoints.forEach(p => {
-                if (p.fib > peakFib) {
-                    peakFib = p.fib;
-                    peakX = p.x;
-                    peakY = p.y;
-                }
+                if (p.fib > peakFib) { peakFib = p.fib; peakX = p.x; peakY = p.y; }
             });
             
             const fibPath = fibPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
             const peakPath = peakPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-            
-            // Area fill - needs to go to the zero line
             const zeroY = fibToY(0);
             const areaPath = fibPath + ` L ${fibPoints[fibPoints.length-1].x} ${zeroY} L ${fibPoints[0].x} ${zeroY} Z`;
-            
-            // Breaker line at fib = 1.0 (neutral color)
             const breakerY = fibToY(1.0);
+            
+            // Breaker Zone with dotted pattern (between fib 0 and fib 1)
+            const zoneTopY = fibToY(1.0);
+            const zoneBottomY = fibToY(0);
+            const dotColor = isBull ? 'rgba(74, 222, 128, 0.4)' : 'rgba(248, 113, 113, 0.4)';
+            const zoneBorderColor = isBull ? 'rgba(74, 222, 128, 0.7)' : 'rgba(248, 113, 113, 0.7)';
+            const zoneLabelColor = isBull ? 'rgba(74, 222, 128, 0.9)' : 'rgba(248, 113, 113, 0.9)';
+            const patternId = 'detail-zone-' + (breaker.id || 'x').replace(/[^a-zA-Z0-9]/g, '');
+            const zoneRect = `
+                <defs>
+                    <pattern id="${patternId}" width="8" height="8" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.2" fill="${dotColor}"/>
+                    </pattern>
+                </defs>
+                <rect x="${padding.left}" y="${Math.min(zoneTopY, zoneBottomY)}" 
+                      width="${chartWidth}" height="${Math.abs(zoneBottomY - zoneTopY)}" 
+                      fill="url(#${patternId})"/>
+                <line x1="${padding.left}" y1="${zoneTopY}" x2="${padding.left + chartWidth}" y2="${zoneTopY}" 
+                      stroke="${zoneBorderColor}" stroke-width="1.5"/>
+                <line x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}" 
+                      stroke="${zoneBorderColor}" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="${padding.left + 4}" y="${Math.min(zoneTopY, zoneBottomY) + 14}" 
+                      fill="${zoneLabelColor}" font-size="10" font-family="Roboto Mono" font-weight="600">ZONE</text>
+            `;
             
             // Y-axis grid and labels
             let yGrid = '';
-            const gridVals = [0, 1, 2, 3, 4].filter(v => v <= fibCeil);
+            const gridVals = [0, 1, 2, 3, 4];
             gridVals.forEach(val => {
                 const y = fibToY(val);
                 const isBreaker = val === 1;
-                // Breaker line is neutral gray, others are darker
-                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${isBreaker ? '#888' : '#252528'}" stroke-width="${isBreaker ? 1.5 : 0.5}"/>`;
-                yGrid += `<text x="${padding.left - 3}" y="${y + 3}" text-anchor="end" fill="${isBreaker ? '#aaa' : '#666'}" font-size="9" font-family="Roboto Mono" font-weight="${isBreaker ? 600 : 400}">${val.toFixed(1)}</text>`;
+                const isFib4 = val === 4;
+                const lineColor = isBreaker ? '#555' : (isFib4 ? '#7c3aed' : '#1e1e21');
+                const lineWidth = isBreaker ? 1 : 0.5;
+                const textColor = isBreaker ? '#888' : (isFib4 ? '#9d7aed' : '#444');
+                const fontWeight = isBreaker ? 600 : 400;
+                yGrid += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + chartWidth}" y2="${y}" stroke="${lineColor}" stroke-width="${lineWidth}"/>`;
+                yGrid += `<text x="${padding.left - 4}" y="${y + 4}" text-anchor="end" fill="${textColor}" font-size="10" font-family="Roboto Mono" font-weight="${fontWeight}">${val.toFixed(1)}</text>`;
             });
             
             // Time labels
             const midTime = minTime + Math.floor(timeRange / 2);
             const timeLabels = `
-                <text x="${padding.left}" y="${height - 2}" text-anchor="start" fill="#555" font-size="8" font-family="Roboto Mono">${minToTime(minTime)}</text>
-                <text x="${padding.left + chartWidth/2}" y="${height - 2}" text-anchor="middle" fill="#555" font-size="8" font-family="Roboto Mono">${minToTime(midTime)}</text>
-                <text x="${padding.left + chartWidth}" y="${height - 2}" text-anchor="end" fill="#555" font-size="8" font-family="Roboto Mono">${minToTime(maxTime)}</text>
+                <text x="${padding.left}" y="${height - 4}" text-anchor="start" fill="#555" font-size="9" font-family="Roboto Mono">${minToTime(minTime)}</text>
+                <text x="${padding.left + chartWidth/2}" y="${height - 4}" text-anchor="middle" fill="#555" font-size="9" font-family="Roboto Mono">${minToTime(midTime)}</text>
+                <text x="${padding.left + chartWidth}" y="${height - 4}" text-anchor="end" fill="#555" font-size="9" font-family="Roboto Mono">${minToTime(maxTime)}</text>
             `;
             
-            // Breaker price on right at fib=1.0 line
-            const breakerPriceLabel = `
-                <text x="${width - 2}" y="${breakerY + 3}" text-anchor="end" fill="#888" font-size="10" font-family="Roboto Mono">${Math.round(breakerPrice)}</text>
-            `;
+            // Price labels
+            const breakerPriceLabel = `<text x="${width - 2}" y="${breakerY + 4}" text-anchor="end" fill="#888" font-size="11" font-family="Roboto Mono" font-weight="500">${Math.round(breakerPrice)}</text>`;
             
             // Peak dots on maxFib line
             let dots = '';
             let dotPoints = peakPoints;
-            if (peakPoints.length > 12) {
-                const step = Math.ceil(peakPoints.length / 10);
+            if (peakPoints.length > 15) {
+                const step = Math.ceil(peakPoints.length / 12);
                 dotPoints = peakPoints.filter((p, i) => i === 0 || i === peakPoints.length - 1 || i % step === 0);
             }
             dotPoints.forEach(p => {
-                dots += `<circle cx="${p.x}" cy="${p.y}" r="2" fill="${dirColor}"/>`;
+                dots += `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${dirColor}"/>`;
             });
             
             // Last point marker with current price
             const lastPoint = fibPoints[fibPoints.length - 1];
             const lastPointY = lastPoint ? lastPoint.y : 0;
-            const currentPriceLabel = lastPoint && currentPrice > 0 ? `
-                <text x="${width - 2}" y="${lastPointY + 3}" text-anchor="end" fill="#fb923c" font-size="10" font-family="Roboto Mono" font-weight="500">${Math.round(currentPrice)}</text>
-            ` : '';
+            const currentPriceLabel = lastPoint && currentPrice > 0 ? 
+                `<text x="${width - 2}" y="${lastPointY + 4}" text-anchor="end" fill="#fb923c" font-size="11" font-family="Roboto Mono" font-weight="600">${Math.round(currentPrice)}</text>` : '';
             
             return `
-                <svg class="stack-svg-tall" viewBox="0 0 ${width} ${height}">
+                <svg class="stack-svg-tall" viewBox="0 0 ${width} ${height}" style="width:100%;height:${height}px;">
+                    ${zoneRect}
                     ${yGrid}
-                    <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.08"/>
+                    <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.15"/>
                     <path d="${peakPath}" fill="none" stroke="${dirColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
-                    <path d="${fibPath}" fill="none" stroke="${dirColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="${fibPath}" fill="none" stroke="${dirColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     ${dots}
-                    <circle cx="${peakX}" cy="${peakY}" r="5" fill="${dirColor}" stroke="#111" stroke-width="1"/>
-                    <text x="${peakX}" y="${peakY + (isBull ? -7 : 14)}" text-anchor="middle" fill="${dirColor}" font-size="11" font-family="Roboto Mono" font-weight="600">${peakFib.toFixed(2)}</text>
-                    ${lastPoint ? `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="#fb923c"/>` : ''}
+                    <circle cx="${peakX}" cy="${peakY}" r="6" fill="${dirColor}" stroke="#0c0c0f" stroke-width="2"/>
+                    <text x="${peakX}" y="${peakY + (isBull ? -10 : 16)}" text-anchor="middle" fill="${dirColor}" font-size="12" font-family="Roboto Mono" font-weight="700">${peakFib.toFixed(2)}</text>
+                    ${lastPoint ? `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="4" fill="#fb923c"/>` : ''}
                     ${breakerPriceLabel}
                     ${currentPriceLabel}
                     ${timeLabels}
@@ -9034,27 +9399,26 @@
                     statusIcon = '✓';
                 }
                 
-                // Generate charts
-                let fibChart = '';
-                try {
-                    fibChart = generateFibChart(b);
-                } catch (chartErr) {
-                    fibChart = '<div style="color:#666;text-align:center;padding:20px;">Chart unavailable</div>';
-                }
-                
-                let priceZone = '';
-                try {
-                    priceZone = generatePriceZone(b);
-                } catch (zoneErr) {
-                    priceZone = '<div style="color:#666;text-align:center;padding:20px;">Zone unavailable</div>';
-                }
-                
                 // Values
                 const symbolLower = (b.symbol || 'ES').toLowerCase();
                 const symbolUpper = (b.symbol || 'ES').toUpperCase();
                 const dirLower = (b.dir || 'bull').toLowerCase();
                 const isBull = dirLower === 'bull';
                 const tfDisplay = TF_DISPLAY[b.tf] || (b.tf || '1m').toUpperCase();
+                
+                // Generate combined chart (taller for detail view)
+                let combinedChart = '';
+                const dirColor = isBull ? '#4ade80' : '#f87171';
+                try {
+                    combinedChart = generateCombinedFibPriceChart(b, dirColor, 280);
+                } catch (chartErr) {
+                    combinedChart = '<div style="color:#666;text-align:center;padding:20px;">Chart unavailable</div>';
+                }
+                
+                // Get time range for cursor
+                const events = b.events || [];
+                const minTimeData = events.length > 0 ? events[0].absMin : 0;
+                const maxTimeData = events.length > 0 ? events[events.length - 1].absMin : 0;
                 
                 const currentFib = (b.currentFib || 0).toFixed(2);
                 const maxFib = (b.maxFib || 0).toFixed(2);
@@ -9076,7 +9440,7 @@
                 const startTime = minToTime(b.startMin || 0);
                 const endTime = minToTime(b.endMin || 0);
                 
-                document.getElementById('panel-time').textContent = startTime;
+                const pt = document.getElementById('panel-time'); if (pt) pt.textContent = startTime;
                 document.getElementById('panel-type').textContent = 'Breaker Detail';
                 document.getElementById('panel-type').classList.remove('live');
                 
@@ -9094,8 +9458,6 @@
                         </div>
                         <div class="bd-info-row">
                             <span class="bd-tf">${tfDisplay}</span>
-                            <span class="bd-separator">·</span>
-                            <span class="bd-timerange">${startTime} → ${endTime}</span>
                             <span class="bd-separator">·</span>
                             <span class="bd-dur">${duration}</span>
                         </div>
@@ -9123,10 +9485,10 @@
                     <div class="bd-zone-entry">
                         <div class="bd-zone-header">
                             <span class="bd-zone-title">Zone Entry</span>
-                            <span class="bd-zone-pct ${zonePct >= 50 ? 'good' : zonePct > 0 ? 'partial' : 'none'}">${zonePct}%</span>
+                            <span class="bd-zone-pct ${zonePct >= 50 ? 'bad' : zonePct > 0 ? 'partial' : 'none'}">${zonePct}%</span>
                         </div>
                         <div class="bd-zone-bar">
-                            <div class="bd-zone-fill ${zonePct >= 50 ? 'good' : zonePct > 0 ? 'partial' : ''}" style="width: ${zonePct}%"></div>
+                            <div class="bd-zone-fill ${zonePct >= 50 ? 'bad' : zonePct > 0 ? 'partial' : ''}" style="width: ${zonePct}%"></div>
                         </div>
                         <div class="bd-zone-levels">
                             <span>H2: ${breakerPrice}</span>
@@ -9136,16 +9498,15 @@
                     </div>
                     
                     <div class="bd-chart-section">
-                        <div class="bd-chart-title">Price Action</div>
-                        ${priceZone}
-                    </div>
-                    
-                    <div class="bd-chart-section">
                         <div class="bd-chart-title">
                             Fib Journey
                             <span class="bd-chart-legend"><span class="leg-p"></span>Peak <span class="leg-c"></span>Current</span>
                         </div>
-                        ${fibChart}
+                        <div class="stack-charts-wrapper" data-min-time="${minTimeData}" data-max-time="${maxTimeData}">
+                            <div class="stack-charts">
+                                ${combinedChart}
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="bd-breaker-id">${b.id}</div>
@@ -9172,6 +9533,72 @@
                 document.getElementById('panel-content').innerHTML = `
                     <div style="color:#f87171;padding:20px;">Error loading details</div>
                 `;
+            }
+        }
+        
+        // Detail panel live cursor
+        function startDetailCursor() {
+            // Clear any existing interval
+            if (detailCursorInterval) {
+                clearInterval(detailCursorInterval);
+            }
+            
+            // Update immediately
+            updateDetailCursor();
+            
+            // Update every second
+            detailCursorInterval = setInterval(updateDetailCursor, 1000);
+        }
+        
+        function updateDetailCursor() {
+            const wrapper = document.querySelector('.stack-charts-wrapper');
+            if (!wrapper) return;
+            
+            const minTime = parseInt(wrapper.dataset.minTime);
+            const maxTime = parseInt(wrapper.dataset.maxTime);
+            if (!minTime || !maxTime) return;
+            
+            const cursorLine = wrapper.querySelector('.detail-cursor-line');
+            const cursorTime = wrapper.querySelector('.detail-cursor-time');
+            if (!cursorLine || !cursorTime) return;
+            
+            const now = new Date();
+            const currentMin = Math.floor(now.getTime() / 60000);
+            
+            // Calculate position within chart
+            // Chart has padding: left: 36, right: 52, total width 420
+            const chartLeft = 36;
+            const chartWidth = 420 - 36 - 52; // 332px
+            const wrapperWidth = wrapper.offsetWidth || 420;
+            
+            const timeRange = maxTime - minTime || 1;
+            const progress = (currentMin - minTime) / timeRange;
+            
+            // Only show cursor if within time range
+            if (progress >= 0 && progress <= 1) {
+                const xPos = chartLeft + (progress * chartWidth);
+                const xPercent = (xPos / wrapperWidth) * 100;
+                
+                cursorLine.style.left = xPercent + '%';
+                cursorLine.classList.add('visible');
+                
+                cursorTime.textContent = minToTime(currentMin);
+                cursorTime.style.left = xPercent + '%';
+                cursorTime.classList.add('visible');
+            } else if (progress > 1) {
+                // Cursor at end
+                const xPos = chartLeft + chartWidth;
+                const xPercent = (xPos / wrapperWidth) * 100;
+                
+                cursorLine.style.left = xPercent + '%';
+                cursorLine.classList.add('visible');
+                
+                cursorTime.textContent = minToTime(currentMin);
+                cursorTime.style.left = xPercent + '%';
+                cursorTime.classList.add('visible');
+            } else {
+                cursorLine.classList.remove('visible');
+                cursorTime.classList.remove('visible');
             }
         }
         
@@ -9666,7 +10093,7 @@
                 });
             });
             
-            document.getElementById('panel-time').textContent = minToTime(entryMin);
+            const pt = document.getElementById('panel-time'); if (pt) pt.textContent = minToTime(entryMin);
             document.getElementById('panel-type').textContent = 'Entry Confluence';
             document.getElementById('panel-type').classList.remove('live');
             
@@ -10048,6 +10475,11 @@
             
             // Update sticky date indicator
             updateStickyDate(container.scrollLeft);
+            
+            // Update main cursor position on scroll
+            if (isLive) {
+                updateMainCursor();
+            }
         }
         
         function updateStickyDate(scrollLeft) {
@@ -10318,18 +10750,29 @@
         }
         
         // ===== CONFLUENCE MODAL =====
-        const CONFLUENCE_CARD_HEIGHT = 220; // full chart height, no header
-        const CONFLUENCE_CARD_GAP = 8;
-        const CONFLUENCE_PPM = 25; // pixels per minute
+        const CONFLUENCE_CARD_HEIGHT = 255; // 220px chart + 35px header
+        const CONFLUENCE_CARD_GAP = 16;
+        const CONFLUENCE_PPM = 35; // pixels per minute
         
         let confluenceModalOpen = false;
         let confluenceScrollHandler = null;
         let confluenceMoveHandler = null;
+        let confluenceLiveCursorInterval = null;
         
         function openConfluenceModal() {
             const modal = document.getElementById('confluence-modal');
             modal.classList.add('visible');
             confluenceModalOpen = true;
+            
+            // Show/hide LIVE badge
+            const liveBadge = document.getElementById('confluence-live-badge');
+            if (liveBadge) {
+                if (isLive) {
+                    liveBadge.classList.add('visible');
+                } else {
+                    liveBadge.classList.remove('visible');
+                }
+            }
             
             renderConfluenceModal();
             setupConfluenceHandlers();
@@ -10352,6 +10795,12 @@
             // Clean up cursor labels
             const labelsContainer = document.getElementById('confluence-labels-container');
             if (labelsContainer) labelsContainer.innerHTML = '';
+            
+            // Clean up live cursor interval
+            if (confluenceLiveCursorInterval) {
+                clearInterval(confluenceLiveCursorInterval);
+                confluenceLiveCursorInterval = null;
+            }
             
             // Remove handlers
             document.removeEventListener('keydown', handleConfluenceEscape);
@@ -10376,8 +10825,16 @@
             
             // Calculate time range
             const minTime = Math.min(...allData.map(d => d.startMin));
-            const maxTime = Math.max(...allData.map(d => d.endMin));
-            const chartWidth = (maxTime - minTime + 5) * CONFLUENCE_PPM; // +5 min padding
+            let maxTime = Math.max(...allData.map(d => d.endMin));
+            
+            // In live mode, extend to current time
+            if (isLive) {
+                const now = new Date();
+                const currentMin = Math.floor(now.getTime() / 60000);
+                maxTime = Math.max(maxTime, currentMin);
+            }
+            
+            const chartWidth = (maxTime - minTime + 1) * CONFLUENCE_PPM; // +1 min padding
             
             // Render time header
             renderConfluenceTimeHeader(minTime, maxTime, chartWidth);
@@ -10404,13 +10861,13 @@
             const rowRanges = []; // Track occupied time ranges per row: [{start, end}, ...]
             
             const chartInner = document.getElementById('confluence-chart-inner');
-            chartInner.style.width = (chartWidth + 40) + 'px';
+            chartInner.style.width = (chartWidth + 20) + 'px';
             
             let html = '';
             let maxY = 0;
             
             sortedBreakers.forEach(breaker => {
-                const startX = (breaker.startMin - minTime) * CONFLUENCE_PPM + 20;
+                const startX = (breaker.startMin - minTime) * CONFLUENCE_PPM + 12;
                 const width = Math.max((breaker.endMin - breaker.startMin) * CONFLUENCE_PPM, 100);
                 const endX = startX + width;
                 
@@ -10440,7 +10897,7 @@
                 }
                 
                 // Add this breaker's range to the row
-                rowRanges[row].push({ start: startX, end: endX + 10 }); // +10 gap
+                rowRanges[row].push({ start: startX - 5, end: endX + 15 }); // padding on both sides
                 
                 const y = row * cardHeight;
                 maxY = Math.max(maxY, y + cardHeight);
@@ -10454,12 +10911,12 @@
         
         function renderConfluenceTimeHeader(minTime, maxTime, chartWidth) {
             const timeInner = document.getElementById('confluence-time-inner');
-            timeInner.style.width = (chartWidth + 40) + 'px';
+            timeInner.style.width = (chartWidth + 20) + 'px';
             
             let html = '';
             // Tick every 5 minutes
-            for (let t = Math.ceil(minTime / 5) * 5; t <= maxTime + 5; t += 5) {
-                const x = (t - minTime) * CONFLUENCE_PPM + 20; // +20 to align with cards
+            for (let t = Math.ceil(minTime / 5) * 5; t <= maxTime; t += 5) {
+                const x = (t - minTime) * CONFLUENCE_PPM + 12; // +12 to align with cards
                 const timeStr = minToTime(t);
                 html += `<span class="confluence-time-tick" style="left:${x}px">${timeStr}</span>`;
             }
@@ -10476,9 +10933,45 @@
             const dirArrow = isBull ? '▲' : '▼';
             const events = breaker.events;
             
+            // Parse status for display
+            const parsed = parseStatus(breaker.status);
+            let statusBadge = '';
+            if (parsed.isSuccess) {
+                const statusText = parsed.icon === 'T2' ? 'T2 WIN' : 'T1 WIN';
+                statusBadge = `<span class="ccard-status success">${statusText}</span>`;
+            } else if (parsed.isFail) {
+                statusBadge = `<span class="ccard-status fail">FAIL</span>`;
+            }
+            
+            // Zone info
+            const zonePct = Math.min(breaker.zonePct || 0, 100);
+            const zoneSize = breaker.zoneSize || 0;
+            const breakerHigh = breaker.breakerHigh || breaker.price || 0;
+            const sweepLow = breaker.sweepLow || 0;
+            const zonePctClass = zonePct >= 50 ? 'bad' : (zonePct > 0 ? 'partial' : '');
+            
+            // Zone display
+            const zoneHtml = `
+                <span class="ccard-zone-info">
+                    <span title="H2 (Breaker High)">${Math.round(breakerHigh)}</span>
+                    <span style="color:#444">|</span>
+                    <span class="ccard-zone-pct ${zonePctClass}" title="Zone penetration">${zonePct}%</span>
+                    <span style="color:#444">|</span>
+                    <span title="Zone size">${zoneSize}z</span>
+                </span>
+            `;
+            
             if (!events || events.length < 2) {
                 return `
                     <div class="confluence-card" data-breaker-id="${breaker.id}" style="left:${x}px; top:${y}px; width:${width}px;">
+                        <div class="ccard-header" style="border-left-color:${tfColor}">
+                            <span class="ccard-tf" style="color:${tfColor}">${tfDisplay}</span>
+                            <span class="ccard-sym">${breaker.symbol}</span>
+                            <span class="ccard-dir" style="color:${dirColor}">${dirArrow}</span>
+                            <span class="ccard-spacer"></span>
+                            ${zoneHtml}
+                            ${statusBadge}
+                        </div>
                         <div class="confluence-card-body">
                             <div style="display:flex; align-items:center; justify-content:center; height:100%; color:#333;">No data</div>
                         </div>
@@ -10490,6 +10983,14 @@
             
             return `
                 <div class="confluence-card" data-breaker-id="${breaker.id}" style="left:${x}px; top:${y}px; width:${width}px;">
+                    <div class="ccard-header" style="border-left-color:${tfColor}">
+                        <span class="ccard-tf" style="color:${tfColor}">${tfDisplay}</span>
+                        <span class="ccard-sym">${breaker.symbol}</span>
+                        <span class="ccard-dir" style="color:${dirColor}">${dirArrow}</span>
+                        <span class="ccard-spacer"></span>
+                        ${zoneHtml}
+                        ${statusBadge}
+                    </div>
                     <div class="confluence-card-body">
                         ${chart}
                     </div>
@@ -10558,6 +11059,30 @@
             const areaPath = fibPath + ` L ${fibPoints[fibPoints.length-1].x} ${zeroY} L ${fibPoints[0].x} ${zeroY} Z`;
             const breakerY = fibToY(1.0);
             
+            // Breaker Zone visualization (between fib 0 and fib 1) - DOTTED PATTERN
+            const zoneTopY = fibToY(1.0);
+            const zoneBottomY = fibToY(0);
+            const dotColor = isBull ? 'rgba(74, 222, 128, 0.4)' : 'rgba(248, 113, 113, 0.4)';
+            const zoneBorderColor = isBull ? 'rgba(74, 222, 128, 0.7)' : 'rgba(248, 113, 113, 0.7)';
+            const zoneLabelColor = isBull ? 'rgba(74, 222, 128, 0.9)' : 'rgba(248, 113, 113, 0.9)';
+            const patternId = 'zone-dots-' + breaker.id.replace(/[^a-zA-Z0-9]/g, '');
+            const zoneRect = `
+                <defs>
+                    <pattern id="${patternId}" width="8" height="8" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1" fill="${dotColor}"/>
+                    </pattern>
+                </defs>
+                <rect x="${padding.left}" y="${Math.min(zoneTopY, zoneBottomY)}" 
+                      width="${chartWidth}" height="${Math.abs(zoneBottomY - zoneTopY)}" 
+                      fill="url(#${patternId})"/>
+                <line x1="${padding.left}" y1="${zoneTopY}" x2="${padding.left + chartWidth}" y2="${zoneTopY}" 
+                      stroke="${zoneBorderColor}" stroke-width="1.5"/>
+                <line x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}" 
+                      stroke="${zoneBorderColor}" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="${padding.left + 4}" y="${Math.min(zoneTopY, zoneBottomY) + 14}" 
+                      fill="${zoneLabelColor}" font-size="10" font-family="Roboto Mono" font-weight="600">ZONE</text>
+            `;
+            
             let yGrid = '';
             const gridVals = [0, 1, 2, 3, 4];
             gridVals.forEach(val => {
@@ -10590,12 +11115,13 @@
             
             return `
                 <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" style="display:block; width:100%; height:220px;">
+                    ${zoneRect}
                     ${yGrid}
                     <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.15"/>
                     <path d="${peakPath}" fill="none" stroke="${dirColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
                     <path d="${fibPath}" fill="none" stroke="${dirColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     ${dots}
-                    <circle cx="${peakX}" cy="${peakY}" r="5" fill="${dirColor}" stroke="#131416" stroke-width="1.5"/>
+                    <circle cx="${peakX}" cy="${peakY}" r="5" fill="${dirColor}" stroke="#0c0c0f" stroke-width="1.5"/>
                     <text x="${peakX}" y="${peakY + (isBull ? -7 : 14)}" text-anchor="middle" fill="${dirColor}" font-size="11" font-family="Roboto Mono" font-weight="600">${peakFib.toFixed(2)}</text>
                     ${lastPoint ? `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="#fb923c"/>` : ''}
                     ${breakerPriceLabel}
@@ -10613,97 +11139,183 @@
             
             let lastMouseX = null;
             let lastMouseY = null;
+            let isLiveCursor = true; // Start with live cursor
             
-            // Function to update cursor labels
-            function updateCursorLabels(x, y) {
+            // Function to update cursor labels at a specific X position and time
+            function updateCursorLabelsAtTime(xPos, cursorMin, isLiveMode) {
                 const rect = scroll.getBoundingClientRect();
                 const timeHeaderRect = timeHeader.getBoundingClientRect();
                 
                 // Clear all existing cursor labels
                 labelsContainer.innerHTML = '';
                 
-                if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-                    cursorLine.style.left = x + 'px';
-                    cursorLine.classList.add('visible');
+                // Position cursor line
+                cursorLine.style.left = xPos + 'px';
+                cursorLine.classList.add('visible');
+                if (isLiveMode) {
+                    cursorLine.classList.add('live');
+                    cursorTime.classList.add('live');
+                } else {
+                    cursorLine.classList.remove('live');
+                    cursorTime.classList.remove('live');
+                }
+                
+                // Show time badge
+                cursorTime.textContent = minToTime(cursorMin);
+                cursorTime.style.left = xPos + 'px';
+                cursorTime.style.top = (timeHeaderRect.top + timeHeaderRect.height / 2 - 10) + 'px';
+                cursorTime.style.display = 'block';
+                
+                // Find all cards and highlight those that cursor passes through
+                const cards = document.querySelectorAll('.confluence-card');
+                const highlightClass = isLiveMode ? 'cursor-highlight-live' : 'cursor-highlight';
+                
+                cards.forEach(card => {
+                    const cardRect = card.getBoundingClientRect();
                     
-                    // Calculate time
-                    const scrollX = scroll.scrollLeft + (x - rect.left) - 20;
+                    // Remove previous highlights
+                    card.classList.remove('cursor-highlight', 'cursor-highlight-live');
+                    
+                    // Check if cursor X is within this card's horizontal bounds
+                    if (xPos >= cardRect.left && xPos <= cardRect.right) {
+                        // Add highlight glow to card
+                        card.classList.add(highlightClass);
+                        
+                        // Create info label for this card
+                        const breakerId = card.dataset.breakerId;
+                        const breaker = allData.find(b => b.id === breakerId);
+                        
+                        if (breaker && breaker.events && breaker.events.length > 0) {
+                            const tf = breaker.tf.replace('hr', 'h').toUpperCase();
+                            const tfColor = TF_COLORS[breaker.tf] || '#888';
+                            const dirColor = breaker.dir === 'bull' ? '#4ade80' : '#f87171';
+                            const dirArrow = breaker.dir === 'bull' ? '▲' : '▼';
+                            
+                            // Find fib value at cursor time
+                            const events = breaker.events;
+                            let fibAtCursor = 0;
+                            let peakAtCursor = 0;
+                            let priceAtCursor = 0;
+                            
+                            for (let i = 0; i < events.length; i++) {
+                                if (events[i].absMin <= cursorMin) {
+                                    fibAtCursor = events[i].fib || 0;
+                                    peakAtCursor = events[i].maxFib || events[i].fib || 0;
+                                    priceAtCursor = events[i].price || 0;
+                                }
+                            }
+                            
+                            // Zone info
+                            const breakerHigh = breaker.breakerHigh || breaker.price || 0;
+                            const sweepLow = breaker.sweepLow || 0;
+                            const zonePct = Math.min(breaker.zonePct || 0, 100);
+                            const zoneSize = breaker.zoneSize || 0;
+                            
+                            // Status indicator
+                            const parsed = parseStatus(breaker.status);
+                            let statusHtml = '';
+                            if (parsed.isSuccess) {
+                                const statusText = parsed.icon === 'T2' ? 'T2' : 'T1';
+                                statusHtml = `<span style="color:#16a34a;font-weight:700">${statusText}✓</span>`;
+                            } else if (parsed.isFail) {
+                                statusHtml = `<span style="color:#dc2626;font-weight:700">✗</span>`;
+                            } else {
+                                statusHtml = '';
+                            }
+                            
+                            // Create lean label
+                            const label = document.createElement('div');
+                            label.className = 'confluence-cursor-label' + (isLiveMode ? ' live' : '');
+                            
+                            // Compact single-line format - dark colors for light background
+                            const fibColor = breaker.dir === 'bull' ? '#16a34a' : '#dc2626';
+                            const zonePctColor = zonePct >= 50 ? '#dc2626' : (zonePct > 0 ? '#ca8a04' : '#6b7280');
+                            label.innerHTML = `
+                                <span style="color:${tfColor};font-weight:700">${tf}</span>
+                                <span style="color:#555">${breaker.symbol}</span>
+                                <span style="color:${fibColor};font-weight:700">${dirArrow}</span>
+                                ${statusHtml}
+                                <span style="color:#aaa">│</span>
+                                <span style="color:${fibColor};font-weight:600">${fibAtCursor.toFixed(2)}</span><span style="color:#888">/</span><span style="color:#333">${peakAtCursor.toFixed(2)}</span>
+                                <span style="color:#aaa">│</span>
+                                <span style="color:${zonePctColor};font-weight:600">${zonePct}%</span>
+                                <span style="color:#aaa">│</span>
+                                <span style="color:#c2410c;font-weight:600">${Math.round(priceAtCursor)}</span>
+                            `;
+                            
+                            // Position label to the LEFT of cursor
+                            label.style.top = (cardRect.top + 38) + 'px';
+                            
+                            // Temporarily add to measure width
+                            label.style.visibility = 'hidden';
+                            labelsContainer.appendChild(label);
+                            const labelWidth = label.offsetWidth;
+                            label.style.visibility = 'visible';
+                            
+                            // Position to LEFT of cursor line
+                            label.style.left = (xPos - labelWidth - 8) + 'px';
+                        }
+                    }
+                });
+            }
+            
+            // Function to update cursor labels (for mouse movement)
+            function updateCursorLabels(x, y) {
+                const rect = scroll.getBoundingClientRect();
+                
+                if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                    // Calculate time from mouse position (24px padding)
+                    const scrollX = scroll.scrollLeft + (x - rect.left) - 24;
                     const minTime = allData.length > 0 ? Math.min(...allData.map(d => d.startMin)) : 0;
                     const cursorMin = Math.round(minTime + Math.max(0, scrollX) / CONFLUENCE_PPM);
                     
-                    // Show time badge - align with time header
-                    cursorTime.textContent = minToTime(cursorMin);
-                    cursorTime.style.left = x + 'px';
-                    cursorTime.style.top = (timeHeaderRect.top + timeHeaderRect.height / 2 - 10) + 'px';
-                    cursorTime.style.display = 'block';
-                    
-                    // Find all cards that the cursor line passes through
-                    const cards = document.querySelectorAll('.confluence-card');
-                    cards.forEach(card => {
-                        const cardRect = card.getBoundingClientRect();
-                        
-                        // Check if cursor X is within this card's horizontal bounds
-                        if (x >= cardRect.left && x <= cardRect.right) {
-                            const breakerId = card.dataset.breakerId;
-                            const breaker = allData.find(b => b.id === breakerId);
-                            
-                            if (breaker && breaker.events && breaker.events.length > 0) {
-                                const tf = breaker.tf.replace('hr', 'h').toUpperCase();
-                                const tfColor = TF_COLORS[breaker.tf] || '#888';
-                                const dirColor = breaker.dir === 'bull' ? '#4ade80' : '#f87171';
-                                const dirArrow = breaker.dir === 'bull' ? '▲' : '▼';
-                                
-                                // Find fib value at cursor time
-                                const events = breaker.events;
-                                let fibAtCursor = 0;
-                                let peakAtCursor = 0;
-                                let priceAtCursor = 0;
-                                
-                                for (let i = 0; i < events.length; i++) {
-                                    if (events[i].absMin <= cursorMin) {
-                                        fibAtCursor = events[i].fib || 0;
-                                        peakAtCursor = events[i].maxFib || events[i].fib || 0;
-                                        priceAtCursor = events[i].price || 0;
-                                    }
-                                }
-                                
-                                const breakerPrice = breaker.price || 0;
-                                
-                                // Create label with fixed positioning
-                                const label = document.createElement('div');
-                                label.className = 'confluence-cursor-label';
-                                label.style.borderRight = `2px solid ${dirColor}`;
-                                
-                                // Format: TF SYM DIR | Fib: x.xx/x.xx | Brkr: xxxxx | Now: xxxxx
-                                label.innerHTML = `<span style="color:${tfColor}">${tf}</span> <span style="color:#666">${breaker.symbol}</span> <span style="color:${dirColor}">${dirArrow}</span> <span style="color:#555">|</span> <span style="color:${dirColor}">${fibAtCursor.toFixed(2)}</span><span style="color:#555">/</span><span style="color:#888">${peakAtCursor.toFixed(2)}</span> <span style="color:#555">|</span> <span style="color:#888">B:</span><span style="color:#aaa">${Math.round(breakerPrice)}</span> <span style="color:#555">|</span> <span style="color:#888">P:</span><span style="color:#fb923c">${Math.round(priceAtCursor)}</span>`;
-                                
-                                // Position label to left of cursor at card's top
-                                // Use fixed positioning relative to viewport
-                                label.style.top = (cardRect.top + 4) + 'px';
-                                
-                                // Temporarily add to measure width
-                                label.style.visibility = 'hidden';
-                                labelsContainer.appendChild(label);
-                                const labelWidth = label.offsetWidth;
-                                label.style.visibility = 'visible';
-                                
-                                // Position to left of cursor
-                                label.style.left = (x - labelWidth - 6) + 'px';
-                            }
-                        }
-                    });
+                    updateCursorLabelsAtTime(x, cursorMin, false);
                 } else {
                     cursorLine.classList.remove('visible');
                     cursorTime.style.display = 'none';
+                    labelsContainer.innerHTML = '';
+                    // Clear card highlights
+                    document.querySelectorAll('.confluence-card').forEach(card => {
+                        card.classList.remove('cursor-highlight', 'cursor-highlight-live');
+                    });
                 }
+            }
+            
+            // Function to show live cursor at current time
+            function showLiveCursor() {
+                if (!isLiveCursor || !isLive) return;
+                
+                const rect = scroll.getBoundingClientRect();
+                const minTime = allData.length > 0 ? Math.min(...allData.map(d => d.startMin)) : 0;
+                const now = new Date();
+                const currentMin = Math.floor(now.getTime() / 60000);
+                
+                // Calculate X position for current time (24px padding matches CSS)
+                const xOffset = (currentMin - minTime) * CONFLUENCE_PPM + 12 - scroll.scrollLeft;
+                const xPos = rect.left + xOffset;
+                
+                // Only show if cursor is within view
+                if (xPos >= rect.left && xPos <= rect.right) {
+                    updateCursorLabelsAtTime(xPos, currentMin, true);
+                }
+            }
+            
+            // Start live cursor update interval
+            if (isLive) {
+                // Initial show
+                setTimeout(showLiveCursor, 100);
+                
+                // Update every second
+                confluenceLiveCursorInterval = setInterval(showLiveCursor, 1000);
             }
             
             // Sync time header scroll AND update cursor labels
             confluenceScrollHandler = () => {
                 timeHeader.scrollLeft = scroll.scrollLeft;
-                // Update labels on scroll using last known mouse position
-                // Use requestAnimationFrame to ensure DOM has updated
-                if (lastMouseX !== null && lastMouseY !== null) {
+                // Update labels on scroll
+                if (isLiveCursor && isLive) {
+                    requestAnimationFrame(showLiveCursor);
+                } else if (lastMouseX !== null && lastMouseY !== null) {
                     requestAnimationFrame(() => {
                         updateCursorLabels(lastMouseX, lastMouseY);
                     });
@@ -10713,6 +11325,14 @@
             
             // Cursor line and on-card labels
             confluenceMoveHandler = (e) => {
+                // Switch from live to user-controlled cursor
+                if (isLiveCursor) {
+                    isLiveCursor = false;
+                    if (confluenceLiveCursorInterval) {
+                        clearInterval(confluenceLiveCursorInterval);
+                        confluenceLiveCursorInterval = null;
+                    }
+                }
                 lastMouseX = e.clientX;
                 lastMouseY = e.clientY;
                 updateCursorLabels(e.clientX, e.clientY);
@@ -10722,9 +11342,23 @@
             scroll.addEventListener('mouseleave', () => {
                 lastMouseX = null;
                 lastMouseY = null;
-                cursorLine.classList.remove('visible');
-                cursorTime.style.display = 'none';
-                labelsContainer.innerHTML = '';
+                
+                // Return to live cursor when mouse leaves
+                if (isLive) {
+                    isLiveCursor = true;
+                    if (!confluenceLiveCursorInterval) {
+                        confluenceLiveCursorInterval = setInterval(showLiveCursor, 1000);
+                    }
+                    showLiveCursor();
+                } else {
+                    cursorLine.classList.remove('visible');
+                    cursorTime.style.display = 'none';
+                    labelsContainer.innerHTML = '';
+                    // Clear card highlights
+                    document.querySelectorAll('.confluence-card').forEach(card => {
+                        card.classList.remove('cursor-highlight', 'cursor-highlight-live');
+                    });
+                }
             });
             
             // Also update on wheel for Mac trackpad
@@ -12087,7 +12721,10 @@
             setRefreshInterval();
             
             // Update viewport indicator on resize
-            window.addEventListener('resize', updateViewportIndicator);
+            window.addEventListener('resize', () => {
+                updateViewportIndicator();
+                if (isLive) updateMainCursor();
+            });
             
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
