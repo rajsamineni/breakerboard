@@ -9273,9 +9273,34 @@
             const areaPath = fibPath + ` L ${fibPoints[fibPoints.length-1].x} ${zeroY} L ${fibPoints[0].x} ${zeroY} Z`;
             const breakerY = fibToY(1.0);
             
-            // Breaker Zone with dotted pattern (between fib 0 and fib 1)
-            const zoneTopY = fibToY(1.0);
-            const zoneBottomY = fibToY(0);
+            // Breaker Zone - calculated from actual zone data
+            // The ID has two price fields that need to be interpreted based on direction
+            const fibRange = breaker.fibRange || 1;
+            const zoneSize = breaker.zoneSize || 0;
+            const price1 = breaker.sweepLow || 0;
+            const price2 = breaker.breakerHigh || breaker.price || 0;
+            
+            // Calculate zone fib values based on direction
+            // Use min/max to ensure correct price interpretation regardless of ID field order
+            let zoneTopFib, zoneBottomFib;
+            if (isBull) {
+                // Bullish: fib 0 at lower price, zone at higher price going down
+                const fib0Price = Math.min(price1, price2);
+                const breakerPrice = Math.max(price1, price2);
+                zoneTopFib = fibRange > 0 ? (breakerPrice - fib0Price) / fibRange : 0;
+                zoneBottomFib = fibRange > 0 ? (breakerPrice - zoneSize - fib0Price) / fibRange : 0;
+            } else {
+                // Bearish: fib 0 at higher price, zone at lower price going up
+                const fib0Price = Math.max(price1, price2);
+                const breakerPrice = Math.min(price1, price2);
+                zoneBottomFib = fibRange > 0 ? (fib0Price - breakerPrice) / fibRange : 0;
+                zoneTopFib = fibRange > 0 ? (fib0Price - breakerPrice - zoneSize) / fibRange : 0;
+            }
+            
+            const zoneTopY = fibToY(zoneTopFib);
+            const zoneBottomY = fibToY(zoneBottomFib);
+            const zoneMinY = Math.min(zoneTopY, zoneBottomY);
+            const zoneHeight = Math.max(Math.abs(zoneBottomY - zoneTopY), 4); // Ensure minimum 4px height
             const dotColor = isBull ? 'rgba(74, 222, 128, 0.4)' : 'rgba(248, 113, 113, 0.4)';
             const zoneBorderColor = isBull ? 'rgba(74, 222, 128, 0.7)' : 'rgba(248, 113, 113, 0.7)';
             const zoneLabelColor = isBull ? 'rgba(74, 222, 128, 0.9)' : 'rgba(248, 113, 113, 0.9)';
@@ -9286,15 +9311,28 @@
                         <circle cx="2" cy="2" r="1.2" fill="${dotColor}"/>
                     </pattern>
                 </defs>
-                <rect x="${padding.left}" y="${Math.min(zoneTopY, zoneBottomY)}" 
-                      width="${chartWidth}" height="${Math.abs(zoneBottomY - zoneTopY)}" 
+                <rect x="${padding.left}" y="${zoneMinY}" 
+                      width="${chartWidth}" height="${zoneHeight}" 
                       fill="url(#${patternId})"/>
                 <line x1="${padding.left}" y1="${zoneTopY}" x2="${padding.left + chartWidth}" y2="${zoneTopY}" 
                       stroke="${zoneBorderColor}" stroke-width="1.5"/>
                 <line x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}" 
                       stroke="${zoneBorderColor}" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="${padding.left + 4}" y="${Math.min(zoneTopY, zoneBottomY) + 14}" 
+                <text x="${padding.left + 4}" y="${zoneMinY + 14}" 
                       fill="${zoneLabelColor}" font-size="10" font-family="Roboto Mono" font-weight="600">ZONE</text>
+            `;
+            
+            // Breaker Fib highlight line (entry level of the zone)
+            // For bullish: top of zone (higher price), for bearish: bottom of zone (lower price)
+            const breakerFibY = isBull ? zoneTopY : zoneBottomY;
+            const breakerFibLabel = (isBull ? zoneTopFib : zoneBottomFib).toFixed(2);
+            const breakerFibLine = `
+                <line x1="${padding.left}" y1="${breakerFibY}" x2="${padding.left + chartWidth}" y2="${breakerFibY}" 
+                      stroke="${dirColor}" stroke-width="2" stroke-dasharray="6,3"/>
+                <rect x="${padding.left + chartWidth + 2}" y="${breakerFibY - 8}" width="32" height="16" rx="2" 
+                      fill="${isBull ? 'rgba(74, 222, 128, 0.2)' : 'rgba(248, 113, 113, 0.2)'}" stroke="${dirColor}" stroke-width="1"/>
+                <text x="${padding.left + chartWidth + 18}" y="${breakerFibY + 4}" text-anchor="middle" 
+                      fill="${dirColor}" font-size="10" font-family="Roboto Mono" font-weight="700">${breakerFibLabel}</text>
             `;
             
             // Y-axis grid and labels
@@ -9343,6 +9381,7 @@
             return `
                 <svg class="stack-svg-tall" viewBox="0 0 ${width} ${height}" style="width:100%;height:${height}px;">
                     ${zoneRect}
+                    ${breakerFibLine}
                     ${yGrid}
                     <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.15"/>
                     <path d="${peakPath}" fill="none" stroke="${dirColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
@@ -11059,9 +11098,34 @@
             const areaPath = fibPath + ` L ${fibPoints[fibPoints.length-1].x} ${zeroY} L ${fibPoints[0].x} ${zeroY} Z`;
             const breakerY = fibToY(1.0);
             
-            // Breaker Zone visualization (between fib 0 and fib 1) - DOTTED PATTERN
-            const zoneTopY = fibToY(1.0);
-            const zoneBottomY = fibToY(0);
+            // Breaker Zone - calculated from actual zone data
+            // The ID has two price fields that need to be interpreted based on direction
+            const fibRange = breaker.fibRange || 1;
+            const zoneSize = breaker.zoneSize || 0;
+            const price1 = breaker.sweepLow || 0;
+            const price2 = breaker.breakerHigh || breaker.price || 0;
+            
+            // Calculate zone fib values based on direction
+            // Use min/max to ensure correct price interpretation regardless of ID field order
+            let zoneTopFib, zoneBottomFib;
+            if (isBull) {
+                // Bullish: fib 0 at lower price, zone at higher price going down
+                const fib0Price = Math.min(price1, price2);
+                const breakerPrice = Math.max(price1, price2);
+                zoneTopFib = fibRange > 0 ? (breakerPrice - fib0Price) / fibRange : 0;
+                zoneBottomFib = fibRange > 0 ? (breakerPrice - zoneSize - fib0Price) / fibRange : 0;
+            } else {
+                // Bearish: fib 0 at higher price, zone at lower price going up
+                const fib0Price = Math.max(price1, price2);
+                const breakerPrice = Math.min(price1, price2);
+                zoneBottomFib = fibRange > 0 ? (fib0Price - breakerPrice) / fibRange : 0;
+                zoneTopFib = fibRange > 0 ? (fib0Price - breakerPrice - zoneSize) / fibRange : 0;
+            }
+            
+            const zoneTopY = fibToY(zoneTopFib);
+            const zoneBottomY = fibToY(zoneBottomFib);
+            const zoneMinY = Math.min(zoneTopY, zoneBottomY);
+            const zoneHeight = Math.max(Math.abs(zoneBottomY - zoneTopY), 4); // Ensure minimum 4px height
             const dotColor = isBull ? 'rgba(74, 222, 128, 0.4)' : 'rgba(248, 113, 113, 0.4)';
             const zoneBorderColor = isBull ? 'rgba(74, 222, 128, 0.7)' : 'rgba(248, 113, 113, 0.7)';
             const zoneLabelColor = isBull ? 'rgba(74, 222, 128, 0.9)' : 'rgba(248, 113, 113, 0.9)';
@@ -11072,15 +11136,28 @@
                         <circle cx="2" cy="2" r="1" fill="${dotColor}"/>
                     </pattern>
                 </defs>
-                <rect x="${padding.left}" y="${Math.min(zoneTopY, zoneBottomY)}" 
-                      width="${chartWidth}" height="${Math.abs(zoneBottomY - zoneTopY)}" 
+                <rect x="${padding.left}" y="${zoneMinY}" 
+                      width="${chartWidth}" height="${zoneHeight}" 
                       fill="url(#${patternId})"/>
                 <line x1="${padding.left}" y1="${zoneTopY}" x2="${padding.left + chartWidth}" y2="${zoneTopY}" 
                       stroke="${zoneBorderColor}" stroke-width="1.5"/>
                 <line x1="${padding.left}" y1="${zoneBottomY}" x2="${padding.left + chartWidth}" y2="${zoneBottomY}" 
                       stroke="${zoneBorderColor}" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="${padding.left + 4}" y="${Math.min(zoneTopY, zoneBottomY) + 14}" 
+                <text x="${padding.left + 4}" y="${zoneMinY + 14}" 
                       fill="${zoneLabelColor}" font-size="10" font-family="Roboto Mono" font-weight="600">ZONE</text>
+            `;
+            
+            // Breaker Fib highlight line (entry level of the zone)
+            // For bullish: top of zone (higher price), for bearish: bottom of zone (lower price)
+            const breakerFibY = isBull ? zoneTopY : zoneBottomY;
+            const breakerFibLabel = (isBull ? zoneTopFib : zoneBottomFib).toFixed(2);
+            const breakerFibLine = `
+                <line x1="${padding.left}" y1="${breakerFibY}" x2="${padding.left + chartWidth}" y2="${breakerFibY}" 
+                      stroke="${dirColor}" stroke-width="2" stroke-dasharray="6,3"/>
+                <rect x="${padding.left + chartWidth + 2}" y="${breakerFibY - 8}" width="32" height="16" rx="2" 
+                      fill="${isBull ? 'rgba(74, 222, 128, 0.2)' : 'rgba(248, 113, 113, 0.2)'}" stroke="${dirColor}" stroke-width="1"/>
+                <text x="${padding.left + chartWidth + 18}" y="${breakerFibY + 4}" text-anchor="middle" 
+                      fill="${dirColor}" font-size="10" font-family="Roboto Mono" font-weight="700">${breakerFibLabel}</text>
             `;
             
             let yGrid = '';
@@ -11116,6 +11193,7 @@
             return `
                 <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" style="display:block; width:100%; height:220px;">
                     ${zoneRect}
+                    ${breakerFibLine}
                     ${yGrid}
                     <path d="${areaPath}" fill="${dirColor}" fill-opacity="0.15"/>
                     <path d="${peakPath}" fill="none" stroke="${dirColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
