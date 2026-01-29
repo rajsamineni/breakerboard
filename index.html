@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.4</title>
+    <title>SigXFlow v6.8.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -6885,6 +6885,371 @@
             font-size: 14px;
             font-family: 'Roboto Mono', monospace;
         }
+        
+        /* ===== TRADE TABS (compact, positioned in swimlane) ===== */
+        .trade-tab {
+            height: 26px;
+            min-width: 20px;
+            padding: 0 6px;
+            background: #1a1a1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 2px solid;
+            position: absolute;
+            z-index: 15;
+        }
+        
+        .trade-tab-left {
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+        
+        .trade-tab-right {
+            border-radius: 0 4px 4px 0;
+            border-left: none;
+        }
+        
+        .trade-tab:hover {
+            filter: brightness(1.3);
+            z-index: 10;
+        }
+        
+        /* Tab colors */
+        .trade-tab.pending { 
+            border-color: #fbbf24; 
+            color: #fbbf24; 
+            animation: tab-blink 1s ease-in-out infinite;
+        }
+        .trade-tab.filled { border-color: #3b82f6; color: #3b82f6; }
+        .trade-tab.denied { border-color: #f97316; color: #f97316; }
+        .trade-tab.win { border-color: #22c55e; color: #22c55e; }
+        .trade-tab.loss { border-color: #ef4444; color: #ef4444; }
+        .trade-tab.cancelled { border-color: #6b7280; color: #6b7280; }
+        
+        /* Tiny close reason subscript (c=cancel, e=eod) */
+        .trade-tab .close-reason {
+            font-size: 7px;
+            vertical-align: sub;
+            opacity: 0.8;
+            margin-left: 1px;
+        }
+        
+        @keyframes tab-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* ===== TRADE DETAIL MODAL ===== */
+        .trade-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: modal-fade-in 0.2s ease;
+        }
+        
+        .trade-modal-backdrop.active {
+            display: flex;
+        }
+        
+        @keyframes modal-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .trade-modal {
+            background: linear-gradient(180deg, #1e1e22 0%, #18181b 100%);
+            border: 1px solid #3a3a3e;
+            border-radius: 12px;
+            width: 420px;
+            max-width: 95vw;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3);
+            animation: modal-slide-up 0.25s ease;
+        }
+        
+        @keyframes modal-slide-up {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .trade-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #2a2a2e;
+            background: linear-gradient(180deg, #252528 0%, #1e1e22 100%);
+        }
+        
+        .trade-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .trade-modal-title-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+        
+        .trade-modal-status {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .trade-modal-status.pending { background: #fbbf24; color: #000; }
+        .trade-modal-status.filled { background: #3b82f6; color: #fff; }
+        .trade-modal-status.success { background: #22c55e; color: #000; }
+        .trade-modal-status.failure { background: #ef4444; color: #fff; }
+        .trade-modal-status.cancelled { background: #6b7280; color: #fff; }
+        .trade-modal-status.entry-denied { background: #f97316; color: #fff; }
+        .trade-modal-status.daily-win { background: #a855f7; color: #fff; border: 2px solid #22c55e; }
+        .trade-modal-status.daily-loss { background: #a855f7; color: #fff; border: 2px solid #ef4444; }
+        
+        .trade-modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: #2a2a2e;
+            color: #888;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        
+        .trade-modal-close:hover {
+            background: #3a3a3e;
+            color: #fff;
+        }
+        
+        .trade-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(85vh - 70px);
+        }
+        
+        /* P&L Hero */
+        .trade-modal-pnl {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1a1a1c 0%, #222225 100%);
+            border-radius: 10px;
+            border: 1px solid #2a2a2e;
+        }
+        
+        .trade-modal-pnl-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+        }
+        
+        .trade-modal-pnl-value.win { color: #4ade80; }
+        .trade-modal-pnl-value.loss { color: #f87171; }
+        
+        .trade-modal-pnl-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        
+        /* Close Reason Box */
+        .trade-modal-close-reason {
+            background: #1a1a1c;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #ccc;
+            border-left: 4px solid #666;
+        }
+        
+        .trade-modal-close-reason.success { border-left-color: #22c55e; }
+        .trade-modal-close-reason.failure { border-left-color: #ef4444; }
+        .trade-modal-close-reason.entry-denied { border-left-color: #f97316; }
+        .trade-modal-close-reason.daily { border-left-color: #a855f7; }
+        
+        /* Section */
+        .trade-modal-section {
+            margin-bottom: 20px;
+        }
+        
+        .trade-modal-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .trade-modal-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #2a2a2e;
+        }
+        
+        /* Prices Visual */
+        .trade-modal-prices {
+            background: #1a1a1c;
+            border-radius: 8px;
+            padding: 14px;
+        }
+        
+        .trade-modal-price-bar {
+            display: flex;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .trade-modal-price-bar-risk {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        .trade-modal-price-bar-reward {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+        }
+        
+        .trade-modal-price-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+        }
+        
+        .trade-modal-price-label.stop { color: #f87171; }
+        .trade-modal-price-label.entry { color: #fbbf24; }
+        .trade-modal-price-label.target { color: #4ade80; }
+        
+        /* Detail Row */
+        .trade-modal-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #222225;
+            font-size: 12px;
+        }
+        
+        .trade-modal-row:last-child {
+            border-bottom: none;
+        }
+        
+        .trade-modal-row-label {
+            color: #888;
+        }
+        
+        .trade-modal-row-value {
+            font-family: 'Roboto Mono', monospace;
+            color: #ccc;
+        }
+        
+        .trade-modal-row-value.pass { color: #4ade80; }
+        .trade-modal-row-value.fail { color: #f87171; }
+        .trade-modal-row-value.warn { color: #f97316; }
+        
+        /* Events Timeline */
+        .trade-modal-events {
+            background: #1a1a1c;
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+        
+        .trade-modal-event {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #252528;
+        }
+        
+        .trade-modal-event:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .trade-modal-event:first-child {
+            padding-top: 0;
+        }
+        
+        .trade-modal-event-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+        
+        .trade-modal-event-dot.created { background: #fbbf24; }
+        .trade-modal-event-dot.filled { background: #3b82f6; }
+        .trade-modal-event-dot.closed { background: #22c55e; }
+        .trade-modal-event-dot.closed.loss { background: #ef4444; }
+        .trade-modal-event-dot.closed.denied { background: #f97316; }
+        
+        .trade-modal-event-content {
+            flex: 1;
+        }
+        
+        .trade-modal-event-type {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+        
+        .trade-modal-event-time {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .trade-modal-event-detail {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        /* Breaker ID */
+        .trade-modal-breaker-id {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            color: #555;
+            word-break: break-all;
+            background: #151517;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #222225;
+        }
     </style>
 </head>
 <body>
@@ -7057,10 +7422,27 @@
         <div class="confluence-labels-container" id="confluence-labels-container"></div>
     </div>
 
+    <!-- Trade Detail Modal -->
+    <div class="trade-modal-backdrop" id="trade-modal-backdrop" onclick="closeTradeModal(event)">
+        <div class="trade-modal" onclick="event.stopPropagation()">
+            <div class="trade-modal-header">
+                <div class="trade-modal-title">
+                    <span class="trade-modal-title-text">Trade Detail</span>
+                    <span class="trade-modal-status" id="trade-modal-status">—</span>
+                </div>
+                <button class="trade-modal-close" onclick="closeTradeModal()">✕</button>
+            </div>
+            <div class="trade-modal-body" id="trade-modal-body">
+                <!-- Content rendered dynamically -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIG =====
         const FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/snapshots.json";
         const SMT_FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/smt_signals.json";
+        const TRADES_FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/trades.json";
         const PIXELS_PER_MINUTE = 35;
         const BAR_HEIGHT = 26;  // Height of breaker bars
         const BAR_GAP = 3;      // Gap between stacked bars
@@ -7075,6 +7457,7 @@
         // ===== STATE =====
         let allData = [];
         let smtData = [];  // SMT signals
+        let tradesData = {}; // Trade records keyed by breaker_id
         let smtCache = {}; // For incremental SMT updates
         let lastSmtFetchTime = null; // Track last SMT fetch for incremental updates
         let breakerCache = {}; // For incremental updates
@@ -7356,7 +7739,7 @@
                 // Full load with server-side time filtering
                 showToast('Loading...', '');
                 
-                // Also reload SMT data
+                // Also reload SMT data (trades are loaded separately and don't need reload here)
                 loadSmtData();
                 
                 // For multi-day loads during market closures, always use fallback
@@ -8340,6 +8723,112 @@
                             tf: tf,
                             symbol: symbol
                         });
+                        
+                        // Trade tabs - only for 1M NQ Bull breakers
+                        if (tf === '1m' && symbol === 'NQ' && b.dir === 'bull') {
+                            const trade = getTradeForBreaker(b.id);
+                            if (trade) {
+                                const barStartX = Math.max(0, (b.startMin - windowStartMin) * PIXELS_PER_MINUTE);
+                                const barEndX = (b.endMin - windowStartMin) * PIXELS_PER_MINUTE;
+                                const barTop = LANE_PADDING + b.stackIdx * (BAR_HEIGHT + BAR_GAP);
+                                
+                                const isDenied = trade.close_reason && trade.close_reason.startsWith('ENTRY_DENIED');
+                                const isCancelled = trade.close_reason === 'CANCELLED';
+                                const isInvalidated = trade.close_reason === 'INVALIDATED';
+                                // Check if was filled before being cancelled (has fill price or FILLED event)
+                                const wasFilled = (trade.prices && trade.prices.fill_price) || 
+                                    (trade.prices && trade.prices.entry_fill) ||
+                                    (trade.events && trade.events.some(e => e.event === 'FILLED'));
+                                
+                                // Left tab - entry state
+                                const leftTab = document.createElement('div');
+                                leftTab.className = 'trade-tab trade-tab-left';
+                                leftTab.style.left = (barStartX - 20) + 'px';
+                                leftTab.style.top = barTop + 'px';
+                                
+                                if (isDenied) {
+                                    leftTab.classList.add('denied');
+                                    leftTab.textContent = 'D';
+                                    leftTab.title = 'Entry Denied';
+                                } else if ((isCancelled || isInvalidated) && !wasFilled) {
+                                    // Cancelled/Invalidated before fill - show C or X on left
+                                    leftTab.classList.add('cancelled');
+                                    leftTab.textContent = isInvalidated ? 'X' : 'C';
+                                    leftTab.title = isInvalidated ? 'Invalidated (never filled)' : 'Cancelled (never filled)';
+                                } else if (trade.phase === 'PENDING') {
+                                    leftTab.classList.add('pending');
+                                    leftTab.textContent = 'P';
+                                    leftTab.title = 'Pending Entry';
+                                } else if (trade.phase === 'FILLED' || trade.phase === 'CLOSED') {
+                                    // Was filled (including filled then cancelled)
+                                    leftTab.classList.add('filled');
+                                    leftTab.textContent = 'F';
+                                    leftTab.title = 'Filled';
+                                } else {
+                                    leftTab.classList.add('pending');
+                                    leftTab.textContent = 'P';
+                                    leftTab.title = 'Pending';
+                                }
+                                
+                                leftTab.addEventListener('click', (e) => {
+                                    e.stopPropagation();
+                                    showTradeModal(trade);
+                                });
+                                swimlane.appendChild(leftTab);
+                                
+                                // Right tab - exit state (for closed trades)
+                                if (trade.phase === 'CLOSED') {
+                                    const rightTab = document.createElement('div');
+                                    rightTab.className = 'trade-tab trade-tab-right';
+                                    rightTab.style.left = barEndX + 'px';
+                                    rightTab.style.top = barTop + 'px';
+                                    
+                                    if (isDenied) {
+                                        // Denied shows D on both sides
+                                        rightTab.classList.add('denied');
+                                        rightTab.textContent = 'D';
+                                        rightTab.title = 'Entry Denied';
+                                    } else if (isCancelled && !wasFilled) {
+                                        // Cancelled before fill - show C on both sides
+                                        rightTab.classList.add('cancelled');
+                                        rightTab.textContent = 'C';
+                                        rightTab.title = 'Cancelled (never filled)';
+                                    } else if (trade.close_reason === 'INVALIDATED' && !wasFilled) {
+                                        // Invalidated before fill - show X on both sides
+                                        rightTab.classList.add('cancelled');
+                                        rightTab.textContent = 'X';
+                                        rightTab.title = 'Invalidated (never filled)';
+                                    } else if (trade.close_reason === 'SUCCESS') {
+                                        rightTab.classList.add('win');
+                                        rightTab.textContent = 'W';
+                                        rightTab.title = 'Win - Target Hit';
+                                    } else if (trade.close_reason === 'FAILURE') {
+                                        rightTab.classList.add('loss');
+                                        rightTab.textContent = 'L';
+                                        rightTab.title = 'Loss - Stop Hit';
+                                    } else if (isCancelled || isInvalidated || trade.close_reason === 'DAILY_CLOSE') {
+                                        // Cancelled (was filled), Invalidated (was filled), or EOD - show W/L based on P&L with tiny reason letter
+                                        const pnl = calculateTradePnL(trade);
+                                        const isWin = pnl !== null && pnl >= 0;
+                                        const reasonLetter = isCancelled ? 'c' : (isInvalidated ? 'i' : 'e');
+                                        
+                                        rightTab.classList.add(isWin ? 'win' : 'loss');
+                                        rightTab.innerHTML = (isWin ? 'W' : 'L') + '<span class="close-reason">' + reasonLetter + '</span>';
+                                        rightTab.title = (isWin ? 'Win' : 'Loss') + ' - ' + (isCancelled ? 'Cancelled' : (isInvalidated ? 'Invalidated' : 'End of Day'));
+                                    } else {
+                                        rightTab.classList.add('cancelled');
+                                        rightTab.textContent = 'C';
+                                        rightTab.title = trade.close_reason || 'Closed';
+                                    }
+                                    
+                                    rightTab.addEventListener('click', (e) => {
+                                        e.stopPropagation();
+                                        showTradeModal(trade);
+                                    });
+                                    swimlane.appendChild(rightTab);
+                                }
+                            }
+                        }
                     });
                     
                     // Render SMT markers in defensive asset lane
@@ -13017,13 +13506,287 @@
             return '';
         }
         
+        // ===== TRADES DATA =====
+        function loadTradesData() {
+            return fetch(TRADES_FIREBASE_URL)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data) {
+                        tradesData = {};
+                        return;
+                    }
+                    
+                    // Index trades by breaker_id for fast lookup
+                    tradesData = {};
+                    Object.entries(data).forEach(([key, trade]) => {
+                        if (trade && trade.breaker_id) {
+                            tradesData[trade.breaker_id] = trade;
+                        }
+                    });
+                    
+                    console.log(`Loaded ${Object.keys(tradesData).length} trades`);
+                })
+                .catch(err => {
+                    console.warn('Failed to load trades:', err);
+                    tradesData = {};
+                });
+        }
+        
+        function getTradeForBreaker(breakerId) {
+            return tradesData[breakerId] || null;
+        }
+        
+        function getTradeStatusClass(trade) {
+            if (!trade) return null;
+            
+            if (trade.phase === 'PENDING') return 'pending';
+            if (trade.phase === 'FILLED') return 'filled';
+            
+            if (trade.phase === 'CLOSED') {
+                const reason = (trade.close_reason || '').toUpperCase();
+                if (reason === 'SUCCESS') return 'success';
+                if (reason === 'FAILURE') return 'failure';
+                if (reason === 'CANCELLED') return 'cancelled';
+                if (reason.startsWith('ENTRY_DENIED')) return 'entry-denied';
+                if (reason === 'DAILY_CLOSE') {
+                    // Determine win/loss from P&L
+                    const pnl = calculateTradePnL(trade);
+                    return pnl >= 0 ? 'daily-win' : 'daily-loss';
+                }
+            }
+            return 'cancelled';
+        }
+        
+        function getTradeStatusIcon(statusClass) {
+            const icons = {
+                'pending': '⚡',
+                'filled': '●',
+                'success': '✓',
+                'failure': '✗',
+                'cancelled': '○',
+                'entry-denied': '⊘',
+                'daily-win': '◐',
+                'daily-loss': '◐'
+            };
+            return icons[statusClass] || '?';
+        }
+        
+        function getTradeStatusLabel(trade, statusClass) {
+            if (trade.phase === 'PENDING') return 'Pending';
+            if (trade.phase === 'FILLED') return 'Filled';
+            if (statusClass === 'entry-denied') return 'Entry Denied';
+            if (statusClass === 'daily-win') return 'EOD Win';
+            if (statusClass === 'daily-loss') return 'EOD Loss';
+            if (statusClass === 'success') return 'Success';
+            if (statusClass === 'failure') return 'Failure';
+            if (statusClass === 'cancelled') return 'Cancelled';
+            return trade.close_reason || 'Closed';
+        }
+        
+        function calculateTradePnL(trade) {
+            if (!trade.events || trade.events.length === 0) return null;
+            
+            const fillEvent = trade.events.find(e => e.event === 'FILLED');
+            const closeEvent = trade.events.find(e => e.event === 'CLOSED');
+            
+            if (fillEvent && closeEvent && closeEvent.price && fillEvent.price) {
+                return closeEvent.price - fillEvent.price;
+            }
+            return null;
+        }
+        
+        // ===== TRADE MODAL =====
+        function showTradeModal(trade) {
+            const backdrop = document.getElementById('trade-modal-backdrop');
+            const statusBadge = document.getElementById('trade-modal-status');
+            const body = document.getElementById('trade-modal-body');
+            
+            const statusClass = getTradeStatusClass(trade);
+            const statusLabel = getTradeStatusLabel(trade, statusClass);
+            const icon = getTradeStatusIcon(statusClass);
+            
+            // Update status badge
+            statusBadge.className = `trade-modal-status ${statusClass}`;
+            statusBadge.textContent = `${icon} ${statusLabel}`;
+            
+            // Build modal content
+            let html = '';
+            
+            // P&L Hero (for closed trades with fills)
+            const pnl = calculateTradePnL(trade);
+            if (pnl !== null && trade.phase === 'CLOSED' && statusClass !== 'entry-denied' && statusClass !== 'cancelled') {
+                const pnlClass = pnl >= 0 ? 'win' : 'loss';
+                const pnlSign = pnl >= 0 ? '+' : '';
+                html += `
+                    <div class="trade-modal-pnl">
+                        <div class="trade-modal-pnl-value ${pnlClass}">${pnlSign}${pnl.toFixed(2)} pts</div>
+                        <div class="trade-modal-pnl-label">Realized P&L</div>
+                    </div>
+                `;
+            }
+            
+            // Close Reason (if present)
+            if (trade.close_reason) {
+                let reasonClass = '';
+                if (trade.close_reason === 'SUCCESS') reasonClass = 'success';
+                else if (trade.close_reason === 'FAILURE') reasonClass = 'failure';
+                else if (trade.close_reason.startsWith('ENTRY_DENIED')) reasonClass = 'entry-denied';
+                else if (trade.close_reason === 'DAILY_CLOSE') reasonClass = 'daily';
+                
+                html += `
+                    <div class="trade-modal-close-reason ${reasonClass}">
+                        ${trade.close_reason}
+                    </div>
+                `;
+            }
+            
+            // Prices Section
+            if (trade.prices) {
+                const entry = trade.prices.entry || 0;
+                const stop = trade.prices.stop || 0;
+                const target = trade.prices.target || 0;
+                const risk = Math.abs(entry - stop);
+                const reward = Math.abs(target - entry);
+                const total = risk + reward || 1;
+                const rr = risk > 0 ? (reward / risk).toFixed(2) : 'N/A';
+                
+                html += `
+                    <div class="trade-modal-section">
+                        <div class="trade-modal-section-title">Prices</div>
+                        <div class="trade-modal-prices">
+                            <div class="trade-modal-price-bar">
+                                <div class="trade-modal-price-bar-risk" style="width: ${(risk/total)*100}%;"></div>
+                                <div class="trade-modal-price-bar-reward" style="width: ${(reward/total)*100}%;"></div>
+                            </div>
+                            <div class="trade-modal-price-labels">
+                                <span class="trade-modal-price-label stop">Stop: ${stop.toLocaleString()}</span>
+                                <span class="trade-modal-price-label entry">Entry: ${entry.toLocaleString()}</span>
+                                <span class="trade-modal-price-label target">Target: ${target.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div class="trade-modal-row">
+                            <span class="trade-modal-row-label">Risk:Reward</span>
+                            <span class="trade-modal-row-value">${rr}:1</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Score Section
+            html += `
+                <div class="trade-modal-section">
+                    <div class="trade-modal-section-title">Score</div>
+                    <div class="trade-modal-row">
+                        <span class="trade-modal-row-label">Score</span>
+                        <span class="trade-modal-row-value ${trade.score >= trade.threshold ? 'pass' : 'fail'}">${trade.score ?? '—'}</span>
+                    </div>
+                    <div class="trade-modal-row">
+                        <span class="trade-modal-row-label">Threshold</span>
+                        <span class="trade-modal-row-value">${trade.threshold ?? '—'}</span>
+                    </div>
+                    <div class="trade-modal-row">
+                        <span class="trade-modal-row-label">Decision</span>
+                        <span class="trade-modal-row-value">${trade.decision || '—'}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Events Timeline
+            if (trade.events && trade.events.length > 0) {
+                let eventsHtml = '';
+                trade.events.forEach(evt => {
+                    let dotClass = evt.event.toLowerCase();
+                    if (evt.event === 'CLOSED') {
+                        if (statusClass === 'failure' || statusClass === 'daily-loss') dotClass = 'closed loss';
+                        else if (statusClass === 'entry-denied') dotClass = 'closed denied';
+                        else dotClass = 'closed';
+                    }
+                    
+                    const time = evt.time ? evt.time.replace('T', ' ').substring(0, 19) : '—';
+                    const priceStr = evt.price ? `@ ${evt.price.toLocaleString()}` : '';
+                    
+                    eventsHtml += `
+                        <div class="trade-modal-event">
+                            <div class="trade-modal-event-dot ${dotClass}"></div>
+                            <div class="trade-modal-event-content">
+                                <div class="trade-modal-event-type">${evt.event}</div>
+                                <div class="trade-modal-event-time">${time}</div>
+                                ${priceStr ? `<div class="trade-modal-event-detail">${priceStr}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <div class="trade-modal-section">
+                        <div class="trade-modal-section-title">Events</div>
+                        <div class="trade-modal-events">${eventsHtml}</div>
+                    </div>
+                `;
+            }
+            
+            // Metadata
+            html += `
+                <div class="trade-modal-section">
+                    <div class="trade-modal-section-title">Metadata</div>
+                    <div class="trade-modal-row">
+                        <span class="trade-modal-row-label">Phase</span>
+                        <span class="trade-modal-row-value">${trade.phase || '—'}</span>
+                    </div>
+                    <div class="trade-modal-row">
+                        <span class="trade-modal-row-label">Last Updated</span>
+                        <span class="trade-modal-row-value">${trade.last_updated ? trade.last_updated.replace('T', ' ').substring(0, 19) : '—'}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Breaker ID
+            html += `
+                <div class="trade-modal-section">
+                    <div class="trade-modal-section-title">Breaker ID</div>
+                    <div class="trade-modal-breaker-id">${trade.breaker_id || '—'}</div>
+                </div>
+            `;
+            
+            body.innerHTML = html;
+            backdrop.classList.add('active');
+            
+            // Close on ESC
+            document.addEventListener('keydown', handleTradeModalEsc);
+        }
+        
+        function closeTradeModal(event) {
+            // If clicking backdrop (not modal content), close
+            if (event && event.target !== event.currentTarget) return;
+            
+            const backdrop = document.getElementById('trade-modal-backdrop');
+            backdrop.classList.remove('active');
+            document.removeEventListener('keydown', handleTradeModalEsc);
+        }
+        
+        function handleTradeModalEsc(e) {
+            if (e.key === 'Escape') {
+                closeTradeModal();
+            }
+        }
+        
         // ===== INIT =====
         window.onload = function() {
             // Start in Live mode (buttons already set in HTML)
             isLive = true;
-            loadSmtData().then(() => {
+            
+            // Load all data sources
+            Promise.all([
+                loadSmtData(),
+                loadTradesData()
+            ]).then(() => {
+                loadData();
+            }).catch(err => {
+                console.error('Error loading data sources:', err);
+                // Still try to load main data even if SMT/trades fail
                 loadData();
             });
+            
             setRefreshInterval();
             
             // Update viewport indicator on resize
