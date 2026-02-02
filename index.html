@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.1</title>
+    <title>SigXFlow v6.15.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -6874,7 +6874,7 @@
         .trade-tab {
             height: 26px;
             min-width: 28px;
-            padding: 0 8px;
+            padding: 0 10px;
             background: #1a1a1f;
             display: flex;
             align-items: center;
@@ -6883,18 +6883,17 @@
             font-weight: 700;
             cursor: pointer;
             border: 2px solid;
+            border-radius: 13px;
             position: absolute;
             z-index: 15;
         }
         
         .trade-tab-left {
-            border-radius: 4px 0 0 4px;
-            border-right: none;
+            /* Rounded pill - no special corners */
         }
         
         .trade-tab-right {
-            border-radius: 0 4px 4px 0;
-            border-left: none;
+            /* Rounded pill - no special corners */
         }
         
         .trade-tab:hover {
@@ -9617,7 +9616,7 @@
                                 // Left tab - entry state
                                 const leftTab = document.createElement('div');
                                 leftTab.className = 'trade-tab trade-tab-left';
-                                leftTab.style.left = (barStartX - 28) + 'px';
+                                leftTab.style.left = (barStartX - 30) + 'px';
                                 leftTab.style.top = barTop + 'px';
                                 
                                 if (isFiltered) {
@@ -14742,42 +14741,65 @@
             }
             html += `</div>`;
             
-            // Hypothetical section (if exists) - show market and limit boxes
+            // Hypothetical section (if exists) - show market/limit boxes OR t2 box
             const hypothetical = outcomes.hypothetical;
             if (hypothetical) {
                 html += `<div class="tm-result-hypothetical-section">`;
-                html += `<div class="tm-hypo-header">IF TRADED → Exit: ${hypothetical.exit_reason || '—'}</div>`;
-                html += `<div class="tm-hypo-boxes">`;
                 
-                // Market box
-                if (hypothetical.market) {
-                    const m = hypothetical.market;
-                    const mStatus = m.outcome === 'WIN' ? 'win' : (m.outcome === 'LOSS' ? 'loss' : '');
-                    html += `<div class="tm-hypo-box">`;
-                    html += `<div class="tm-hypo-label">MARKET</div>`;
-                    html += `<div class="tm-hypo-outcome ${mStatus}">${m.outcome || '—'}</div>`;
-                    if (m.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${mStatus}">${m.pnl_points >= 0 ? '+' : ''}${m.pnl_points.toFixed(2)} pts</div>`;
-                    if (m.pnl_r !== undefined) html += `<div class="tm-hypo-r ${mStatus}">${m.pnl_r >= 0 ? '+' : ''}${m.pnl_r.toFixed(2)}R</div>`;
-                    if (m.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${m.fill_price.toLocaleString()}</div>`;
-                    if (m.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${m.exit_price.toLocaleString()}</div>`;
+                // Check if this is a T2 hypothetical (for successful T1 trades)
+                if (hypothetical.t2) {
+                    html += `<div class="tm-hypo-header">IF T2 TARGET</div>`;
+                    html += `<div class="tm-hypo-boxes">`;
+                    
+                    const t2 = hypothetical.t2;
+                    const t2Status = t2.outcome === 'WIN' ? 'win' : (t2.outcome === 'LOSS' ? 'loss' : '');
+                    html += `<div class="tm-hypo-box t2-box">`;
+                    html += `<div class="tm-hypo-label">T2 POTENTIAL</div>`;
+                    html += `<div class="tm-hypo-outcome ${t2Status}">${t2.outcome || '—'}</div>`;
+                    if (t2.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${t2Status}">${t2.pnl_points >= 0 ? '+' : ''}${t2.pnl_points.toFixed(2)} pts</div>`;
+                    if (t2.pnl_r !== undefined) html += `<div class="tm-hypo-r ${t2Status}">${t2.pnl_r >= 0 ? '+' : ''}${t2.pnl_r.toFixed(2)}R</div>`;
+                    if (t2.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${t2.fill_price.toLocaleString()}</div>`;
+                    if (t2.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${t2.exit_price.toLocaleString()}</div>`;
+                    html += `</div>`;
+                    
+                    html += `</div>`;
+                } else {
+                    // Cancelled/filtered trade hypothetical (market/limit)
+                    html += `<div class="tm-hypo-header">IF TRADED → Exit: ${hypothetical.exit_reason || '—'}</div>`;
+                    html += `<div class="tm-hypo-boxes">`;
+                    
+                    // Market box
+                    if (hypothetical.market) {
+                        const m = hypothetical.market;
+                        const mStatus = m.outcome === 'WIN' ? 'win' : (m.outcome === 'LOSS' ? 'loss' : '');
+                        html += `<div class="tm-hypo-box">`;
+                        html += `<div class="tm-hypo-label">MARKET</div>`;
+                        html += `<div class="tm-hypo-outcome ${mStatus}">${m.outcome || '—'}</div>`;
+                        if (m.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${mStatus}">${m.pnl_points >= 0 ? '+' : ''}${m.pnl_points.toFixed(2)} pts</div>`;
+                        if (m.pnl_r !== undefined) html += `<div class="tm-hypo-r ${mStatus}">${m.pnl_r >= 0 ? '+' : ''}${m.pnl_r.toFixed(2)}R</div>`;
+                        if (m.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${m.fill_price.toLocaleString()}</div>`;
+                        if (m.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${m.exit_price.toLocaleString()}</div>`;
+                        html += `</div>`;
+                    }
+                    
+                    // Limit box
+                    if (hypothetical.limit) {
+                        const l = hypothetical.limit;
+                        const lStatus = l.outcome === 'WIN' ? 'win' : (l.outcome === 'LOSS' ? 'loss' : '');
+                        html += `<div class="tm-hypo-box">`;
+                        html += `<div class="tm-hypo-label">LIMIT</div>`;
+                        html += `<div class="tm-hypo-outcome ${lStatus}">${l.outcome || '—'}</div>`;
+                        if (l.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${lStatus}">${l.pnl_points >= 0 ? '+' : ''}${l.pnl_points.toFixed(2)} pts</div>`;
+                        if (l.pnl_r !== undefined) html += `<div class="tm-hypo-r ${lStatus}">${l.pnl_r >= 0 ? '+' : ''}${l.pnl_r.toFixed(2)}R</div>`;
+                        if (l.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${l.fill_price.toLocaleString()}</div>`;
+                        if (l.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${l.exit_price.toLocaleString()}</div>`;
+                        html += `</div>`;
+                    }
+                    
                     html += `</div>`;
                 }
                 
-                // Limit box
-                if (hypothetical.limit) {
-                    const l = hypothetical.limit;
-                    const lStatus = l.outcome === 'WIN' ? 'win' : (l.outcome === 'LOSS' ? 'loss' : '');
-                    html += `<div class="tm-hypo-box">`;
-                    html += `<div class="tm-hypo-label">LIMIT</div>`;
-                    html += `<div class="tm-hypo-outcome ${lStatus}">${l.outcome || '—'}</div>`;
-                    if (l.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${lStatus}">${l.pnl_points >= 0 ? '+' : ''}${l.pnl_points.toFixed(2)} pts</div>`;
-                    if (l.pnl_r !== undefined) html += `<div class="tm-hypo-r ${lStatus}">${l.pnl_r >= 0 ? '+' : ''}${l.pnl_r.toFixed(2)}R</div>`;
-                    if (l.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${l.fill_price.toLocaleString()}</div>`;
-                    if (l.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${l.exit_price.toLocaleString()}</div>`;
-                    html += `</div>`;
-                }
-                
-                html += `</div></div>`;
+                html += `</div>`;
             }
             
             // Center: Close type + reason from outcomes
