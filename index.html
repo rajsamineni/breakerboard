@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.8.0</title>
+    <title>SigXFlow v6.15.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -857,12 +857,6 @@
             flex-shrink: 0;
         }
         
-        .breaker-bar:hover {
-            z-index: 20;
-            filter: brightness(1.15);
-            box-shadow: 0 0 12px rgba(255,255,255,0.2);
-        }
-        
         .breaker-bar.selected {
             box-shadow: 0 0 0 2px #00ffff, 0 0 12px #00ffff;
             z-index: 21;
@@ -892,10 +886,6 @@
         /* Completed = slightly faded */
         .breaker-bar.completed {
             opacity: 0.75;
-        }
-        
-        .breaker-bar.completed:hover {
-            opacity: 1;
         }
         
         /* Fib label */
@@ -982,20 +972,34 @@
             opacity: 1 !important;
         }
         
-        /* Cursor hover highlight (yellow - crisp) */
+        /* Click cursor line - solid yellow line on click */
+        .click-cursor-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #fbbf24;
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+        }
+        
+        .click-cursor-line.visible {
+            display: block;
+        }
+        
+        /* Cursor active - no visual highlight on cursor movement */
         .breaker-bar.cursor-active {
-            box-shadow: 0 0 0 2px #fbbf24, 0 0 8px rgba(251, 191, 36, 0.5) !important;
-            z-index: 24;
-            opacity: 1 !important;
+            /* Removed yellow highlight - only click selection highlights now */
         }
         
         .lane-row.cursor-confluence {
-            box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.4);
-            background: rgba(251, 191, 36, 0.12) !important;
+            /* Removed cursor confluence highlight */
         }
         
         .lane-row.cursor-confluence .symbol-badge {
-            box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+            /* Removed cursor confluence badge highlight */
         }
         
         /* Live mode highlight (yellow - same as cursor) */
@@ -1014,41 +1018,21 @@
             box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
         }
         
-        /* Entry lines */
+        /* Entry lines - DISABLED */
         .entry-line {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: rgba(251, 191, 36, 0.4);
-            z-index: 15;
-            cursor: pointer;
-            transition: all 0.15s;
+            display: none !important;
         }
         
-        /* Wider invisible hit area for easier clicking */
         .entry-line::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -12px;
-            width: 26px;
-            height: 100%;
-            background: transparent;
+            display: none !important;
         }
         
         .entry-line:hover {
-            background: #fbbf24;
-            width: 6px;
-            margin-left: -2px;
-            box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+            display: none !important;
         }
         
         .entry-line.selected {
-            background: #fbbf24;
-            width: 4px;
-            margin-left: -1px;
-            box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+            display: none !important;
         }
         
         /* Cursor line */
@@ -6889,13 +6873,13 @@
         /* ===== TRADE TABS (compact, positioned in swimlane) ===== */
         .trade-tab {
             height: 26px;
-            min-width: 20px;
-            padding: 0 6px;
+            min-width: 28px;
+            padding: 0 8px;
             background: #1a1a1f;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             border: 2px solid;
@@ -6943,312 +6927,1185 @@
             50% { opacity: 0.4; }
         }
         
-        /* ===== TRADE DETAIL MODAL ===== */
+        /* ===== TRADE DETAIL MODAL (v6.9.0) ===== */
         .trade-modal-backdrop {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
             z-index: 10000;
             display: none;
             align-items: center;
             justify-content: center;
-            animation: modal-fade-in 0.2s ease;
         }
-        
-        .trade-modal-backdrop.active {
-            display: flex;
-        }
-        
-        @keyframes modal-fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .trade-modal-backdrop.active { display: flex; }
         
         .trade-modal {
-            background: linear-gradient(180deg, #1e1e22 0%, #18181b 100%);
-            border: 1px solid #3a3a3e;
+            background: #ffffff;
             border-radius: 12px;
-            width: 420px;
-            max-width: 95vw;
-            max-height: 85vh;
+            width: 1200px;
+            max-width: 98vw;
+            height: 98vh;
+            max-height: 98vh;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3);
-            animation: modal-slide-up 0.25s ease;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            border: 1px solid #e0e0e5;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
-        @keyframes modal-slide-up {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        /* Close Button */
+        .tm-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px; height: 32px; border-radius: 8px; border: none;
+            background: rgba(0,0,0,0.05); color: #666; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        .tm-close:hover { background: rgba(0,0,0,0.1); color: #333; }
+        
+        /* Tabs - Integrated look */
+        .tm-tabs { 
+            display: flex; 
+            background: #ffffff; 
+            border-bottom: 1px solid #e0e0e5;
+            flex-shrink: 0;
+        }
+        .tm-tab {
+            flex: 1; padding: 16px 20px; font-size: 13px; font-weight: 600; color: #888;
+            text-align: center; cursor: pointer; border-bottom: 3px solid transparent;
+            transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #fafafa;
+        }
+        .tm-tab:first-child { justify-content: flex-start; }
+        .tm-tab:hover { color: #333; background: #f5f5f5; }
+        .tm-tab.active { 
+            color: #1a1a2e; 
+            border-bottom-color: #3b82f6; 
+            background: #ffffff;
+        }
+        .tm-tab-symbol { font-family: 'Roboto Mono', monospace; font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .tm-tab.active .tm-tab-symbol { color: #1a1a2e; }
+        .tm-tab-tf { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #e0e7ff; color: #4f46e5; }
+        .tm-tab-dir { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+        .tm-tab-dir.bull { background: rgba(34,197,94,0.15); color: #16a34a; }
+        .tm-tab-dir.bear { background: rgba(239,68,68,0.15); color: #dc2626; }
+        .tm-tab-status { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-left: 4px; }
+        .tm-tab-status.win { background: rgba(34,197,94,0.12); color: #16a34a; }
+        .tm-tab-status.loss { background: rgba(239,68,68,0.12); color: #dc2626; }
+        .tm-tab-status.filtered { background: rgba(249,115,22,0.12); color: #ea580c; }
+        .tm-tab-status.pending { background: rgba(59,130,246,0.12); color: #2563eb; }
+        .tm-tab-status.cancelled { background: rgba(107,114,128,0.12); color: #6b7280; }
+        .tm-tab-pnl { font-family: 'Roboto Mono', monospace; font-size: 16px; font-weight: 700; margin-left: 6px; }
+        .tm-tab-pnl.win { color: #16a34a; }
+        .tm-tab-pnl.loss { color: #dc2626; }
+        .tm-tab-pnl.neutral { color: #666; }
+        /* Breaker tab styling */
+        #tm-tab-breaker { font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; color: #555; }
+        #tm-tab-breaker.active { color: #333; }
+        
+        /* Tab Content - Fill available space */
+        .tm-content { 
+            display: none; 
+            padding: 12px; 
+            flex: 1;
+            overflow-y: auto; 
+            background: #f8f8fa; 
+        }
+        .tm-content.active { display: flex; flex-direction: column; }
+        
+        /* Panels - No headers */
+        .tm-panel {
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e0e0e8;
+            overflow: hidden;
         }
         
-        .trade-modal-header {
+        /* Trade Tab - Compact but Detailed Layout */
+        .tm-trade-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 14px;
+        }
+        
+        /* Gates Panel - Removed, using new v3 layout */
+        
+        /* Setup Panel - Right Top */
+        .tm-setup-panel { 
+            background: linear-gradient(135deg, #eff6ff 0%, #f8faff 100%);
+            border-color: #bfdbfe;
+        }
+        .tm-setup-content { padding: 14px; display: grid; grid-template-columns: 1fr 100px; gap: 12px; }
+        .tm-prices { display: flex; flex-direction: column; gap: 6px; }
+        .tm-price-row {
+            display: flex; align-items: center; padding: 10px 12px;
+            background: rgba(255,255,255,0.8); border-radius: 6px; border-left: 4px solid;
+        }
+        .tm-price-row.target { border-left-color: #16a34a; }
+        .tm-price-row.entry { border-left-color: #2563eb; }
+        .tm-price-row.stop { border-left-color: #dc2626; }
+        .tm-price-label { font-size: 10px; color: #666; text-transform: uppercase; width: 50px; }
+        .tm-price-value { font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 600; flex: 1; color: #222; }
+        .tm-price-row.target .tm-price-value { color: #16a34a; }
+        .tm-price-row.entry .tm-price-value { color: #2563eb; }
+        .tm-price-row.stop .tm-price-value { color: #dc2626; }
+        .tm-price-pts { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #888; }
+        .tm-price-pts.target-pts { color: #16a34a; font-weight: 700; font-size: 11px; }
+        .tm-price-pts.stop-pts { color: #dc2626; font-weight: 700; font-size: 11px; }
+        .tm-rr-box {
+            background: rgba(255,255,255,0.8); border-radius: 6px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .tm-rr-value { font-family: 'Roboto Mono', monospace; font-size: 22px; font-weight: 700; color: #ca8a04; }
+        .tm-rr-value.good { color: #16a34a; }
+        .tm-rr-label { font-size: 9px; color: #888; text-transform: uppercase; }
+        
+        /* Entry Thresholds - Below Setup */
+        .tm-thresholds { 
+            padding: 10px 14px;
+            border-top: 1px solid rgba(191,219,254,0.5);
+            display: flex;
+            gap: 12px;
+            justify-content: space-around;
+            background: rgba(255,255,255,0.5);
+        }
+        .tm-threshold {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .tm-threshold-pct {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .tm-threshold.weak .tm-threshold-pct { background: rgba(234,179,8,0.15); color: #ca8a04; }
+        .tm-threshold.moderate .tm-threshold-pct { background: rgba(59,130,246,0.15); color: #2563eb; }
+        .tm-threshold.strong .tm-threshold-pct { background: rgba(34,197,94,0.15); color: #16a34a; }
+        .tm-threshold-price {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+        .tm-threshold-label {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+        }
+        
+        /* Outcome Panel - Close Reason & Terminal State */
+        .tm-outcome-panel { 
+            background: linear-gradient(135deg, #fefce8 0%, #fffef5 100%);
+            border-color: #fde68a;
+        }
+        .tm-outcome-content {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .tm-outcome-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tm-outcome-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            min-width: 140px;
+        }
+        .tm-outcome-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #333;
+            flex: 1;
+        }
+        .tm-terminal-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .tm-terminal-badge.success { background: rgba(34,197,94,0.12); color: #16a34a; }
+        .tm-terminal-badge.failure { background: rgba(239,68,68,0.12); color: #dc2626; }
+        .tm-terminal-badge.active { background: rgba(59,130,246,0.12); color: #2563eb; }
+        
+        /* Timeline Panel - Right Middle */
+        .tm-timeline-panel { 
+            background: linear-gradient(135deg, #faf5ff 0%, #fcfaff 100%);
+            border-color: #e9d5ff;
+        }
+        .tm-timeline-content { padding: 14px; }
+        .tm-timeline-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid #2a2a2e;
-            background: linear-gradient(180deg, #252528 0%, #1e1e22 100%);
         }
+        .tm-tl-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .tm-tl-dot {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700; border: 2px solid;
+            background: #fff;
+        }
+        .tm-tl-dot.created { border-color: #eab308; color: #ca8a04; }
+        .tm-tl-dot.filled { background: #2563eb; border-color: #2563eb; color: #fff; }
+        .tm-tl-dot.win { background: #16a34a; border-color: #16a34a; color: #fff; }
+        .tm-tl-dot.loss { background: #dc2626; border-color: #dc2626; color: #fff; }
+        .tm-tl-dot.filtered { background: #ea580c; border-color: #ea580c; color: #fff; }
+        .tm-tl-dot.pending { border-color: #d1d5db; color: #9ca3af; }
+        .tm-tl-dot.cancelled { background: #6b7280; border-color: #6b7280; color: #fff; }
+        .tm-tl-info { margin-top: 6px; text-align: center; max-width: 150px; }
+        .tm-tl-info .label { display: block; font-size: 11px; font-weight: 600; color: #333; }
+        .tm-tl-info .time { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #555; }
+        .tm-tl-info .price { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #2563eb; font-weight: 600; }
+        .tm-tl-info .reason { display: block; font-size: 9px; color: #888; margin-top: 2px; line-height: 1.2; word-wrap: break-word; }
+        .tm-tl-info .filter-reason { 
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px; 
+            color: #c2410c; 
+            background: rgba(251,146,60,0.1);
+            padding: 4px 6px;
+            border-radius: 4px;
+            margin-top: 6px;
+            max-width: 180px;
+        }
+        .tm-tl-connector {
+            flex: 0 0 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #d1d5db, #22c55e);
+            margin: 0 -8px;
+            margin-top: -20px;
+        }
+        .tm-tl-connector.loss { background: linear-gradient(90deg, #d1d5db, #ef4444); }
+        .tm-tl-connector.filtered { background: linear-gradient(90deg, #d1d5db, #f97316); }
+        .tm-tl-connector.pending { background: #e5e7eb; }
         
-        .trade-modal-title {
+        /* Confluence Panel - Full Width Bottom, Highlighted */
+        .tm-confluence-panel {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #eef2ff 0%, #f5f7ff 100%);
+            border-radius: 10px;
+            border: 2px solid #c7d2fe;
+        }
+        .tm-confluence-content {
+            padding: 16px;
+        }
+        .tm-confluence-summary {
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 14px;
         }
-        
-        .trade-modal-title-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e0e0e0;
+        .tm-conf-score {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e1b4b;
         }
-        
-        .trade-modal-status {
-            padding: 5px 12px;
-            border-radius: 6px;
+        .tm-conf-score span { font-size: 14px; color: #888; font-weight: 400; }
+        .tm-conf-badge {
             font-size: 11px;
             font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        
-        .trade-modal-status.pending { background: #fbbf24; color: #000; }
-        .trade-modal-status.filled { background: #3b82f6; color: #fff; }
-        .trade-modal-status.success { background: #22c55e; color: #000; }
-        .trade-modal-status.failure { background: #ef4444; color: #fff; }
-        .trade-modal-status.cancelled { background: #6b7280; color: #fff; }
-        .trade-modal-status.entry-denied { background: #f97316; color: #fff; }
-        .trade-modal-status.daily-win { background: #a855f7; color: #fff; border: 2px solid #22c55e; }
-        .trade-modal-status.daily-loss { background: #a855f7; color: #fff; border: 2px solid #ef4444; }
-        
-        .trade-modal-close {
-            width: 32px;
-            height: 32px;
+        .tm-conf-badge.entry { background: #16a34a; color: #fff; }
+        .tm-conf-badge.filtered { background: #ea580c; color: #fff; }
+        .tm-factors-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .tm-factor {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: #fff;
             border-radius: 8px;
-            border: none;
-            background: #2a2a2e;
-            color: #888;
-            font-size: 18px;
-            cursor: pointer;
+            border-left: 4px solid;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .tm-factor.pos { border-left-color: #16a34a; background: rgba(34,197,94,0.04); }
+        .tm-factor.zero { border-left-color: #d1d5db; }
+        .tm-factor.neg { border-left-color: #dc2626; background: rgba(239,68,68,0.04); }
+        .tm-factor-score { 
+            font-family: 'Roboto Mono', monospace;
+            font-size: 16px;
+            font-weight: 700; 
+            min-width: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s;
         }
+        .tm-factor.pos .tm-factor-score { color: #16a34a; }
+        .tm-factor.zero .tm-factor-score { color: #9ca3af; }
+        .tm-factor.neg .tm-factor-score { color: #dc2626; }
+        .tm-factor-info { flex: 1; min-width: 0; }
+        .tm-factor-name { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 2px; }
+        .tm-factor-reason { font-size: 11px; color: #555; line-height: 1.3; }
+        .tm-confluence-dimmed { opacity: 0.5; }
+        .tm-confluence-dimmed .tm-confluence-content { text-align: center; padding: 24px; color: #888; font-size: 12px; }
         
-        .trade-modal-close:hover {
-            background: #3a3a3e;
-            color: #fff;
-        }
-        
-        .trade-modal-body {
-            padding: 20px;
-            overflow-y: auto;
-            max-height: calc(85vh - 70px);
-        }
-        
-        /* P&L Hero */
-        .trade-modal-pnl {
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #1a1a1c 0%, #222225 100%);
-            border-radius: 10px;
-            border: 1px solid #2a2a2e;
-        }
-        
-        .trade-modal-pnl-value {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 36px;
-            font-weight: 700;
-        }
-        
-        .trade-modal-pnl-value.win { color: #4ade80; }
-        .trade-modal-pnl-value.loss { color: #f87171; }
-        
-        .trade-modal-pnl-label {
+        /* Blocked message */
+        .tm-blocked-msg {
+            padding: 8px 12px;
+            background: rgba(239,68,68,0.08);
+            border-radius: 6px;
             font-size: 11px;
-            color: #666;
+            color: #dc2626;
+            margin-top: 6px;
+        }
+        
+        /* ===== TRADE TAB V2 - Scoring First Layout ===== */
+        .tm-trade-grid-v2 {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════
+           V7 ANALYST FOCUS - Scoring & Gates prominent, Setup minimal
+           ═══════════════════════════════════════════════════════════════ */
+        
+        .tm-report {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0;
+            background: #f1f5f9;
+            flex: 1;
+        }
+        
+        /* ─────────────────────────────────────────────────────────────
+           RESULT HEADER - Outcome dominates
+           ───────────────────────────────────────────────────────────── */
+        .tm-result-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        
+        .tm-result-header.win { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 5px solid #22c55e; }
+        .tm-result-header.loss { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 5px solid #ef4444; }
+        .tm-result-header.filtered { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-left: 5px solid #f97316; }
+        
+        .tm-result-outcome {
+            font-size: 26px;
+            font-weight: 800;
+        }
+        .tm-result-outcome.win { color: #16a34a; }
+        .tm-result-outcome.loss { color: #dc2626; }
+        .tm-result-outcome.filtered { color: #ea580c; }
+        
+        .tm-result-closetype {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+        
+        .tm-result-r {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .tm-result-r.win { color: #16a34a; }
+        .tm-result-r.loss { color: #dc2626; }
+        
+        .tm-result-detail {
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        /* Hypothetical section */
+        .tm-result-hypothetical-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            margin-left: 16px;
+        }
+        
+        .tm-hypo-header {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .tm-hypo-boxes {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tm-hypo-box {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 6px 10px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            min-width: 100px;
+        }
+        
+        .tm-hypo-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-top: 4px;
         }
         
-        /* Close Reason Box */
-        .trade-modal-close-reason {
-            background: #1a1a1c;
-            border-radius: 8px;
-            padding: 12px 14px;
-            margin-bottom: 20px;
+        .tm-hypo-outcome {
+            font-size: 14px;
+            font-weight: 800;
+            color: #64748b;
+        }
+        .tm-hypo-outcome.win { color: #16a34a; }
+        .tm-hypo-outcome.loss { color: #dc2626; }
+        
+        .tm-hypo-pnl {
             font-family: 'Roboto Mono', monospace;
             font-size: 12px;
-            color: #ccc;
-            border-left: 4px solid #666;
-        }
-        
-        .trade-modal-close-reason.success { border-left-color: #22c55e; }
-        .trade-modal-close-reason.failure { border-left-color: #ef4444; }
-        .trade-modal-close-reason.entry-denied { border-left-color: #f97316; }
-        .trade-modal-close-reason.daily { border-left-color: #a855f7; }
-        
-        /* Section */
-        .trade-modal-section {
-            margin-bottom: 20px;
-        }
-        
-        .trade-modal-section-title {
-            font-size: 10px;
             font-weight: 600;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
+            color: #64748b;
+        }
+        .tm-hypo-pnl.win { color: #16a34a; }
+        .tm-hypo-pnl.loss { color: #dc2626; }
+        
+        .tm-hypo-r {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .tm-hypo-r.win { color: #16a34a; }
+        .tm-hypo-r.loss { color: #dc2626; }
+        
+        .tm-hypo-detail {
+            font-size: 10px;
+            color: #64748b;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .tm-result-pnl {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .tm-result-pnl.win { color: #16a34a; }
+        .tm-result-pnl.loss { color: #dc2626; }
+        
+        .tm-result-r {
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .tm-result-divider {
+            width: 1px;
+            height: 36px;
+            background: #e2e8f0;
+            margin: 0 8px;
+        }
+        
+        .tm-result-close {
+            flex: 1;
+        }
+        
+        .tm-result-close-main {
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .tm-result-close-rule {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+        
+        .tm-result-close-detail {
+            font-size: 12px;
+            color: #64748b;
+            display: block;
+        }
+        
+        .tm-result-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+        }
+        
+        .tm-result-score-num {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 24px;
+            font-weight: 800;
+            color: #4338ca;
+        }
+        
+        .tm-result-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #16a34a;
+            color: #fff;
+        }
+        .tm-result-badge.filtered { background: #ea580c; }
+        
+        /* Card Result - the actual class used in HTML */
+        .tm-card-result {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .tm-card-result.win { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 5px solid #22c55e; }
+        .tm-card-result.loss { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 5px solid #ef4444; }
+        .tm-card-result.filtered { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-left: 5px solid #f97316; }
+        
+        .tm-result-left { flex: 0 0 auto; display: flex; flex-direction: column; gap: 2px; }
+        .tm-result-center { flex: 1; text-align: center; padding: 0 24px; border-left: 1px solid rgba(0,0,0,0.1); border-right: 1px solid rgba(0,0,0,0.1); margin: 0 20px; }
+        .tm-result-right { flex: 0 0 auto; text-align: center; }
+        
+        .tm-result-close-label { font-size: 10px; color: #64748b; text-transform: uppercase; }
+        .tm-result-close-value { font-size: 16px; font-weight: 700; color: #334155; margin-top: 2px; }
+        
+        .tm-result-score { font-family: 'Roboto Mono', monospace; font-size: 36px; font-weight: 800; color: #4338ca; line-height: 1; }
+        
+        /* Gates + Rules side by side */
+        .tm-row-gates-rules {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        /* Timeline bar - horizontal */
+        .tm-timeline-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        
+        .tm-tl-step {
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .trade-modal-section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #2a2a2e;
+        .tm-tl-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
         }
+        .tm-tl-dot.created { background: #fef3c7; color: #b45309; }
+        .tm-tl-dot.filled { background: #dbeafe; color: #1d4ed8; }
+        .tm-tl-dot.win { background: #dcfce7; color: #16a34a; }
+        .tm-tl-dot.loss { background: #fee2e2; color: #dc2626; }
+        .tm-tl-dot.filtered { background: #ffedd5; color: #ea580c; }
+        .tm-tl-dot.pending { background: #f3f4f6; color: #6b7280; }
         
-        /* Prices Visual */
-        .trade-modal-prices {
-            background: #1a1a1c;
+        .tm-tl-info { display: flex; flex-direction: column; }
+        .tm-tl-label { font-weight: 600; color: #334155; font-size: 12px; }
+        .tm-tl-time { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #64748b; }
+        .tm-tl-price { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #4338ca; font-weight: 600; }
+        .tm-tl-arrow { color: #cbd5e1; font-size: 18px; }
+        
+        /* Setup bar - horizontal */
+        .tm-setup-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 16px;
+            background: #fff;
             border-radius: 8px;
-            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            font-size: 12px;
+            flex-wrap: wrap;
         }
         
-        .trade-modal-price-bar {
+        .tm-setup-divider {
+            width: 1px;
+            height: 20px;
+            background: #e2e8f0;
+        }
+        
+        .tm-setup-zones {
             display: flex;
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-left: auto;
         }
         
-        .trade-modal-price-bar-risk {
-            background: linear-gradient(90deg, #ef4444, #f87171);
-        }
-        
-        .trade-modal-price-bar-reward {
-            background: linear-gradient(90deg, #4ade80, #22c55e);
-        }
-        
-        .trade-modal-price-labels {
-            display: flex;
-            justify-content: space-between;
+        .tm-zone-tag {
+            font-size: 10px;
             font-family: 'Roboto Mono', monospace;
-            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
         }
+        .tm-zone-tag.weak { background: #fef3c7; color: #92400e; }
+        .tm-zone-tag.mod { background: #dbeafe; color: #1e40af; }
+        .tm-zone-tag.strong { background: #dcfce7; color: #166534; }
         
-        .trade-modal-price-label.stop { color: #f87171; }
-        .trade-modal-price-label.entry { color: #fbbf24; }
-        .trade-modal-price-label.target { color: #4ade80; }
-        
-        /* Detail Row */
-        .trade-modal-row {
+        /* ─────────────────────────────────────────────────────────────
+           COMPACT INFO BAR - Timeline + Setup in one row
+           ───────────────────────────────────────────────────────────── */
+        .tm-info-bar {
             display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #222225;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
             font-size: 12px;
         }
         
-        .trade-modal-row:last-child {
-            border-bottom: none;
-        }
-        
-        .trade-modal-row-label {
-            color: #888;
-        }
-        
-        .trade-modal-row-value {
-            font-family: 'Roboto Mono', monospace;
-            color: #ccc;
-        }
-        
-        .trade-modal-row-value.pass { color: #4ade80; }
-        .trade-modal-row-value.fail { color: #f87171; }
-        .trade-modal-row-value.warn { color: #f97316; }
-        
-        /* Events Timeline */
-        .trade-modal-events {
-            background: #1a1a1c;
-            border-radius: 8px;
-            padding: 12px 14px;
-        }
-        
-        .trade-modal-event {
+        .tm-info-section {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tm-info-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+        
+        .tm-info-divider {
+            width: 1px;
+            height: 24px;
+            background: #e2e8f0;
+        }
+        
+        .tm-tl-compact {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .tm-tl-step { color: #475569; }
+        .tm-tl-arrow { color: #94a3b8; }
+        .tm-tl-price { color: #4338ca; font-weight: 600; }
+        .tm-tl-final.win { color: #16a34a; font-weight: 600; }
+        .tm-tl-final.loss { color: #dc2626; font-weight: 600; }
+        
+        .tm-setup-compact {
+            display: flex;
+            align-items: center;
             gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid #252528;
+            font-family: 'Roboto Mono', monospace;
         }
         
-        .trade-modal-event:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
+        .tm-setup-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         
-        .trade-modal-event:first-child {
-            padding-top: 0;
+        .tm-setup-item .lbl { color: #64748b; font-size: 11px; }
+        .tm-setup-item .val { color: #334155; font-weight: 600; font-family: 'Roboto Mono', monospace; }
+        .tm-setup-item .pts { font-weight: 700; font-size: 11px; font-family: 'Roboto Mono', monospace; }
+        .tm-setup-item .pts.pos { color: #16a34a; }
+        .tm-setup-item .pts.neg { color: #dc2626; }
+        .tm-setup-item .rr { color: #4338ca; font-weight: 700; font-size: 14px; font-family: 'Roboto Mono', monospace; }
+        
+        /* ─────────────────────────────────────────────────────────────
+           MAIN CONTENT - 2 column grid for Scoring + Gates
+           ───────────────────────────────────────────────────────────── */
+        .tm-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            flex: 1;
         }
         
-        .trade-modal-event-dot {
-            width: 10px;
-            height: 10px;
+        .tm-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tm-card-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        /* ─────────────────────────────────────────────────────────────
+           SCORING CARD - Primary focus
+           ───────────────────────────────────────────────────────────── */
+        .tm-card-scoring {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border-top: 3px solid #7c3aed;
+            padding: 10px 12px;
+        }
+        
+        .tm-card-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tm-scoring-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        
+        .tm-scoring-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+        
+        .tm-scoring-item.has-score { background: linear-gradient(90deg, #faf5ff 0%, #fff 100%); border-left: 3px solid #a78bfa; }
+        .tm-scoring-item.zero { opacity: 0.7; }
+        
+        .tm-scoring-badge {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .tm-scoring-badge.pos { background: #16a34a; color: #fff; }
+        .tm-scoring-badge.zero { background: #e5e7eb; color: #6b7280; }
+        .tm-scoring-badge.neg { background: #dc2626; color: #fff; }
+        
+        .tm-scoring-info { flex: 1; min-width: 0; }
+        .tm-scoring-name { font-weight: 600; color: #334155; font-size: 13px; }
+        .tm-scoring-reason { font-size: 12px; color: #64748b; }
+        
+        /* ─────────────────────────────────────────────────────────────
+           GATES CARD - Primary focus
+           ───────────────────────────────────────────────────────────── */
+        .tm-card-gates {
+            border-top: 3px solid #22c55e;
+        }
+        
+        .tm-card-gates .tm-card-title { border-color: #bbf7d0; }
+        
+        .tm-gates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .tm-gate-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: #f0fdf4;
+            border-left: 3px solid #86efac;
+        }
+        
+        .tm-gate-item.fail {
+            background: #fef2f2;
+            border-left-color: #fca5a5;
+        }
+        
+        .tm-gate-icon {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+        .tm-gate-item .tm-gate-icon { color: #16a34a; }
+        .tm-gate-item.fail .tm-gate-icon { color: #dc2626; }
+        
+        .tm-gate-info { flex: 1; min-width: 0; }
+        .tm-gate-code { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 12px; color: #334155; min-width: 35px; }
+        .tm-gate-reason { font-size: 12px; color: #64748b; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* ─────────────────────────────────────────────────────────────
+           RULES CARD - Full width at bottom
+           ───────────────────────────────────────────────────────────── */
+        .tm-card-rules {
+            border-top: 3px solid #f59e0b;
+        }
+        
+        .tm-card-rules .tm-card-title { border-color: #fde68a; }
+        
+        .tm-rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .tm-rule-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+        
+        .tm-rule-item.triggered {
+            background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid #fde68a;
+        }
+        
+        .tm-rule-icon {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+        .tm-rule-item .tm-rule-icon { color: #9ca3af; }
+        .tm-rule-item.triggered .tm-rule-icon { color: #f59e0b; }
+        
+        .tm-rule-code {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 12px;
+            color: #475569;
+            min-width: 35px;
+        }
+        
+        .tm-rule-reason {
+            flex: 1;
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .tm-rule-item.triggered .tm-rule-reason {
+            color: #92400e;
+            font-weight: 500;
+        }
+        
+        .tm-rule-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #f59e0b;
+            color: #fff;
+        }
+        
+        /* Timeline inline - inside rules card */
+        .tm-timeline-inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .tm-tl-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #475569;
+        }
+        
+        .tm-tl-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+        
+        .tm-tl-lbl {
+            font-size: 11px;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .tm-tl-time {
+            font-size: 11px;
+            color: #64748b;
+        }
+        
+        .tm-tl-dot-sm {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            background: #e2e8f0;
+            color: #475569;
+        }
+        /* Event type color coding */
+        .tm-tl-dot-sm.pending { background: #fef3c7; color: #b45309; }
+        .tm-tl-dot-sm.filled { background: #dbeafe; color: #1d4ed8; }
+        .tm-tl-dot-sm.exited { background: #dcfce7; color: #16a34a; }
+        .tm-tl-dot-sm.closed { background: #d1fae5; color: #059669; }
+        .tm-tl-dot-sm.cancelled { background: #fee2e2; color: #dc2626; }
+        .tm-tl-dot-sm.rejected { background: #fecaca; color: #b91c1c; }
+        .tm-tl-dot-sm.expired { background: #f3e8ff; color: #7c3aed; }
+        
+        .tm-timeline-inline .tm-tl-arrow { color: #94a3b8; font-size: 16px; }
+        .tm-timeline-inline .tm-tl-price { color: #4338ca; font-weight: 600; font-size: 11px; }
+        
+        /* ─────────────────────────────────────────────────────────────
+           ZONES - Small row if present
+           ───────────────────────────────────────────────────────────── */
+        .tm-zones-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        
+        .tm-zones-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+        
+        .tm-zone-tag {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .tm-zone-tag.weak { background: #fef3c7; color: #92400e; }
+        .tm-zone-tag.mod { background: #dbeafe; color: #1e40af; }
+        .tm-zone-tag.strong { background: #dcfce7; color: #166534; }
+        
+        .tm-zone-tag .pct { font-weight: 700; margin-right: 4px; }
+        
+        /* OLD CSS - kept for backwards compat */
+        .tm-blocked-msg code {
+            font-family: 'Roboto Mono', monospace;
+            color: #b91c1c;
+            font-size: 10px;
+        }
+        
+        /* Breaker Tab */
+        .tm-breaker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .tm-breaker-grid .tm-full { grid-column: 1 / -1; }
+        
+        /* Pattern Panel */
+        .tm-pattern-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+        }
+        .tm-pattern-flow { 
+            display: flex; 
+            align-items: flex-start; 
+            padding: 20px 16px; 
+            gap: 4px; 
+            justify-content: center; 
+        }
+        .tm-pattern-node { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-width: 90px; 
+        }
+        .tm-pattern-dot {
+            width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; border: 2px solid;
+            flex-shrink: 0;
+        }
+        .tm-pattern-dot.high { background: rgba(34,197,94,0.08); border-color: #22c55e; color: #16a34a; }
+        .tm-pattern-dot.low { background: rgba(239,68,68,0.08); border-color: #ef4444; color: #dc2626; }
+        .tm-pattern-dot.br { background: rgba(59,130,246,0.08); border-color: #3b82f6; color: #2563eb; }
+        .tm-pattern-info { margin-top: 8px; text-align: center; }
+        .tm-pattern-time { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #9ca3af; }
+        .tm-pattern-price { font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 600; color: #374151; margin-top: 2px; }
+        .tm-pattern-note { font-size: 10px; color: #6b7280; margin-top: 1px; }
+        .tm-pattern-note.swing { color: #d97706; }
+        .tm-pattern-note.fvg { color: #059669; }
+        .tm-pattern-connector { 
+            width: 20px; height: 2px; background: #d1d5db; 
+            margin-top: 21px;
             flex-shrink: 0;
         }
         
-        .trade-modal-event-dot.created { background: #fbbf24; }
-        .trade-modal-event-dot.filled { background: #3b82f6; }
-        .trade-modal-event-dot.closed { background: #22c55e; }
-        .trade-modal-event-dot.closed.loss { background: #ef4444; }
-        .trade-modal-event-dot.closed.denied { background: #f97316; }
+        /* Metrics Panel */
+        .tm-metrics-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+        }
+        .tm-metrics-content { 
+            padding: 16px;
+        }
+        .tm-metrics-grid {
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 1px;
+            background: #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .tm-metric { 
+            text-align: center; 
+            padding: 14px 10px; 
+            background: #fff;
+        }
+        .tm-metric-val { 
+            display: block;
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 15px; 
+            font-weight: 600; 
+            color: #111827; 
+        }
+        .tm-metric-val.good { color: #059669; }
+        .tm-metric-lbl { 
+            display: block;
+            font-size: 10px; 
+            font-weight: 500;
+            color: #9ca3af; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            margin-top: 4px; 
+        }
         
-        .trade-modal-event-content {
+        /* Fib Panel */
+        .tm-fib-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+        }
+        .tm-fib-content { padding: 16px; }
+        .tm-fib-values {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .tm-fib-val-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 10px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        .tm-fib-val-lbl { 
+            display: block;
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 9px; 
+            color: #9ca3af;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+        .tm-fib-val-num { 
+            display: block;
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 18px; 
+            font-weight: 700;
+            color: #111827;
+        }
+        .tm-fib-val-num.peak { color: #d97706; }
+        .tm-fib-val-num.fb { color: #2563eb; }
+        .tm-fib-levels { }
+        .tm-fib-row {
+            display: flex; 
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .tm-fib-row:last-child { border-bottom: none; }
+        .tm-fib-row::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .tm-fib-row.f0::before { background: #ef4444; }
+        .tm-fib-row.f1::before { background: #f97316; }
+        .tm-fib-row.f3::before { background: #84cc16; }
+        .tm-fib-row.f4::before { background: #22c55e; }
+        .tm-fib-lbl { 
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 11px; 
+            color: #6b7280; 
             flex: 1;
         }
-        
-        .trade-modal-event-type {
-            font-size: 12px;
-            font-weight: 600;
-            color: #e0e0e0;
-        }
-        
-        .trade-modal-event-time {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 10px;
-            color: #666;
-            margin-top: 2px;
-        }
-        
-        .trade-modal-event-detail {
-            font-size: 11px;
-            color: #888;
-            margin-top: 2px;
-        }
-        
-        /* Breaker ID */
-        .trade-modal-breaker-id {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 9px;
-            color: #555;
-            word-break: break-all;
-            background: #151517;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #222225;
+        .tm-fib-price { 
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #111827; 
         }
     </style>
 </head>
@@ -7422,17 +8279,31 @@
         <div class="confluence-labels-container" id="confluence-labels-container"></div>
     </div>
 
-    <!-- Trade Detail Modal -->
+    <!-- Trade Detail Modal (v6.9.0) -->
     <div class="trade-modal-backdrop" id="trade-modal-backdrop" onclick="closeTradeModal(event)">
         <div class="trade-modal" onclick="event.stopPropagation()">
-            <div class="trade-modal-header">
-                <div class="trade-modal-title">
-                    <span class="trade-modal-title-text">Trade Detail</span>
-                    <span class="trade-modal-status" id="trade-modal-status">—</span>
+            <!-- Close Button -->
+            <button class="tm-close" onclick="closeTradeModal()">✕</button>
+            
+            <!-- Tabs -->
+            <div class="tm-tabs">
+                <div class="tm-tab active" onclick="switchTradeModalTab(0)" id="tm-tab-trade">
+                    <span class="tm-tab-symbol" id="tm-tab-symbol">NQ</span>
+                    <span class="tm-tab-tf" id="tm-tab-tf">1M</span>
+                    <span class="tm-tab-dir" id="tm-tab-dir">BULL</span>
+                    <span class="tm-tab-status" id="tm-tab-status">CANCELLED</span>
+                    <span class="tm-tab-pnl" id="tm-tab-pnl">+2.13</span>
                 </div>
-                <button class="trade-modal-close" onclick="closeTradeModal()">✕</button>
+                <div class="tm-tab" onclick="switchTradeModalTab(1)" id="tm-tab-breaker">Breaker Details</div>
             </div>
-            <div class="trade-modal-body" id="trade-modal-body">
+            
+            <!-- Trade Details Tab -->
+            <div class="tm-content active" id="tm-trade-content">
+                <!-- Content rendered dynamically -->
+            </div>
+            
+            <!-- Breaker Details Tab -->
+            <div class="tm-content" id="tm-breaker-content">
                 <!-- Content rendered dynamically -->
             </div>
         </div>
@@ -7443,6 +8314,7 @@
         const FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/snapshots.json";
         const SMT_FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/smt_signals.json";
         const TRADES_FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/trades.json";
+        const BREAKERS_FIREBASE_URL = "https://sigxflow-default-rtdb.firebaseio.com/breakers";
         const PIXELS_PER_MINUTE = 35;
         const BAR_HEIGHT = 26;  // Height of breaker bars
         const BAR_GAP = 3;      // Gap between stacked bars
@@ -7458,6 +8330,7 @@
         let allData = [];
         let smtData = [];  // SMT signals
         let tradesData = {}; // Trade records keyed by breaker_id
+        let breakerDetailsCache = {}; // Cached breaker details from /breakers endpoint
         let smtCache = {}; // For incremental SMT updates
         let lastSmtFetchTime = null; // Track last SMT fetch for incremental updates
         let breakerCache = {}; // For incremental updates
@@ -8732,35 +9605,30 @@
                                 const barEndX = (b.endMin - windowStartMin) * PIXELS_PER_MINUTE;
                                 const barTop = LANE_PADDING + b.stackIdx * (BAR_HEIGHT + BAR_GAP);
                                 
-                                const isDenied = trade.close_reason && trade.close_reason.startsWith('ENTRY_DENIED');
-                                const isCancelled = trade.close_reason === 'CANCELLED';
-                                const isInvalidated = trade.close_reason === 'INVALIDATED';
-                                // Check if was filled before being cancelled (has fill price or FILLED event)
-                                const wasFilled = (trade.prices && trade.prices.fill_price) || 
-                                    (trade.prices && trade.prices.entry_fill) ||
-                                    (trade.events && trade.events.some(e => e.event === 'FILLED'));
+                                // NEW SCHEMA ONLY
+                                const decision = trade.status?.decision || '';
+                                const phase = trade.status?.phase || '';
+                                const tradeOutcome = trade.outcomes?.trade_outcome || '';
+                                const displayCloseReason = getDisplayCloseReason(trade);
+                                
+                                const isFiltered = decision === 'FILTERED';
+                                const wasFilled = trade.events?.some(e => e.event === 'FILLED') || false;
                                 
                                 // Left tab - entry state
                                 const leftTab = document.createElement('div');
                                 leftTab.className = 'trade-tab trade-tab-left';
-                                leftTab.style.left = (barStartX - 20) + 'px';
+                                leftTab.style.left = (barStartX - 28) + 'px';
                                 leftTab.style.top = barTop + 'px';
                                 
-                                if (isDenied) {
+                                if (isFiltered) {
                                     leftTab.classList.add('denied');
                                     leftTab.textContent = 'D';
-                                    leftTab.title = 'Entry Denied';
-                                } else if ((isCancelled || isInvalidated) && !wasFilled) {
-                                    // Cancelled/Invalidated before fill - show C or X on left
-                                    leftTab.classList.add('cancelled');
-                                    leftTab.textContent = isInvalidated ? 'X' : 'C';
-                                    leftTab.title = isInvalidated ? 'Invalidated (never filled)' : 'Cancelled (never filled)';
-                                } else if (trade.phase === 'PENDING') {
+                                    leftTab.title = displayCloseReason || 'Filtered';
+                                } else if (phase === 'PENDING') {
                                     leftTab.classList.add('pending');
                                     leftTab.textContent = 'P';
                                     leftTab.title = 'Pending Entry';
-                                } else if (trade.phase === 'FILLED' || trade.phase === 'CLOSED') {
-                                    // Was filled (including filled then cancelled)
+                                } else if (phase === 'FILLED' || phase === 'CLOSED') {
                                     leftTab.classList.add('filled');
                                     leftTab.textContent = 'F';
                                     leftTab.title = 'Filled';
@@ -8777,48 +9645,33 @@
                                 swimlane.appendChild(leftTab);
                                 
                                 // Right tab - exit state (for closed trades)
-                                if (trade.phase === 'CLOSED') {
+                                if (phase === 'CLOSED') {
                                     const rightTab = document.createElement('div');
                                     rightTab.className = 'trade-tab trade-tab-right';
                                     rightTab.style.left = barEndX + 'px';
                                     rightTab.style.top = barTop + 'px';
                                     
-                                    if (isDenied) {
-                                        // Denied shows D on both sides
+                                    // Derive win/loss from pnl_points
+                                    const pnlPts = trade.outcomes?.close_details?.pnl_points;
+                                    
+                                    if (isFiltered) {
                                         rightTab.classList.add('denied');
                                         rightTab.textContent = 'D';
-                                        rightTab.title = 'Entry Denied';
-                                    } else if (isCancelled && !wasFilled) {
-                                        // Cancelled before fill - show C on both sides
+                                        rightTab.title = displayCloseReason || 'Filtered';
+                                    } else if (pnlPts !== undefined) {
+                                        // Use P&L to determine win/loss
+                                        const isWin = pnlPts >= 0;
+                                        rightTab.classList.add(isWin ? 'win' : 'loss');
+                                        rightTab.textContent = isWin ? 'W' : 'L';
+                                        rightTab.title = `${isWin ? 'Win' : 'Loss'} - ${displayCloseReason} (${pnlPts >= 0 ? '+' : ''}${pnlPts.toFixed(1)})`;
+                                    } else if (tradeOutcome === 'CANCELLED') {
                                         rightTab.classList.add('cancelled');
                                         rightTab.textContent = 'C';
-                                        rightTab.title = 'Cancelled (never filled)';
-                                    } else if (trade.close_reason === 'INVALIDATED' && !wasFilled) {
-                                        // Invalidated before fill - show X on both sides
-                                        rightTab.classList.add('cancelled');
-                                        rightTab.textContent = 'X';
-                                        rightTab.title = 'Invalidated (never filled)';
-                                    } else if (trade.close_reason === 'SUCCESS') {
-                                        rightTab.classList.add('win');
-                                        rightTab.textContent = 'W';
-                                        rightTab.title = 'Win - Target Hit';
-                                    } else if (trade.close_reason === 'FAILURE') {
-                                        rightTab.classList.add('loss');
-                                        rightTab.textContent = 'L';
-                                        rightTab.title = 'Loss - Stop Hit';
-                                    } else if (isCancelled || isInvalidated || trade.close_reason === 'DAILY_CLOSE') {
-                                        // Cancelled (was filled), Invalidated (was filled), or EOD - show W/L based on P&L with tiny reason letter
-                                        const pnl = calculateTradePnL(trade);
-                                        const isWin = pnl !== null && pnl >= 0;
-                                        const reasonLetter = isCancelled ? 'c' : (isInvalidated ? 'i' : 'e');
-                                        
-                                        rightTab.classList.add(isWin ? 'win' : 'loss');
-                                        rightTab.innerHTML = (isWin ? 'W' : 'L') + '<span class="close-reason">' + reasonLetter + '</span>';
-                                        rightTab.title = (isWin ? 'Win' : 'Loss') + ' - ' + (isCancelled ? 'Cancelled' : (isInvalidated ? 'Invalidated' : 'End of Day'));
+                                        rightTab.title = 'Cancelled - ' + displayCloseReason;
                                     } else {
                                         rightTab.classList.add('cancelled');
                                         rightTab.textContent = 'C';
-                                        rightTab.title = trade.close_reason || 'Closed';
+                                        rightTab.title = displayCloseReason || 'Closed';
                                     }
                                     
                                     rightTab.addEventListener('click', (e) => {
@@ -8880,6 +9733,12 @@
             cursorLine.className = 'cursor-line';
             cursorLine.id = 'cursor-line';
             chartInner.appendChild(cursorLine);
+            
+            // Add click cursor line (solid yellow on click)
+            const clickCursorLine = document.createElement('div');
+            clickCursorLine.className = 'click-cursor-line';
+            clickCursorLine.id = 'click-cursor-line';
+            chartInner.appendChild(clickCursorLine);
             
             // Set chart inner height so absolute positioned elements span correctly
             chartInner.style.height = totalHeight + 'px';
@@ -9021,6 +9880,13 @@
             } else if (lockedConfluenceMin !== null) {
                 highlightActiveAtEntry(lockedConfluenceMin);
                 showCursorConfluence(lockedConfluenceMin);
+                // Restore click cursor line position
+                const clickCursorLine = document.getElementById('click-cursor-line');
+                if (clickCursorLine) {
+                    const xPos = (lockedConfluenceMin - windowStartMin) * PIXELS_PER_MINUTE;
+                    clickCursorLine.style.left = xPos + 'px';
+                    clickCursorLine.classList.add('visible');
+                }
             } else if (preservedEntryMin) {
                 selectedEntryMin = preservedEntryMin;
                 lockedConfluenceMin = preservedEntryMin;
@@ -10893,6 +11759,13 @@
             selectedEntryMin = null;
             selectedSmtId = null;
             
+            // Hide click cursor line when selecting breaker
+            const clickCursorLine = document.getElementById('click-cursor-line');
+            if (clickCursorLine) {
+                clickCursorLine.classList.remove('visible');
+            }
+            lockedConfluenceMin = null;
+            
             // Toggle selection
             if (selectedBreakerId === breakerId) {
                 selectedBreakerId = null;
@@ -10998,11 +11871,18 @@
             selectedSmtId = null;
             selectedEntryMin = null;
             
+            // Get click cursor line
+            const clickCursorLine = document.getElementById('click-cursor-line');
+            
             // Toggle lock on confluence view
             if (lockedConfluenceMin === clickedMin) {
                 // Clicking same time unlocks
                 lockedConfluenceMin = null;
                 clearEntryHighlight();
+                // Hide click cursor line
+                if (clickCursorLine) {
+                    clickCursorLine.classList.remove('visible');
+                }
                 if (isLive) {
                     showLiveConfluence();
                 } else {
@@ -11013,6 +11893,13 @@
                 lockedConfluenceMin = clickedMin;
                 highlightActiveAtEntry(clickedMin);
                 showCursorConfluence(clickedMin);
+                
+                // Show and position click cursor line
+                if (clickCursorLine) {
+                    const xPos = (clickedMin - windowStartMin) * PIXELS_PER_MINUTE;
+                    clickCursorLine.style.left = xPos + 'px';
+                    clickCursorLine.classList.add('visible');
+                }
             }
         }
         
@@ -13517,10 +14404,12 @@
                     }
                     
                     // Index trades by breaker_id for fast lookup
+                    // Note: breaker_id is the Firebase document key, not a field in the document
                     tradesData = {};
                     Object.entries(data).forEach(([key, trade]) => {
-                        if (trade && trade.breaker_id) {
-                            tradesData[trade.breaker_id] = trade;
+                        if (trade) {
+                            trade.breaker_id = key;  // Add breaker_id from document key
+                            tradesData[key] = trade;
                         }
                     });
                     
@@ -13539,20 +14428,31 @@
         function getTradeStatusClass(trade) {
             if (!trade) return null;
             
-            if (trade.phase === 'PENDING') return 'pending';
-            if (trade.phase === 'FILLED') return 'filled';
+            // NEW SCHEMA ONLY
+            const decision = trade.status?.decision || '';
+            const phase = trade.status?.phase || '';
+            const closeReason = trade.outcomes?.close_reason || '';
+            const pnlPoints = trade.outcomes?.close_details?.pnl_points;
             
-            if (trade.phase === 'CLOSED') {
-                const reason = (trade.close_reason || '').toUpperCase();
-                if (reason === 'SUCCESS') return 'success';
-                if (reason === 'FAILURE') return 'failure';
-                if (reason === 'CANCELLED') return 'cancelled';
-                if (reason.startsWith('ENTRY_DENIED')) return 'entry-denied';
-                if (reason === 'DAILY_CLOSE') {
-                    // Determine win/loss from P&L
-                    const pnl = calculateTradePnL(trade);
-                    return pnl >= 0 ? 'daily-win' : 'daily-loss';
+            if (decision === 'FILTERED') return 'entry-denied';
+            
+            if (phase === 'PENDING') return 'pending';
+            if (phase === 'FILLED') return 'filled';
+            
+            if (phase === 'CLOSED') {
+                // Derive WIN/LOSS from pnl_points (more reliable for exit rules)
+                if (pnlPoints !== undefined) {
+                    return pnlPoints >= 0 ? 'success' : 'failure';
                 }
+                // Fallback to close_reason for bracket orders
+                if (closeReason === 'TARGET' || closeReason === 'T2') return 'success';
+                if (closeReason === 'STOP') return 'failure';
+                // Calculate from events if no pnl_points
+                const pnl = calculateTradePnL(trade);
+                if (pnl !== null) {
+                    return pnl >= 0 ? 'success' : 'failure';
+                }
+                return 'cancelled';
             }
             return 'cancelled';
         }
@@ -13572,22 +14472,31 @@
         }
         
         function getTradeStatusLabel(trade, statusClass) {
-            if (trade.phase === 'PENDING') return 'Pending';
-            if (trade.phase === 'FILLED') return 'Filled';
+            // NEW SCHEMA ONLY
+            const phase = trade.status?.phase || '';
+            
+            if (phase === 'PENDING') return 'Pending';
+            if (phase === 'FILLED') return 'Filled';
             if (statusClass === 'entry-denied') return 'Entry Denied';
             if (statusClass === 'daily-win') return 'EOD Win';
             if (statusClass === 'daily-loss') return 'EOD Loss';
             if (statusClass === 'success') return 'Success';
             if (statusClass === 'failure') return 'Failure';
             if (statusClass === 'cancelled') return 'Cancelled';
-            return trade.close_reason || 'Closed';
+            return getDisplayCloseReason(trade) || 'Closed';
         }
         
         function calculateTradePnL(trade) {
+            // NEW SCHEMA: outcomes.close_details.pnl_points
+            if (trade.outcomes?.close_details?.pnl_points !== undefined) {
+                return trade.outcomes.close_details.pnl_points;
+            }
+            
+            // Fallback to events
             if (!trade.events || trade.events.length === 0) return null;
             
             const fillEvent = trade.events.find(e => e.event === 'FILLED');
-            const closeEvent = trade.events.find(e => e.event === 'CLOSED');
+            const closeEvent = trade.events.find(e => e.event === 'EXITED' || e.event === 'CLOSED');
             
             if (fillEvent && closeEvent && closeEvent.price && fillEvent.price) {
                 return closeEvent.price - fillEvent.price;
@@ -13595,173 +14504,684 @@
             return null;
         }
         
-        // ===== TRADE MODAL =====
-        function showTradeModal(trade) {
+        // ===== TRADE MODAL (v6.9.0) =====
+        let currentTradeModalTrade = null;
+        let currentTradeModalBreaker = null;
+        
+        // Gate rule definitions for display
+        const GATE_DEFINITIONS = {
+            'G01_TRADING_HOURS': { name: 'Trading Hours', desc: 'Blocked time windows' },
+            'G02_NEWS_BLACKOUT': { name: 'News Blackout', desc: 'News event periods' },
+            'G03_PRICE_VOLATILITY': { name: 'Price Volatility', desc: 'ATR check' },
+            'G04_MARKET_VOLATILITY': { name: 'Market Volatility', desc: 'VIX check' },
+            'G05_RISK_REWARD': { name: 'Risk:Reward', desc: 'R:R ratio' },
+            'G06_SPY_TREND': { name: 'SPY Trend', desc: 'Trend check' }
+        };
+        
+        function showTradeModal(trade, breaker = null) {
+            currentTradeModalTrade = trade;
+            currentTradeModalBreaker = breaker;
+            
             const backdrop = document.getElementById('trade-modal-backdrop');
-            const statusBadge = document.getElementById('trade-modal-status');
-            const body = document.getElementById('trade-modal-body');
-            
             const statusClass = getTradeStatusClass(trade);
-            const statusLabel = getTradeStatusLabel(trade, statusClass);
-            const icon = getTradeStatusIcon(statusClass);
-            
-            // Update status badge
-            statusBadge.className = `trade-modal-status ${statusClass}`;
-            statusBadge.textContent = `${icon} ${statusLabel}`;
-            
-            // Build modal content
-            let html = '';
-            
-            // P&L Hero (for closed trades with fills)
             const pnl = calculateTradePnL(trade);
-            if (pnl !== null && trade.phase === 'CLOSED' && statusClass !== 'entry-denied' && statusClass !== 'cancelled') {
-                const pnlClass = pnl >= 0 ? 'win' : 'loss';
-                const pnlSign = pnl >= 0 ? '+' : '';
-                html += `
-                    <div class="trade-modal-pnl">
-                        <div class="trade-modal-pnl-value ${pnlClass}">${pnlSign}${pnl.toFixed(2)} pts</div>
-                        <div class="trade-modal-pnl-label">Realized P&L</div>
-                    </div>
-                `;
+            
+            // Parse breaker ID for symbol, tf, direction
+            const breakerId = trade.breaker_id || '';
+            const parts = breakerId.split('-');
+            const symbol = parts[0] || 'NQ';
+            const tf = parts[1] || '1m';
+            const direction = breakerId.toLowerCase().includes('bull') || breakerId.endsWith('-L') ? 'BULL' : 'BEAR';
+            
+            // Update tab 1 with symbol info
+            document.getElementById('tm-tab-symbol').textContent = symbol;
+            document.getElementById('tm-tab-tf').textContent = tf.toUpperCase();
+            const tabDir = document.getElementById('tm-tab-dir');
+            tabDir.textContent = direction;
+            tabDir.className = `tm-tab-dir ${direction.toLowerCase()}`;
+            
+            // Update tab 2 with breaker name
+            document.getElementById('tm-tab-breaker').textContent = breakerId || 'Breaker Details';
+            
+            // Update tab 1 status and P&L
+            const tabStatus = document.getElementById('tm-tab-status');
+            const tabPnl = document.getElementById('tm-tab-pnl');
+            const displayCloseReason = getDisplayCloseReason(trade);
+            
+            if (statusClass === 'success') {
+                tabStatus.className = 'tm-tab-status win';
+                // Show close reason (TARGET, T2, X01_SMT_FLIP, etc.)
+                tabStatus.textContent = displayCloseReason || 'WIN';
+            } else if (statusClass === 'failure') {
+                tabStatus.className = 'tm-tab-status loss';
+                // Show close reason (STOP, BOS, X01_SMT_FLIP, etc.)
+                tabStatus.textContent = displayCloseReason || 'LOSS';
+            } else if (statusClass === 'entry-denied') {
+                tabStatus.className = 'tm-tab-status filtered';
+                tabStatus.textContent = 'FILTERED';
+            } else if (statusClass === 'filled') {
+                tabStatus.className = 'tm-tab-status pending';
+                tabStatus.textContent = 'FILLED';
+            } else if (statusClass === 'pending') {
+                tabStatus.className = 'tm-tab-status pending';
+                tabStatus.textContent = 'PENDING';
+            } else {
+                tabStatus.className = 'tm-tab-status cancelled';
+                tabStatus.textContent = displayCloseReason || 'CANCELLED';
             }
             
-            // Close Reason (if present)
-            if (trade.close_reason) {
-                let reasonClass = '';
-                if (trade.close_reason === 'SUCCESS') reasonClass = 'success';
-                else if (trade.close_reason === 'FAILURE') reasonClass = 'failure';
-                else if (trade.close_reason.startsWith('ENTRY_DENIED')) reasonClass = 'entry-denied';
-                else if (trade.close_reason === 'DAILY_CLOSE') reasonClass = 'daily';
-                
-                html += `
-                    <div class="trade-modal-close-reason ${reasonClass}">
-                        ${trade.close_reason}
-                    </div>
-                `;
+            // Update tab P&L
+            const tradePhase = trade.status?.phase || '';
+            if (pnl !== null && tradePhase === 'CLOSED' && statusClass !== 'entry-denied') {
+                tabPnl.className = `tm-tab-pnl ${pnl >= 0 ? 'win' : 'loss'}`;
+                tabPnl.textContent = `${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}`;
+            } else {
+                tabPnl.className = 'tm-tab-pnl neutral';
+                tabPnl.textContent = '';
             }
             
-            // Prices Section
-            if (trade.prices) {
-                const entry = trade.prices.entry || 0;
-                const stop = trade.prices.stop || 0;
-                const target = trade.prices.target || 0;
-                const risk = Math.abs(entry - stop);
-                const reward = Math.abs(target - entry);
-                const total = risk + reward || 1;
-                const rr = risk > 0 ? (reward / risk).toFixed(2) : 'N/A';
-                
-                html += `
-                    <div class="trade-modal-section">
-                        <div class="trade-modal-section-title">Prices</div>
-                        <div class="trade-modal-prices">
-                            <div class="trade-modal-price-bar">
-                                <div class="trade-modal-price-bar-risk" style="width: ${(risk/total)*100}%;"></div>
-                                <div class="trade-modal-price-bar-reward" style="width: ${(reward/total)*100}%;"></div>
-                            </div>
-                            <div class="trade-modal-price-labels">
-                                <span class="trade-modal-price-label stop">Stop: ${stop.toLocaleString()}</span>
-                                <span class="trade-modal-price-label entry">Entry: ${entry.toLocaleString()}</span>
-                                <span class="trade-modal-price-label target">Target: ${target.toLocaleString()}</span>
-                            </div>
-                        </div>
-                        <div class="trade-modal-row">
-                            <span class="trade-modal-row-label">Risk:Reward</span>
-                            <span class="trade-modal-row-value">${rr}:1</span>
-                        </div>
-                    </div>
-                `;
-            }
+            // Render trade tab content (initially without breaker data)
+            renderTradeTabContent(trade, statusClass, pnl, null);
             
-            // Score Section
-            html += `
-                <div class="trade-modal-section">
-                    <div class="trade-modal-section-title">Score</div>
-                    <div class="trade-modal-row">
-                        <span class="trade-modal-row-label">Score</span>
-                        <span class="trade-modal-row-value ${trade.score >= trade.threshold ? 'pass' : 'fail'}">${trade.score ?? '—'}</span>
-                    </div>
-                    <div class="trade-modal-row">
-                        <span class="trade-modal-row-label">Threshold</span>
-                        <span class="trade-modal-row-value">${trade.threshold ?? '—'}</span>
-                    </div>
-                    <div class="trade-modal-row">
-                        <span class="trade-modal-row-label">Decision</span>
-                        <span class="trade-modal-row-value">${trade.decision || '—'}</span>
-                    </div>
-                </div>
-            `;
+            // Render breaker tab content - show loading first, then fetch
+            renderBreakerTabContent(null, trade, true); // loading state
             
-            // Events Timeline
-            if (trade.events && trade.events.length > 0) {
-                let eventsHtml = '';
-                trade.events.forEach(evt => {
-                    let dotClass = evt.event.toLowerCase();
-                    if (evt.event === 'CLOSED') {
-                        if (statusClass === 'failure' || statusClass === 'daily-loss') dotClass = 'closed loss';
-                        else if (statusClass === 'entry-denied') dotClass = 'closed denied';
-                        else dotClass = 'closed';
-                    }
-                    
-                    const time = evt.time ? evt.time.replace('T', ' ').substring(0, 19) : '—';
-                    const priceStr = evt.price ? `@ ${evt.price.toLocaleString()}` : '';
-                    
-                    eventsHtml += `
-                        <div class="trade-modal-event">
-                            <div class="trade-modal-event-dot ${dotClass}"></div>
-                            <div class="trade-modal-event-content">
-                                <div class="trade-modal-event-type">${evt.event}</div>
-                                <div class="trade-modal-event-time">${time}</div>
-                                ${priceStr ? `<div class="trade-modal-event-detail">${priceStr}</div>` : ''}
-                            </div>
-                        </div>
-                    `;
+            // Fetch breaker details if we have an ID
+            if (breakerId) {
+                fetchBreakerDetails(breakerId).then(breakerData => {
+                    currentTradeModalBreaker = breakerData;
+                    // Re-render trade tab with breaker data (for entry thresholds)
+                    renderTradeTabContent(trade, statusClass, pnl, breakerData);
+                    renderBreakerTabContent(breakerData, trade, false);
+                }).catch(err => {
+                    console.warn('Failed to fetch breaker details:', err);
+                    renderBreakerTabContent(null, trade, false);
                 });
-                
-                html += `
-                    <div class="trade-modal-section">
-                        <div class="trade-modal-section-title">Events</div>
-                        <div class="trade-modal-events">${eventsHtml}</div>
-                    </div>
-                `;
             }
             
-            // Metadata
-            html += `
-                <div class="trade-modal-section">
-                    <div class="trade-modal-section-title">Metadata</div>
-                    <div class="trade-modal-row">
-                        <span class="trade-modal-row-label">Phase</span>
-                        <span class="trade-modal-row-value">${trade.phase || '—'}</span>
-                    </div>
-                    <div class="trade-modal-row">
-                        <span class="trade-modal-row-label">Last Updated</span>
-                        <span class="trade-modal-row-value">${trade.last_updated ? trade.last_updated.replace('T', ' ').substring(0, 19) : '—'}</span>
-                    </div>
-                </div>
-            `;
+            // Reset to first tab
+            switchTradeModalTab(0);
             
-            // Breaker ID
-            html += `
-                <div class="trade-modal-section">
-                    <div class="trade-modal-section-title">Breaker ID</div>
-                    <div class="trade-modal-breaker-id">${trade.breaker_id || '—'}</div>
-                </div>
-            `;
-            
-            body.innerHTML = html;
             backdrop.classList.add('active');
-            
-            // Close on ESC
             document.addEventListener('keydown', handleTradeModalEsc);
         }
         
-        function closeTradeModal(event) {
-            // If clicking backdrop (not modal content), close
-            if (event && event.target !== event.currentTarget) return;
+        // Fetch breaker details from Firebase
+        async function fetchBreakerDetails(breakerId) {
+            // Check cache first
+            if (breakerDetailsCache[breakerId]) {
+                return breakerDetailsCache[breakerId];
+            }
             
+            // Fetch from API
+            const url = `${BREAKERS_FIREBASE_URL}/${encodeURIComponent(breakerId)}.json`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const data = await response.json();
+            
+            if (data) {
+                breakerDetailsCache[breakerId] = data;
+            }
+            return data;
+        }
+        
+        function formatTimeShort(isoTime) {
+            if (!isoTime) return '—';
+            const d = new Date(isoTime);
+            return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+        
+        // Get the triggered rule name from rules object
+        function getTriggeredRule(rules, ruleType) {
+            // ruleType: 'exit' or 'cancel'
+            const ruleSet = rules?.[ruleType] || {};
+            for (const [ruleName, ruleData] of Object.entries(ruleSet)) {
+                if (ruleData?.[ruleType] === true) {
+                    return ruleName;  // e.g., "X01_SMT_FLIP" or "C01_T1_CROSSED"
+                }
+            }
+            return null;
+        }
+        
+        // Get display-friendly close reason
+        function getDisplayCloseReason(trade) {
+            const closeReason = trade.outcomes?.close_reason || '';
+            
+            // If EXIT, lookup which exit rule triggered
+            if (closeReason === 'EXIT') {
+                const triggeredRule = getTriggeredRule(trade.rules, 'exit');
+                return triggeredRule || 'EXIT';
+            }
+            
+            // If CANCEL, lookup which cancel rule triggered
+            if (closeReason === 'CANCEL') {
+                const triggeredRule = getTriggeredRule(trade.rules, 'cancel');
+                return triggeredRule || 'CANCEL';
+            }
+            
+            return closeReason;
+        }
+        
+        function renderTradeTabContent(trade, statusClass, pnl, breaker = null) {
+            const content = document.getElementById('tm-trade-content');
+            const isFiltered = statusClass === 'entry-denied';
+            
+            // === EXTRACT ALL DATA ===
+            const phase = trade.status?.phase || '';
+            const score = trade.scoring?.score ?? 0;
+            const scoringRules = trade.scoring?.rules || {};
+            
+            // Outcomes - use directly from data
+            const outcomes = trade.outcomes || {};
+            const closeType = outcomes.close_type || '';
+            const closeReason = outcomes.close_reason || '';
+            const tradeOutcome = outcomes.trade_outcome || '';
+            const breakerOutcome = outcomes.breaker_outcome || '';
+            const closeDetails = outcomes.close_details || {};
+            const pnlPoints = closeDetails.pnl_points;
+            const pnlR = closeDetails.pnl_r;
+            
+            const entry = trade.trade_setup?.entry || 0;
+            const stop = trade.trade_setup?.stop || 0;
+            const target = trade.trade_setup?.target || 0;
+            const risk = Math.abs(entry - stop);
+            const reward = Math.abs(target - entry);
+            const rr = risk > 0 ? (reward / risk).toFixed(2) : '0';
+            const gateRules = trade.rules?.gate || {};
+            const cancelRules = trade.rules?.cancel || {};
+            const exitRules = trade.rules?.exit || {};
+            const events = trade.events || [];
+            const createdEvt = events.find(e => e.event === 'PENDING') || events[0];
+            const filledEvt = events.find(e => e.event === 'FILLED');
+            const closedEvt = events.find(e => e.event === 'EXITED' || e.event === 'CLOSED');
+            
+            // Derive status from trade_outcome
+            const isWin = tradeOutcome === 'WIN';
+            const isLoss = tradeOutcome === 'LOSS';
+            const noTrade = closeType === 'FILTERED' || closeType === 'REJECTED' || closeType === 'CANCELLED' || closeType === 'EXPIRED';
+            const finalStatus = isWin ? 'win' : (isLoss ? 'loss' : (noTrade ? 'filtered' : 'pending'));
+            
+            // Entry thresholds
+            const weakEntry = breaker?.entry?.weak_entry_threshold;
+            const moderateEntry = breaker?.entry?.moderate_entry_threshold;
+            const strongEntry = breaker?.entry?.strong_entry_threshold;
+            
+            let html = `<div class="tm-report">`;
+            
+            // ═══════════════════════════════════════════════════════════════
+            // 1. RESULT CARD - Hero with outcome + close type/reason + score
+            // ═══════════════════════════════════════════════════════════════
+            html += `<div class="tm-card-result ${finalStatus}">`;
+            
+            // Left: Outcome + P&L + all close details
+            html += `<div class="tm-result-left">`;
+            if (tradeOutcome) {
+                html += `<div class="tm-result-outcome ${finalStatus}">${tradeOutcome}${closeType ? ` <span class="tm-result-closetype">(${closeType})</span>` : ''}</div>`;
+                // Show all close_details
+                if (pnlPoints !== undefined) {
+                    html += `<div class="tm-result-pnl ${finalStatus}">${pnlPoints >= 0 ? '+' : ''}${pnlPoints.toFixed(2)} pts</div>`;
+                }
+                if (pnlR !== undefined) {
+                    html += `<div class="tm-result-r ${finalStatus}">${pnlR >= 0 ? '+' : ''}${pnlR.toFixed(2)}R</div>`;
+                }
+                if (closeDetails.close_price !== undefined) {
+                    html += `<div class="tm-result-detail">Close: ${closeDetails.close_price.toLocaleString()}</div>`;
+                }
+                if (closeDetails.exit_fib !== undefined) {
+                    html += `<div class="tm-result-detail">Exit Fib: ${closeDetails.exit_fib.toFixed(2)}</div>`;
+                }
+            } else if (noTrade) {
+                html += `<div class="tm-result-outcome filtered">${closeType}</div>`;
+                if (closeDetails.exit_fib !== undefined) {
+                    html += `<div class="tm-result-detail">Exit Fib: ${closeDetails.exit_fib.toFixed(2)}</div>`;
+                }
+            } else {
+                html += `<div class="tm-result-outcome pending">${phase || 'WATCHING'}</div>`;
+            }
+            html += `</div>`;
+            
+            // Hypothetical section (if exists) - show market and limit boxes
+            const hypothetical = outcomes.hypothetical;
+            if (hypothetical) {
+                html += `<div class="tm-result-hypothetical-section">`;
+                html += `<div class="tm-hypo-header">IF TRADED → Exit: ${hypothetical.exit_reason || '—'}</div>`;
+                html += `<div class="tm-hypo-boxes">`;
+                
+                // Market box
+                if (hypothetical.market) {
+                    const m = hypothetical.market;
+                    const mStatus = m.outcome === 'WIN' ? 'win' : (m.outcome === 'LOSS' ? 'loss' : '');
+                    html += `<div class="tm-hypo-box">`;
+                    html += `<div class="tm-hypo-label">MARKET</div>`;
+                    html += `<div class="tm-hypo-outcome ${mStatus}">${m.outcome || '—'}</div>`;
+                    if (m.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${mStatus}">${m.pnl_points >= 0 ? '+' : ''}${m.pnl_points.toFixed(2)} pts</div>`;
+                    if (m.pnl_r !== undefined) html += `<div class="tm-hypo-r ${mStatus}">${m.pnl_r >= 0 ? '+' : ''}${m.pnl_r.toFixed(2)}R</div>`;
+                    if (m.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${m.fill_price.toLocaleString()}</div>`;
+                    if (m.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${m.exit_price.toLocaleString()}</div>`;
+                    html += `</div>`;
+                }
+                
+                // Limit box
+                if (hypothetical.limit) {
+                    const l = hypothetical.limit;
+                    const lStatus = l.outcome === 'WIN' ? 'win' : (l.outcome === 'LOSS' ? 'loss' : '');
+                    html += `<div class="tm-hypo-box">`;
+                    html += `<div class="tm-hypo-label">LIMIT</div>`;
+                    html += `<div class="tm-hypo-outcome ${lStatus}">${l.outcome || '—'}</div>`;
+                    if (l.pnl_points !== undefined) html += `<div class="tm-hypo-pnl ${lStatus}">${l.pnl_points >= 0 ? '+' : ''}${l.pnl_points.toFixed(2)} pts</div>`;
+                    if (l.pnl_r !== undefined) html += `<div class="tm-hypo-r ${lStatus}">${l.pnl_r >= 0 ? '+' : ''}${l.pnl_r.toFixed(2)}R</div>`;
+                    if (l.fill_price !== undefined) html += `<div class="tm-hypo-detail">Fill: ${l.fill_price.toLocaleString()}</div>`;
+                    if (l.exit_price !== undefined) html += `<div class="tm-hypo-detail">Exit: ${l.exit_price.toLocaleString()}</div>`;
+                    html += `</div>`;
+                }
+                
+                html += `</div></div>`;
+            }
+            
+            // Center: Close type + reason from outcomes
+            html += `<div class="tm-result-center">`;
+            if (closeType) {
+                html += `<div class="tm-result-close-label">${closeType}</div>`;
+                html += `<div class="tm-result-close-value">${closeReason}</div>`;
+                if (breakerOutcome) {
+                    html += `<div class="tm-result-close-detail">${breakerOutcome.replace(/_/g, ' ')}</div>`;
+                }
+            }
+            html += `</div>`;
+            
+            // Right: Score
+            html += `<div class="tm-result-right">`;
+            html += `<div class="tm-result-score">${score.toFixed(1)}</div>`;
+            html += `<div class="tm-result-badge ${noTrade ? 'filtered' : ''}">${noTrade ? 'NO TRADE' : '✓ TRADED'}</div>`;
+            html += `</div>`;
+            
+            html += `</div>`; // close result card
+            
+            // ═══════════════════════════════════════════════════════════════
+            // 2. SCORING CARD - Primary focus, 2-column grid
+            // ═══════════════════════════════════════════════════════════════
+            html += `<div class="tm-card-scoring">`;
+            html += `<div class="tm-card-title">Confluence Scoring</div>`;
+            html += `<div class="tm-scoring-grid">`;
+            
+            const scoringEntries = Object.entries(scoringRules);
+            scoringEntries.forEach(([ruleName, rule]) => {
+                const s = rule.score ?? 0;
+                const cls = s > 0 ? 'pos' : (s < 0 ? 'neg' : 'zero');
+                const name = ruleName.replace(/^S\d+_/, '').replace(/_/g, ' ');
+                html += `
+                    <div class="tm-scoring-item ${s !== 0 ? 'has-score' : ''}">
+                        <div class="tm-scoring-badge ${cls}">${s > 0 ? '+' : ''}${s}</div>
+                        <div class="tm-scoring-info">
+                            <div class="tm-scoring-name">${name}</div>
+                            <div class="tm-scoring-reason">${rule.reason || '—'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`; // close scoring card
+            
+            // ═══════════════════════════════════════════════════════════════
+            // 3. GATES + RULES - Side by side
+            // ═══════════════════════════════════════════════════════════════
+            html += `<div class="tm-row-gates-rules">`;
+            
+            // Gates Card
+            const gateEntries = Object.entries(gateRules);
+            html += `<div class="tm-card tm-card-gates">`;
+            html += `<div class="tm-card-title">Gate Filters</div>`;
+            html += `<div class="tm-gates-list">`;
+            gateEntries.forEach(([gateKey, gateData]) => {
+                const passed = gateData?.gate === true;
+                const code = gateKey.split('_')[0];
+                const reason = gateData?.reason || '';
+                html += `
+                    <div class="tm-gate-item ${passed ? '' : 'fail'}">
+                        <span class="tm-gate-icon">${passed ? '✓' : '✗'}</span>
+                        <span class="tm-gate-code">${code}</span>
+                        <span class="tm-gate-reason">${reason || '—'}</span>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+            
+            // Rules Card
+            const cancelEntries = Object.entries(cancelRules);
+            const exitEntries = Object.entries(exitRules);
+            html += `<div class="tm-card tm-card-rules">`;
+            html += `<div class="tm-card-title">Trade Rules</div>`;
+            html += `<div class="tm-rules-list">`;
+            
+            cancelEntries.forEach(([ruleKey, ruleData]) => {
+                const triggered = ruleData?.cancel === true;
+                const code = ruleKey.split('_')[0];
+                html += `
+                    <div class="tm-rule-item ${triggered ? 'triggered' : ''}">
+                        <span class="tm-rule-icon">${triggered ? '⚠' : '○'}</span>
+                        <span class="tm-rule-code">${code}</span>
+                        <span class="tm-rule-reason">${ruleData?.reason || ''}</span>
+                        ${triggered ? '<span class="tm-rule-tag">TRIGGERED</span>' : ''}
+                    </div>
+                `;
+            });
+            
+            exitEntries.forEach(([ruleKey, ruleData]) => {
+                const triggered = ruleData?.exit === true;
+                const code = ruleKey.split('_')[0];
+                html += `
+                    <div class="tm-rule-item ${triggered ? 'triggered' : ''}">
+                        <span class="tm-rule-icon">${triggered ? '⚠' : '○'}</span>
+                        <span class="tm-rule-code">${code}</span>
+                        <span class="tm-rule-reason">${ruleData?.reason || ''}</span>
+                        ${triggered ? '<span class="tm-rule-tag">TRIGGERED</span>' : ''}
+                    </div>
+                `;
+            });
+            
+            html += `</div>`; // close rules-list
+            
+            // Timeline - just display events in order from data with icons
+            html += `<div class="tm-timeline-inline">`;
+            const eventIcons = {
+                'PENDING': '⏳',
+                'FILLED': '✓',
+                'EXITED': '↗',
+                'CLOSED': '●',
+                'CANCELLED': '✗',
+                'REJECTED': '⊘',
+                'EXPIRED': '⏱'
+            };
+            events.forEach((evt, idx) => {
+                if (idx > 0) html += `<span class="tm-tl-arrow">→</span>`;
+                const evtClass = (evt.event || '').toLowerCase().replace(/[^a-z]/g, '');
+                const icon = eventIcons[evt.event] || '○';
+                html += `<span class="tm-tl-item">`;
+                html += `<span class="tm-tl-dot-sm ${evtClass}">${icon}</span>`;
+                html += `<span class="tm-tl-text">`;
+                html += `<span class="tm-tl-lbl">${evt.event || '—'}</span>`;
+                html += `<span class="tm-tl-time">${formatTimeShort(evt.time)}</span>`;
+                if (evt.price) html += `<span class="tm-tl-price">@${evt.price.toLocaleString()}</span>`;
+                html += `</span></span>`;
+            });
+            html += `</div>`;
+            
+            html += `</div>`; // close rules card
+            html += `</div>`; // close gates-rules row
+            
+            // ═══════════════════════════════════════════════════════════════
+            // 4. SETUP BAR - Compact, secondary
+            // ═══════════════════════════════════════════════════════════════
+            html += `<div class="tm-setup-bar">`;
+            html += `<span class="tm-setup-item"><span class="lbl">Entry</span> <span class="val">${entry.toLocaleString()}</span></span>`;
+            html += `<span class="tm-setup-divider"></span>`;
+            html += `<span class="tm-setup-item"><span class="lbl">Stop</span> <span class="val">${stop.toLocaleString()}</span> <span class="pts neg">(-${risk.toFixed(1)})</span></span>`;
+            html += `<span class="tm-setup-divider"></span>`;
+            html += `<span class="tm-setup-item"><span class="lbl">Target</span> <span class="val">${target.toLocaleString()}</span> <span class="pts pos">(+${reward.toFixed(1)})</span></span>`;
+            html += `<span class="tm-setup-divider"></span>`;
+            html += `<span class="tm-setup-item"><span class="lbl">R:R</span> <span class="rr">${rr}:1</span></span>`;
+            
+            if (weakEntry || moderateEntry || strongEntry) {
+                html += `<div class="tm-setup-zones">`;
+                html += `<span class="tm-zone-tag weak">30% ${weakEntry?.toLocaleString() || '—'}</span>`;
+                html += `<span class="tm-zone-tag mod">50% ${moderateEntry?.toLocaleString() || '—'}</span>`;
+                html += `<span class="tm-zone-tag strong">75% ${strongEntry?.toLocaleString() || '—'}</span>`;
+                html += `</div>`;
+            }
+            
+            html += `</div>`; // close setup bar
+            
+            html += `</div>`; // close tm-report
+            content.innerHTML = html;
+        }
+        
+        function renderBreakerTabContent(breaker, trade, isLoading = false) {
+            const content = document.getElementById('tm-breaker-content');
+            
+            // Loading state
+            if (isLoading) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: #555;">
+                        <div style="font-size: 20px; margin-bottom: 10px;">⏳</div>
+                        <div>Loading breaker details...</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // No data state
+            if (!breaker) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #555;">
+                        <div style="font-size: 24px; margin-bottom: 10px;">📐</div>
+                        <div>Breaker details not available</div>
+                        <div style="font-size: 11px; margin-top: 5px;">Pattern data from /breakers endpoint</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Extract data using schema field names
+            const pattern = breaker.pattern || {};
+            const fib = breaker.fib || {};
+            const zone = breaker.zone || {};
+            const mss = breaker.mss || {};
+            const entry = breaker.entry || {};
+            const metrics = breaker.metrics || {};
+            const timing = breaker.timing || {};
+            const fakeout = breaker.fakeout || {};
+            
+            // Format helpers
+            const fmtTime = (t) => {
+                if (!t) return '—';
+                try {
+                    const d = new Date(t);
+                    if (!isNaN(d)) {
+                        return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    }
+                } catch (e) {}
+                return String(t);
+            };
+            
+            const fmtPrice = (p) => {
+                if (p === null || p === undefined) return '—';
+                if (typeof p === 'number') return p.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                return String(p);
+            };
+            
+            // Pattern events from schema
+            const h1 = { 
+                price: pattern.phase1_high_price, 
+                time: pattern.phase1_high_time,
+                bar: pattern.phase1_high_bar_index
+            };
+            const l1 = { 
+                price: pattern.phase1_low_price, 
+                time: pattern.phase1_low_time,
+                bar: pattern.phase1_low_bar_index 
+            };
+            const h2 = { 
+                price: pattern.breaker_high_price, 
+                time: pattern.breaker_high_time,
+                bar: pattern.breaker_high_bar_index 
+            };
+            const l2 = { 
+                price: pattern.sweep_low_price, 
+                time: pattern.sweep_low_time,
+                bar: pattern.sweep_low_bar_index 
+            };
+            const mssData = { 
+                price: mss.mss_price, 
+                time: mss.mss_time,
+                bar: mss.mss_bar_index 
+            };
+            
+            // Fib levels from schema
+            const fibBase = fib.fib_base_range || 0;
+            const fib0 = fib.fib_level_0;  // Base level (L2/sweep_low)
+            const fib1 = fib.fib_level_1;  // 100% extension
+            const fibT1 = fib.fib_t1;      // T1 target (2.2x)
+            const fibT2 = fib.fib_t2;      // T2 target (3.2x)
+            const fibBreaker = fib.fib_breaker || 1.0;
+            
+            // Calculate additional fib levels (F-2, F-3, F-4 = 2x, 3x, 4x base range from L2)
+            const fib2 = fib0 ? fib0 + (2 * fibBase) : null;
+            const fib3 = fib0 ? fib0 + (3 * fibBase) : null;
+            const fib4 = fib0 ? fib0 + (4 * fibBase) : null;
+            
+            // Zone data
+            const zoneHigh = zone.breaker_block_high;
+            const zoneLow = zone.breaker_block_low;
+            const zoneRange = zone.breaker_block_range;
+            
+            // Status from trade/snapshot context
+            const status = breaker.status || trade?.status || 'DETECTED';
+            const detection = breaker.l1_detection || 'swing';
+            
+            // Peak fib - would come from snapshot data, use fibBreaker as fallback
+            const rawPeakFib = breaker.max_fib || breaker.peak_fib || fibBreaker;
+            const peakFib = typeof rawPeakFib === 'number' ? rawPeakFib.toFixed(2) : rawPeakFib;
+            
+            // Build pattern flow HTML - Bullish: H1 → L1 → H2 → L2 → MSS
+            let patternHtml = '<div class="tm-pattern-flow">';
+            
+            // H1 - Impulse peak
+            patternHtml += `
+                <div class="tm-pattern-node">
+                    <div class="tm-pattern-dot high">H1</div>
+                    <div class="tm-pattern-info">
+                        <div class="tm-pattern-time">${fmtTime(h1.time)}</div>
+                        <div class="tm-pattern-price">${fmtPrice(h1.price)}</div>
+                    </div>
+                </div>
+                <div class="tm-pattern-connector"></div>
+            `;
+            
+            // L1 - Swing low
+            patternHtml += `
+                <div class="tm-pattern-node">
+                    <div class="tm-pattern-dot low">L1</div>
+                    <div class="tm-pattern-info">
+                        <div class="tm-pattern-time">${fmtTime(l1.time)}</div>
+                        <div class="tm-pattern-price">${fmtPrice(l1.price)}</div>
+                        <div class="tm-pattern-note swing">(${detection})</div>
+                    </div>
+                </div>
+                <div class="tm-pattern-connector"></div>
+            `;
+            
+            // H2 - Breaker high (retracement)
+            patternHtml += `
+                <div class="tm-pattern-node">
+                    <div class="tm-pattern-dot high">H2</div>
+                    <div class="tm-pattern-info">
+                        <div class="tm-pattern-time">${fmtTime(h2.time)}</div>
+                        <div class="tm-pattern-price">${fmtPrice(h2.price)}</div>
+                        <div class="tm-pattern-note fvg">(breaker)</div>
+                    </div>
+                </div>
+                <div class="tm-pattern-connector"></div>
+            `;
+            
+            // L2 - Sweep low
+            patternHtml += `
+                <div class="tm-pattern-node">
+                    <div class="tm-pattern-dot low">L2</div>
+                    <div class="tm-pattern-info">
+                        <div class="tm-pattern-time">${fmtTime(l2.time)}</div>
+                        <div class="tm-pattern-price">${fmtPrice(l2.price)}</div>
+                        <div class="tm-pattern-note fvg">(sweep)</div>
+                    </div>
+                </div>
+                <div class="tm-pattern-connector"></div>
+            `;
+            
+            // MSS - Market Structure Shift
+            patternHtml += `
+                <div class="tm-pattern-node">
+                    <div class="tm-pattern-dot br">MSS</div>
+                    <div class="tm-pattern-info">
+                        <div class="tm-pattern-time">${fmtTime(mssData.time)}</div>
+                        <div class="tm-pattern-price">${fmtPrice(mssData.price)}</div>
+                    </div>
+                </div>
+            `;
+            
+            patternHtml += '</div>';
+            
+            // Metrics display
+            const impulseSize = metrics.impulse_size || '—';
+            const raidSize = metrics.raid_size || '—';
+            const sweepDepth = metrics.sweep_depth || '—';
+            const totalBars = timing.pattern_total_bars || '—';
+            
+            content.innerHTML = `
+                <div class="tm-breaker-grid">
+                    <div class="tm-panel tm-full tm-pattern-panel">
+                        ${patternHtml}
+                    </div>
+                    <div class="tm-panel tm-metrics-panel">
+                        <div class="tm-metrics-content">
+                            <div class="tm-metrics-grid">
+                                <div class="tm-metric">
+                                    <span class="tm-metric-val ${status === 'ACTIVE' ? 'good' : ''}">${status}</span>
+                                    <span class="tm-metric-lbl">Status</span>
+                                </div>
+                                <div class="tm-metric">
+                                    <span class="tm-metric-val">${totalBars}</span>
+                                    <span class="tm-metric-lbl">Bars</span>
+                                </div>
+                                <div class="tm-metric">
+                                    <span class="tm-metric-val">${fmtPrice(zoneRange)}</span>
+                                    <span class="tm-metric-lbl">Zone Range</span>
+                                </div>
+                                <div class="tm-metric">
+                                    <span class="tm-metric-val">${fmtPrice(fibBase)}</span>
+                                    <span class="tm-metric-lbl">Fib Base</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tm-panel tm-fib-panel">
+                        <div class="tm-fib-content">
+                            <div class="tm-fib-values">
+                                <div class="tm-fib-val-item">
+                                    <span class="tm-fib-val-lbl">max_fib</span>
+                                    <span class="tm-fib-val-num peak">${peakFib}</span>
+                                </div>
+                                <div class="tm-fib-val-item">
+                                    <span class="tm-fib-val-lbl">fib_breaker</span>
+                                    <span class="tm-fib-val-num fb">${fibBreaker.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="tm-fib-levels">
+                                <div class="tm-fib-row f4"><span class="tm-fib-lbl">fib_t2</span><span class="tm-fib-price">${fmtPrice(fibT2)}</span></div>
+                                <div class="tm-fib-row f3"><span class="tm-fib-lbl">fib_t1</span><span class="tm-fib-price">${fmtPrice(fibT1)}</span></div>
+                                <div class="tm-fib-row f1"><span class="tm-fib-lbl">fib_level_1</span><span class="tm-fib-price">${fmtPrice(fib1)}</span></div>
+                                <div class="tm-fib-row f0"><span class="tm-fib-lbl">fib_level_0</span><span class="tm-fib-price">${fmtPrice(fib0)}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function switchTradeModalTab(index) {
+            const tabs = document.querySelectorAll('.tm-tab');
+            const contents = document.querySelectorAll('.tm-content');
+            tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+            contents.forEach((c, i) => c.classList.toggle('active', i === index));
+        }
+        
+        function closeTradeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
             const backdrop = document.getElementById('trade-modal-backdrop');
             backdrop.classList.remove('active');
             document.removeEventListener('keydown', handleTradeModalEsc);
+            currentTradeModalTrade = null;
+            currentTradeModalBreaker = null;
         }
         
         function handleTradeModalEsc(e) {
