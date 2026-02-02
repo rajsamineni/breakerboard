@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.3</title>
+    <title>SigXFlow v6.15.8</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -6550,6 +6550,144 @@
             background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
         }
         
+        /* SMT Button */
+        .smt-btn {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%) !important;
+            border: none !important;
+        }
+        
+        .smt-btn:hover {
+            background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
+        }
+        
+        /* SMT Modal */
+        .smt-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .smt-modal-overlay.visible {
+            display: flex;
+        }
+        
+        .smt-modal {
+            background: #1a1a1f;
+            border-radius: 12px;
+            width: 95vw;
+            max-width: 1600px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+        }
+        
+        .smt-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .smt-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .smt-modal-close {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .smt-modal-close:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #fff;
+        }
+        
+        .smt-modal-content {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+        }
+        
+        .smt-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .smt-table th {
+            background: #252530;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid #333;
+            position: sticky;
+            top: 0;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        .smt-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a2a35;
+            color: #e2e8f0;
+        }
+        
+        .smt-table tr:hover td {
+            background: #252530;
+        }
+        
+        .smt-table .bull { color: #22c55e; }
+        .smt-table .bear { color: #ef4444; }
+        .smt-table .nq { color: #60a5fa; }
+        .smt-table .es { color: #a78bfa; }
+        
+        .smt-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .smt-badge.bull { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .smt-badge.bear { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .smt-badge.sync { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .smt-badge.div { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .smt-badge.none { background: rgba(100, 116, 139, 0.2); color: #64748b; }
+        
+        .smt-quality {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 600;
+        }
+        
+        .smt-quality.high { color: #22c55e; }
+        .smt-quality.med { color: #fbbf24; }
+        .smt-quality.low { color: #ef4444; }
+        
         /* Confluence Modal - Enterprise Design */
         .confluence-modal-overlay {
             position: fixed;
@@ -8124,6 +8262,7 @@
             <button class="btn inactive" id="mode-explore" onclick="setMode('explore')">🔍 Explore</button>
             <button class="btn live" id="mode-live" onclick="setMode('live')">🔴 Live</button>
             <button class="btn confluence-btn" onclick="openConfluenceModal()">◈ Confluence</button>
+            <button class="btn smt-btn" onclick="openSmtModal()">◇ SMT</button>
             <div class="divider"></div>
             <div class="settings-group">
                 <select class="select-styled" id="load-limit" onchange="loadData(true)">
@@ -8276,6 +8415,19 @@
         <div class="confluence-cursor-line" id="confluence-cursor-line"></div>
         <div class="confluence-cursor-time" id="confluence-cursor-time"></div>
         <div class="confluence-labels-container" id="confluence-labels-container"></div>
+    </div>
+
+    <!-- SMT Modal -->
+    <div class="smt-modal-overlay" id="smt-modal-overlay" onclick="closeSmtModal(event)">
+        <div class="smt-modal" onclick="event.stopPropagation()">
+            <div class="smt-modal-header">
+                <div class="smt-modal-title">◇ SMT Analysis - Breakers with SMT Details</div>
+                <button class="smt-modal-close" onclick="closeSmtModal()">✕</button>
+            </div>
+            <div class="smt-modal-content" id="smt-modal-content">
+                <!-- Table populated by JS -->
+            </div>
+        </div>
     </div>
 
     <!-- Trade Detail Modal (v6.9.0) -->
@@ -8611,8 +8763,9 @@
                 // Full load with server-side time filtering
                 showToast('Loading...', '');
                 
-                // Also reload SMT data (trades are loaded separately and don't need reload here)
+                // Also reload SMT data and trades data
                 loadSmtData();
+                loadTradesData();
                 
                 // For multi-day loads during market closures, always use fallback
                 // (indexed query uses wall clock time which misses old data when market is closed)
@@ -8746,8 +8899,9 @@
                 }
             } else {
                 // Incremental load - only fetch newer data from Firebase
-                // Also refresh SMT data incrementally
+                // Also refresh SMT data and trades data
                 loadSmtData(true);
+                loadTradesData();
                 
                 // Convert lastFetchedTime from "2026-01-21T07:31" to key format "2026-01-21T0731"
                 const lastKey = lastFetchedTime ? lastFetchedTime.replace(':', '') : '';
@@ -12452,6 +12606,175 @@
             if (e.key === 'Escape') {
                 closeConfluenceModal();
             }
+        }
+        
+        // ===== SMT MODAL FUNCTIONS =====
+        function openSmtModal() {
+            const modal = document.getElementById('smt-modal-overlay');
+            modal.classList.add('visible');
+            renderSmtTable();
+            document.addEventListener('keydown', handleSmtEscape);
+        }
+        
+        function closeSmtModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            const modal = document.getElementById('smt-modal-overlay');
+            modal.classList.remove('visible');
+            document.removeEventListener('keydown', handleSmtEscape);
+        }
+        
+        function handleSmtEscape(e) {
+            if (e.key === 'Escape') {
+                closeSmtModal();
+            }
+        }
+        
+        function renderSmtTable() {
+            const content = document.getElementById('smt-modal-content');
+            
+            console.log('SMT Modal - allData length:', allData.length);
+            console.log('SMT Modal - tradesData keys:', Object.keys(tradesData).length);
+            if (allData.length > 0) {
+                console.log('SMT Modal - first breaker id:', allData[0].id);
+                console.log('SMT Modal - first breaker:', allData[0]);
+            }
+            if (Object.keys(tradesData).length > 0) {
+                console.log('SMT Modal - first trade key:', Object.keys(tradesData)[0]);
+                console.log('SMT Modal - first trade:', tradesData[Object.keys(tradesData)[0]]);
+            }
+            
+            if (!allData || allData.length === 0) {
+                content.innerHTML = '<div style="color:#64748b;text-align:center;padding:40px;">No breaker data loaded. Load data first.</div>';
+                return;
+            }
+            
+            // Build table
+            let html = `
+                <table class="smt-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Breaker ID</th>
+                            <th>Symbol</th>
+                            <th>TF</th>
+                            <th>Dir</th>
+                            <th>Fib</th>
+                            <th>1M Align</th>
+                            <th>1M SMT</th>
+                            <th>HTF SMT</th>
+                            <th>1M Exhaust</th>
+                            <th>Form FVG</th>
+                            <th>Score</th>
+                            <th>Trade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // Sort by time descending (newest first)
+            const sorted = [...allData].sort((a, b) => b.startMin - a.startMin);
+            
+            console.log('SMT Modal - sorted length:', sorted.length);
+            
+            for (const breaker of sorted) {
+                try {
+                    const time = new Date(breaker.startMin * 60000);
+                    const timeStr = time.toLocaleString('en-US', { 
+                        month: 'numeric', 
+                        day: 'numeric',
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: false 
+                    });
+                    
+                    const dirClass = breaker.direction === 'bull' ? 'bull' : 'bear';
+                    const symClass = breaker.symbol === 'NQ' ? 'nq' : 'es';
+                    
+                    // Get trade data for this breaker
+                    const trade = tradesData[breaker.id];
+                    const scoringRules = trade?.scoring?.rules || {};
+                    const totalScore = trade?.scoring?.score ?? '—';
+                    
+                    // Extract scoring dimensions
+                    const align1m = findScoringRule(scoringRules, '1M_ALIGNMENT');
+                    const smt1m = findScoringRule(scoringRules, '1M_SMT');
+                    const htfSmt = findScoringRule(scoringRules, 'HTF_SMT');
+                    const exhaust1m = findScoringRule(scoringRules, '1M_EXHAUSTION');
+                    const formFvg = findScoringRule(scoringRules, 'FORMATIVE_FVG');
+                    
+                    // Get trade outcome
+                    let tradeStatus = '—';
+                    if (trade) {
+                        const outcome = trade.outcomes?.trade_outcome;
+                        const closeType = trade.outcomes?.close_type;
+                        if (outcome === 'WIN') {
+                            tradeStatus = '<span class="smt-badge bull">WIN</span>';
+                        } else if (outcome === 'LOSS') {
+                            tradeStatus = '<span class="smt-badge bear">LOSS</span>';
+                        } else if (closeType === 'CANCELLED' || closeType === 'FILTERED') {
+                            tradeStatus = '<span class="smt-badge none">SKIP</span>';
+                        } else {
+                            tradeStatus = '<span class="smt-badge none">PEND</span>';
+                        }
+                    }
+                    
+                    // Score color
+                    let scoreClass = '';
+                    if (totalScore >= 5) scoreClass = 'high';
+                    else if (totalScore >= 3) scoreClass = 'med';
+                    else if (totalScore > 0) scoreClass = 'low';
+                    
+                    html += `
+                        <tr>
+                            <td style="font-family:'Roboto Mono',monospace;font-size:11px;">${timeStr}</td>
+                            <td style="font-family:'Roboto Mono',monospace;font-size:10px;color:#94a3b8;white-space:nowrap;">${breaker.id || '—'}</td>
+                            <td class="${symClass}">${breaker.symbol || '—'}</td>
+                            <td>${breaker.tf || '—'}</td>
+                            <td class="${dirClass}">${(breaker.direction || '').toUpperCase() || '—'}</td>
+                            <td style="font-family:'Roboto Mono',monospace;">${breaker.currentFib?.toFixed(2) || '—'}</td>
+                            <td>${renderScoreCell(align1m)}</td>
+                            <td>${renderScoreCell(smt1m)}</td>
+                            <td>${renderScoreCell(htfSmt)}</td>
+                            <td>${renderScoreCell(exhaust1m)}</td>
+                            <td>${renderScoreCell(formFvg)}</td>
+                            <td><span class="smt-quality ${scoreClass}">${totalScore}</span></td>
+                            <td>${tradeStatus}</td>
+                        </tr>
+                    `;
+                } catch (err) {
+                    console.error('SMT Modal - Error rendering breaker:', breaker, err);
+                }
+            }
+            
+            html += '</tbody></table>';
+            content.innerHTML = html;
+        }
+        
+        function findScoringRule(rules, partialKey) {
+            // Find a scoring rule by partial key match (e.g., '1M_SMT' matches 'S02_1M_SMT')
+            for (const [key, value] of Object.entries(rules)) {
+                if (key.includes(partialKey)) {
+                    return value;
+                }
+            }
+            return null;
+        }
+        
+        function renderScoreCell(rule) {
+            if (!rule) {
+                return '<span style="color:#64748b;">—</span>';
+            }
+            
+            const score = rule.score ?? 0;
+            let cls = 'none';
+            if (score > 0) cls = 'sync';
+            else if (score < 0) cls = 'div';
+            
+            const reason = rule.reason || '';
+            // Truncate reason for display
+            const shortReason = reason.length > 20 ? reason.substring(0, 20) + '...' : reason;
+            
+            return `<span class="smt-badge ${cls}" title="${reason}">${score > 0 ? '+' : ''}${score}</span>`;
         }
         
         function renderConfluenceModal() {
