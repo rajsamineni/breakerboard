@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.8</title>
+    <title>SigXFlow v6.15.14</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -6624,10 +6624,236 @@
             color: #fff;
         }
         
+        /* SMT Modal Filters */
+        .smt-modal-filters {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #1a1a1f;
+            border-bottom: 1px solid #333;
+            flex-wrap: wrap;
+        }
+        
+        .smt-filter-label {
+            font-size: 10px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .smt-filter-divider {
+            width: 1px;
+            height: 20px;
+            background: #333;
+            margin: 0 8px;
+        }
+        
+        .smt-filter-btn {
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background: transparent;
+            color: #555;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .smt-filter-btn:hover {
+            border-color: #555;
+            color: #888;
+        }
+        
+        .smt-filter-btn.active {
+            border-color: #60a5fa;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+        }
+        
+        .smt-filter-btn.nq.active {
+            border-color: #60a5fa;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+        }
+        
+        .smt-filter-btn.es.active {
+            border-color: #a78bfa;
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.1);
+        }
+        
+        .smt-filter-btn.bull.active {
+            border-color: #22c55e;
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .smt-filter-btn.bear.active {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .smt-filter-btn.status-active.active {
+            border-color: #60a5fa;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+        }
+        
+        .smt-filter-btn.status-t1.active {
+            border-color: #4ade80;
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        
+        .smt-filter-btn.status-t2.active {
+            border-color: #16a34a;
+            color: #16a34a;
+            background: rgba(22, 163, 74, 0.1);
+        }
+        
+        .smt-filter-btn.status-fail.active {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        /* SMT Group Card */
+        .smt-group-card {
+            background: #1a1a1f;
+            border: 1px solid #2a2a35;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        
+        .smt-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #252530;
+            border-bottom: 1px solid #333;
+        }
+        
+        .smt-group-id {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #22c55e;
+            font-weight: 600;
+        }
+        
+        .smt-group-count {
+            font-size: 11px;
+            color: #666;
+            background: #1a1a1f;
+            padding: 3px 10px;
+            border-radius: 10px;
+        }
+        
+        .smt-group-breakers {
+            padding: 8px;
+        }
+        
+        .smt-breaker-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        
+        .smt-breaker-row:hover {
+            background: #252530;
+        }
+        
+        .smt-breaker-time {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #888;
+            min-width: 90px;
+        }
+        
+        .smt-breaker-id {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #94a3b8;
+            flex: 1;
+        }
+        
+        .smt-breaker-badges {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .smt-badge {
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .smt-badge.nq { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .smt-badge.es { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
+        .smt-badge.bull { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .smt-badge.bear { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .smt-badge.tf { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        
+        /* Status badges */
+        .smt-badge.status-active { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .smt-badge.status-success-t1 { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .smt-badge.status-success-t2 { background: rgba(22, 163, 74, 0.2); color: #16a34a; font-weight: 700; }
+        .smt-badge.status-failure { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        
+        /* Status stat boxes */
+        .smt-stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: #252530;
+            border: 1px solid #333;
+            min-width: 60px;
+        }
+        
+        .smt-stat-count {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .smt-stat-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .smt-stat-box.active { border-color: rgba(96, 165, 250, 0.3); }
+        .smt-stat-box.active .smt-stat-count { color: #60a5fa; }
+        
+        .smt-stat-box.t1 { border-color: rgba(74, 222, 128, 0.3); }
+        .smt-stat-box.t1 .smt-stat-count { color: #4ade80; }
+        
+        .smt-stat-box.t2 { border-color: rgba(22, 163, 74, 0.3); }
+        .smt-stat-box.t2 .smt-stat-count { color: #16a34a; }
+        
+        .smt-stat-box.fail { border-color: rgba(239, 68, 68, 0.3); }
+        .smt-stat-box.fail .smt-stat-count { color: #ef4444; }
+        
+        .smt-stat-box.winrate { border-color: rgba(251, 191, 36, 0.3); }
+        .smt-stat-box.winrate .smt-stat-count { color: #fbbf24; }
+        
         .smt-modal-content {
             flex: 1;
             overflow: auto;
-            padding: 20px;
+            padding: 0;
         }
         
         .smt-table {
@@ -8418,14 +8644,37 @@
     </div>
 
     <!-- SMT Modal -->
+    <!-- SMT Modal - Breakers with Linked SMT IDs -->
     <div class="smt-modal-overlay" id="smt-modal-overlay" onclick="closeSmtModal(event)">
         <div class="smt-modal" onclick="event.stopPropagation()">
             <div class="smt-modal-header">
-                <div class="smt-modal-title">◇ SMT Analysis - Breakers with SMT Details</div>
+                <div class="smt-modal-title">◇ SMT Linked Breakers</div>
                 <button class="smt-modal-close" onclick="closeSmtModal()">✕</button>
             </div>
+            <!-- Filters -->
+            <div class="smt-modal-filters">
+                <span class="smt-filter-label">SYMBOL</span>
+                <button class="smt-filter-btn nq active" id="smt-filter-nq" onclick="toggleSmtFilter('nq')">NQ</button>
+                <button class="smt-filter-btn es active" id="smt-filter-es" onclick="toggleSmtFilter('es')">ES</button>
+                <span class="smt-filter-divider"></span>
+                <span class="smt-filter-label">DIRECTION</span>
+                <button class="smt-filter-btn bull active" id="smt-filter-bull" onclick="toggleSmtFilter('bull')">↑ Bull</button>
+                <button class="smt-filter-btn bear active" id="smt-filter-bear" onclick="toggleSmtFilter('bear')">↓ Bear</button>
+                <span class="smt-filter-divider"></span>
+                <span class="smt-filter-label">TIMEFRAME</span>
+                <button class="smt-filter-btn active" id="smt-filter-1m" onclick="toggleSmtFilter('1m')">1m</button>
+                <button class="smt-filter-btn active" id="smt-filter-5m" onclick="toggleSmtFilter('5m')">5m</button>
+                <button class="smt-filter-btn active" id="smt-filter-15m" onclick="toggleSmtFilter('15m')">15m</button>
+                <button class="smt-filter-btn active" id="smt-filter-1h" onclick="toggleSmtFilter('1h')">1h</button>
+                <span class="smt-filter-divider"></span>
+                <span class="smt-filter-label">STATUS</span>
+                <button class="smt-filter-btn status-active active" id="smt-filter-active" onclick="toggleSmtFilter('active')">Active</button>
+                <button class="smt-filter-btn status-t1 active" id="smt-filter-t1" onclick="toggleSmtFilter('t1')">T1</button>
+                <button class="smt-filter-btn status-t2 active" id="smt-filter-t2" onclick="toggleSmtFilter('t2')">T2</button>
+                <button class="smt-filter-btn status-fail active" id="smt-filter-fail" onclick="toggleSmtFilter('fail')">Fail</button>
+            </div>
             <div class="smt-modal-content" id="smt-modal-content">
-                <!-- Table populated by JS -->
+                <!-- Content populated by JS -->
             </div>
         </div>
     </div>
@@ -9056,8 +9305,14 @@
                             t2Time: null,
                             events: [],
                             currentFib: 0,
-                            maxFib: 0
+                            maxFib: 0,
+                            linkedSmtId: b.linked_smt_id || null
                         };
+                    }
+                    
+                    // Update linked_smt_id if present
+                    if (b.linked_smt_id) {
+                        breakerCache[id].linkedSmtId = b.linked_smt_id;
                     }
                     
                     // Update display_id if we get a newer one
@@ -9109,7 +9364,50 @@
             
             finalizeBreakers();
             
+            // Load linked_smt_ids from breakers collection
+            loadLinkedSmtIds();
+            
             showToast('Loaded ' + allData.length + ' breakers', 'success');
+        }
+        
+        function loadLinkedSmtIds() {
+            // Fetch breaker records to get linked_smt_id
+            fetch(BREAKERS_FIREBASE_URL + '.json')
+                .then(r => r.json())
+                .then(data => {
+                    if (!data) {
+                        console.log('📊 No breaker records found for linked_smt_id');
+                        return;
+                    }
+                    
+                    let linkedCount = 0;
+                    Object.entries(data).forEach(([key, breaker]) => {
+                        if (breaker && breaker.linked_smt_id) {
+                            // Find matching breaker in cache by ID
+                            // The key might be the breaker_id or the record key
+                            const breakerId = breaker.breaker_id || key;
+                            
+                            if (breakerCache[breakerId]) {
+                                breakerCache[breakerId].linkedSmtId = breaker.linked_smt_id;
+                                linkedCount++;
+                            } else {
+                                // Try matching by key directly
+                                if (breakerCache[key]) {
+                                    breakerCache[key].linkedSmtId = breaker.linked_smt_id;
+                                    linkedCount++;
+                                }
+                            }
+                        }
+                    });
+                    
+                    console.log(`📊 Loaded ${linkedCount} linked_smt_ids from breakers collection`);
+                    
+                    // Update allData reference
+                    allData = Object.values(breakerCache);
+                })
+                .catch(err => {
+                    console.warn('📊 Error loading linked_smt_ids:', err);
+                });
         }
         
         function processIncrementalData(snapshots) {
@@ -9194,9 +9492,15 @@
                             t2Time: null,
                             events: [],
                             currentFib: 0,
-                            maxFib: 0
+                            maxFib: 0,
+                            linkedSmtId: b.linked_smt_id || null
                         };
                         newBreakers++;
+                    }
+                    
+                    // Update linked_smt_id if present
+                    if (b.linked_smt_id) {
+                        breakerCache[id].linkedSmtId = b.linked_smt_id;
                     }
                     
                     // Update display_id if we get a newer one
@@ -10140,7 +10444,10 @@
             return fetch(SMT_FIREBASE_URL)
                 .then(r => r.json())
                 .then(data => {
+                    console.log('📊 SMT Data Load - Raw response:', data ? Object.keys(data).length + ' records' : 'null/empty');
+                    
                     if (!data) {
+                        console.warn('📊 SMT: No data returned from Firebase');
                         if (!incremental) smtData = [];
                         return;
                     }
@@ -10154,6 +10461,7 @@
                     const errors = [];
                     let newCount = 0;
                     let updatedCount = 0;
+                    let validationFailCount = 0;
                     
                     Object.entries(data).forEach(([key, smt]) => {
                         // STRICT VALIDATION - all fields required
@@ -10174,6 +10482,10 @@
                         
                         if (missing.length > 0) {
                             errors.push(`${key}: Missing fields: ${missing.join(', ')}`);
+                            validationFailCount++;
+                            if (validationFailCount <= 3) {
+                                console.warn('📊 SMT Validation fail (top-level):', key, missing);
+                            }
                             return;
                         }
                         
@@ -10193,13 +10505,16 @@
                         if (!smt.nq.curr_time) nestedMissing.push('nq.curr_time');
                         
                         // Validate criteria fields
-                        if (smt.criteria.has_fvg === undefined) nestedMissing.push('criteria.has_fvg');
                         if (smt.criteria.is_sync === undefined) nestedMissing.push('criteria.is_sync');
                         if (smt.criteria.sweep_magnitude_ok === undefined) nestedMissing.push('criteria.sweep_magnitude_ok');
                         if (smt.criteria.defensive_held === undefined) nestedMissing.push('criteria.defensive_held');
                         
                         if (nestedMissing.length > 0) {
                             errors.push(`${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
+                            validationFailCount++;
+                            if (validationFailCount <= 3) {
+                                console.warn('📊 SMT Validation fail (nested):', key, nestedMissing);
+                            }
                             return;
                         }
                         
@@ -10270,7 +10585,6 @@
                                 isWeekly: smt.criteria.is_weekly || false,
                                 isMidnight: smt.criteria.is_midnight || false,
                                 isSession: smt.criteria.is_session || false,
-                                hasFvg: smt.criteria.has_fvg,
                                 isHtf: smt.criteria.is_htf || false,
                                 isSync: smt.criteria.is_sync,
                                 sweepMagnitudeOk: smt.criteria.sweep_magnitude_ok,
@@ -10304,20 +10618,23 @@
                     
                     // Log errors if any
                     if (errors.length > 0) {
-                        console.warn(`SMT validation errors: ${errors.length}`);
+                        console.warn(`📊 SMT validation errors: ${errors.length} failed, ${smtData.length} passed`);
+                        if (errors.length <= 5) {
+                            errors.forEach(e => console.warn('  -', e));
+                        }
                     }
                     
                     // Check for duplicates
                     const smtIds = smtData.map(s => s.smtId);
                     const duplicates = smtIds.filter((id, idx) => smtIds.indexOf(id) !== idx);
                     if (duplicates.length > 0) {
-                        console.warn(`Duplicate SMT IDs: ${duplicates.length}`);
+                        console.warn(`📊 Duplicate SMT IDs: ${duplicates.length}`);
                     }
                     
                     if (incremental) {
-                        console.log(`SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
+                        console.log(`📊 SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
                     } else {
-                        console.log(`Loaded ${smtData.length} SMT signals`);
+                        console.log(`📊 Loaded ${smtData.length} SMT signals (${validationFailCount} failed validation)`);
                     }
                     
                     lastSmtFetchTime = new Date().toISOString();
@@ -10462,20 +10779,20 @@
             const statusClass = smt.status === 'ACTIVE' ? 'active' : 
                                smt.status === 'INVALIDATED' ? 'invalidated' : 'expired';
             
-            // Quality (0-10 scale) - compute color gradient from red to dark green
+            // Quality (0-100 scale) - compute color gradient from red to dark green
             const qScore = smt.quality;
-            // Color gradient: 0=red(#dc2626), 5=yellow(#fbbf24), 10=dark green(#166534)
+            // Color gradient: 0=red(#dc2626), 50=yellow(#fbbf24), 100=dark green(#166534)
             const getQualityColor = (score) => {
-                if (score <= 5) {
-                    // Red to yellow (0-5)
-                    const ratio = score / 5;
+                if (score <= 50) {
+                    // Red to yellow (0-50)
+                    const ratio = score / 50;
                     const r = Math.round(220 - (220 - 251) * ratio);
                     const g = Math.round(38 + (191 - 38) * ratio);
                     const b = Math.round(38 + (36 - 38) * ratio);
                     return `rgb(${r}, ${g}, ${b})`;
                 } else {
-                    // Yellow to dark green (5-10)
-                    const ratio = (score - 5) / 5;
+                    // Yellow to dark green (50-100)
+                    const ratio = (score - 50) / 50;
                     const r = Math.round(251 - (251 - 22) * ratio);
                     const g = Math.round(191 - (191 - 101) * ratio);
                     const b = Math.round(36 + (52 - 36) * ratio);
@@ -10491,11 +10808,13 @@
                 { label: 'Midnight', ok: smt.criteria.isMidnight },
                 { label: 'Session', ok: smt.criteria.isSession },
                 { label: 'HTF', ok: smt.criteria.isHtf },
-                { label: 'FVG', ok: smt.criteria.hasFvg },
                 { label: 'Sync', ok: smt.criteria.isSync },
                 { label: 'Sweep', ok: smt.criteria.sweepMagnitudeOk },
                 { label: 'Held', ok: smt.criteria.defensiveHeld }
             ];
+            
+            // Swept level display
+            const sweptLevel = smt.criteria.sweptLevel || '—';
             
             // Extract detection time from smt_time
             const smtTimeParts = smt.smtTime.split('T');
@@ -10563,7 +10882,7 @@
                 
                 <!-- Criteria - Big Rows -->
                 <div class="detail-section">
-                    <div class="smt-section-title">Signal Criteria</div>
+                    <div class="smt-section-title">Signal Criteria ${sweptLevel !== '—' ? `<span style="float:right;color:#60a5fa;font-weight:600;font-size:11px;">Swept: ${sweptLevel}</span>` : ''}</div>
                     <div class="smt-criteria-list">
                         ${allCriteria.map(c => `
                             <div class="smt-criteria-row ${c.ok ? 'ok' : ''}">
@@ -12629,124 +12948,212 @@
             }
         }
         
+        // SMT Modal Filter State
+        const smtFilters = {
+            nq: true,
+            es: true,
+            bull: true,
+            bear: true,
+            '1m': true,
+            '5m': true,
+            '15m': true,
+            '1h': true,
+            active: true,
+            t1: true,
+            t2: true,
+            fail: true
+        };
+        
+        function toggleSmtFilter(key) {
+            smtFilters[key] = !smtFilters[key];
+            const btn = document.getElementById('smt-filter-' + key);
+            if (btn) {
+                btn.classList.toggle('active', smtFilters[key]);
+            }
+            renderSmtTable();
+        }
+        
         function renderSmtTable() {
             const content = document.getElementById('smt-modal-content');
-            
-            console.log('SMT Modal - allData length:', allData.length);
-            console.log('SMT Modal - tradesData keys:', Object.keys(tradesData).length);
-            if (allData.length > 0) {
-                console.log('SMT Modal - first breaker id:', allData[0].id);
-                console.log('SMT Modal - first breaker:', allData[0]);
-            }
-            if (Object.keys(tradesData).length > 0) {
-                console.log('SMT Modal - first trade key:', Object.keys(tradesData)[0]);
-                console.log('SMT Modal - first trade:', tradesData[Object.keys(tradesData)[0]]);
-            }
             
             if (!allData || allData.length === 0) {
                 content.innerHTML = '<div style="color:#64748b;text-align:center;padding:40px;">No breaker data loaded. Load data first.</div>';
                 return;
             }
             
-            // Build table
+            // Filter breakers with linked SMT and apply filters
+            const breakersWithSmt = allData.filter(b => {
+                if (!b.linkedSmtId) return false;
+                
+                // Apply symbol filter
+                const sym = (b.symbol || '').toUpperCase();
+                if (sym === 'NQ' && !smtFilters.nq) return false;
+                if (sym === 'ES' && !smtFilters.es) return false;
+                
+                // Apply direction filter
+                const dir = (b.dir || '').toLowerCase();
+                if (dir === 'bull' && !smtFilters.bull) return false;
+                if (dir === 'bear' && !smtFilters.bear) return false;
+                
+                // Apply timeframe filter
+                const tf = (b.tf || '').toLowerCase();
+                if (tf === '1m' && !smtFilters['1m']) return false;
+                if (tf === '5m' && !smtFilters['5m']) return false;
+                if (tf === '15m' && !smtFilters['15m']) return false;
+                if (tf === '1h' && !smtFilters['1h']) return false;
+                
+                // Apply status filter
+                const status = (b.status || 'ACTIVE').toUpperCase();
+                if (status === 'ACTIVE' && !smtFilters.active) return false;
+                if (status.includes('SUCCESS_T2') && !smtFilters.t2) return false;
+                if (status.includes('SUCCESS_T1') && !status.includes('SUCCESS_T2') && !smtFilters.t1) return false;
+                if (status.includes('FAILURE') && !smtFilters.fail) return false;
+                
+                return true;
+            });
+            
+            // Group by SMT ID
+            const smtGroups = {};
+            breakersWithSmt.forEach(b => {
+                const smtId = b.linkedSmtId;
+                if (!smtGroups[smtId]) {
+                    smtGroups[smtId] = [];
+                }
+                smtGroups[smtId].push(b);
+            });
+            
+            // Sort groups by most recent breaker time
+            const sortedSmtIds = Object.keys(smtGroups).sort((a, b) => {
+                const maxA = Math.max(...smtGroups[a].map(br => br.startMin));
+                const maxB = Math.max(...smtGroups[b].map(br => br.startMin));
+                return maxB - maxA;
+            });
+            
+            // Sort breakers within each group by time
+            sortedSmtIds.forEach(smtId => {
+                smtGroups[smtId].sort((a, b) => b.startMin - a.startMin);
+            });
+            
+            // Summary counts
+            const totalBreakers = allData.length;
+            const totalWithSmt = allData.filter(b => b.linkedSmtId).length;
+            const filteredBreakers = breakersWithSmt.length;
+            const uniqueSmtCount = sortedSmtIds.length;
+            
+            // Status breakdown counts
+            let activeCount = 0, t1Count = 0, t2Count = 0, failCount = 0;
+            breakersWithSmt.forEach(b => {
+                const status = (b.status || 'ACTIVE').toUpperCase();
+                if (status.includes('SUCCESS_T2')) t2Count++;
+                else if (status.includes('SUCCESS_T1')) t1Count++;
+                else if (status.includes('FAILURE')) failCount++;
+                else activeCount++;
+            });
+            
+            // Calculate win rate (T1 + T2) / (T1 + T2 + Fail)
+            const completedCount = t1Count + t2Count + failCount;
+            const winRate = completedCount > 0 ? ((t1Count + t2Count) / completedCount * 100).toFixed(1) : '—';
+            
             let html = `
-                <table class="smt-table">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Breaker ID</th>
-                            <th>Symbol</th>
-                            <th>TF</th>
-                            <th>Dir</th>
-                            <th>Fib</th>
-                            <th>1M Align</th>
-                            <th>1M SMT</th>
-                            <th>HTF SMT</th>
-                            <th>1M Exhaust</th>
-                            <th>Form FVG</th>
-                            <th>Score</th>
-                            <th>Trade</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div style="padding:12px 16px;background:#1e1e24;border-bottom:1px solid #333;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+                        <div style="font-size:13px;color:#888;">
+                            <span style="color:#22c55e;font-weight:600;">${uniqueSmtCount}</span> unique SMT signals
+                            <span style="color:#555;margin:0 8px;">•</span>
+                            <span style="color:#60a5fa;font-weight:600;">${filteredBreakers}</span> breakers
+                            <span style="color:#555;margin-left:8px;">(${totalWithSmt} total with SMT)</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <div class="smt-stat-box active">
+                            <span class="smt-stat-count">${activeCount}</span>
+                            <span class="smt-stat-label">Active</span>
+                        </div>
+                        <div class="smt-stat-box t1">
+                            <span class="smt-stat-count">${t1Count}</span>
+                            <span class="smt-stat-label">T1</span>
+                        </div>
+                        <div class="smt-stat-box t2">
+                            <span class="smt-stat-count">${t2Count}</span>
+                            <span class="smt-stat-label">T2</span>
+                        </div>
+                        <div class="smt-stat-box fail">
+                            <span class="smt-stat-count">${failCount}</span>
+                            <span class="smt-stat-label">Fail</span>
+                        </div>
+                        <div class="smt-stat-box winrate">
+                            <span class="smt-stat-count">${winRate}${winRate !== '—' ? '%' : ''}</span>
+                            <span class="smt-stat-label">Win Rate</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding:16px;">
             `;
             
-            // Sort by time descending (newest first)
-            const sorted = [...allData].sort((a, b) => b.startMin - a.startMin);
-            
-            console.log('SMT Modal - sorted length:', sorted.length);
-            
-            for (const breaker of sorted) {
-                try {
-                    const time = new Date(breaker.startMin * 60000);
-                    const timeStr = time.toLocaleString('en-US', { 
-                        month: 'numeric', 
-                        day: 'numeric',
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: false 
-                    });
-                    
-                    const dirClass = breaker.direction === 'bull' ? 'bull' : 'bear';
-                    const symClass = breaker.symbol === 'NQ' ? 'nq' : 'es';
-                    
-                    // Get trade data for this breaker
-                    const trade = tradesData[breaker.id];
-                    const scoringRules = trade?.scoring?.rules || {};
-                    const totalScore = trade?.scoring?.score ?? '—';
-                    
-                    // Extract scoring dimensions
-                    const align1m = findScoringRule(scoringRules, '1M_ALIGNMENT');
-                    const smt1m = findScoringRule(scoringRules, '1M_SMT');
-                    const htfSmt = findScoringRule(scoringRules, 'HTF_SMT');
-                    const exhaust1m = findScoringRule(scoringRules, '1M_EXHAUSTION');
-                    const formFvg = findScoringRule(scoringRules, 'FORMATIVE_FVG');
-                    
-                    // Get trade outcome
-                    let tradeStatus = '—';
-                    if (trade) {
-                        const outcome = trade.outcomes?.trade_outcome;
-                        const closeType = trade.outcomes?.close_type;
-                        if (outcome === 'WIN') {
-                            tradeStatus = '<span class="smt-badge bull">WIN</span>';
-                        } else if (outcome === 'LOSS') {
-                            tradeStatus = '<span class="smt-badge bear">LOSS</span>';
-                        } else if (closeType === 'CANCELLED' || closeType === 'FILTERED') {
-                            tradeStatus = '<span class="smt-badge none">SKIP</span>';
-                        } else {
-                            tradeStatus = '<span class="smt-badge none">PEND</span>';
-                        }
-                    }
-                    
-                    // Score color
-                    let scoreClass = '';
-                    if (totalScore >= 5) scoreClass = 'high';
-                    else if (totalScore >= 3) scoreClass = 'med';
-                    else if (totalScore > 0) scoreClass = 'low';
+            if (sortedSmtIds.length === 0) {
+                html += '<div style="text-align:center;color:#555;padding:40px;">No breakers match current filters</div>';
+            } else {
+                for (const smtId of sortedSmtIds) {
+                    const breakers = smtGroups[smtId];
                     
                     html += `
-                        <tr>
-                            <td style="font-family:'Roboto Mono',monospace;font-size:11px;">${timeStr}</td>
-                            <td style="font-family:'Roboto Mono',monospace;font-size:10px;color:#94a3b8;white-space:nowrap;">${breaker.id || '—'}</td>
-                            <td class="${symClass}">${breaker.symbol || '—'}</td>
-                            <td>${breaker.tf || '—'}</td>
-                            <td class="${dirClass}">${(breaker.direction || '').toUpperCase() || '—'}</td>
-                            <td style="font-family:'Roboto Mono',monospace;">${breaker.currentFib?.toFixed(2) || '—'}</td>
-                            <td>${renderScoreCell(align1m)}</td>
-                            <td>${renderScoreCell(smt1m)}</td>
-                            <td>${renderScoreCell(htfSmt)}</td>
-                            <td>${renderScoreCell(exhaust1m)}</td>
-                            <td>${renderScoreCell(formFvg)}</td>
-                            <td><span class="smt-quality ${scoreClass}">${totalScore}</span></td>
-                            <td>${tradeStatus}</td>
-                        </tr>
+                        <div class="smt-group-card">
+                            <div class="smt-group-header">
+                                <div class="smt-group-id">${smtId}</div>
+                                <div class="smt-group-count">${breakers.length} breaker${breakers.length > 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="smt-group-breakers">
                     `;
-                } catch (err) {
-                    console.error('SMT Modal - Error rendering breaker:', breaker, err);
+                    
+                    for (const breaker of breakers) {
+                        const time = new Date(breaker.startMin * 60000);
+                        const timeStr = time.toLocaleString('en-US', { 
+                            month: 'numeric', day: 'numeric',
+                            hour: '2-digit', minute: '2-digit', hour12: false 
+                        });
+                        
+                        const symClass = (breaker.symbol || '').toLowerCase();
+                        const dirClass = (breaker.dir || '').toLowerCase();
+                        
+                        // Parse status for display
+                        const status = (breaker.status || 'ACTIVE').toUpperCase();
+                        let statusLabel, statusClass;
+                        if (status.includes('SUCCESS_T2')) {
+                            statusLabel = 'T2';
+                            statusClass = 'success-t2';
+                        } else if (status.includes('SUCCESS_T1')) {
+                            statusLabel = 'T1';
+                            statusClass = 'success-t1';
+                        } else if (status.includes('FAILURE')) {
+                            statusLabel = 'FAIL';
+                            statusClass = 'failure';
+                        } else {
+                            statusLabel = 'ACTIVE';
+                            statusClass = 'active';
+                        }
+                        
+                        html += `
+                            <div class="smt-breaker-row">
+                                <div class="smt-breaker-time">${timeStr}</div>
+                                <div class="smt-breaker-id">${breaker.id || '—'}</div>
+                                <div class="smt-breaker-badges">
+                                    <span class="smt-badge ${symClass}">${breaker.symbol || '—'}</span>
+                                    <span class="smt-badge tf">${breaker.tf || '—'}</span>
+                                    <span class="smt-badge ${dirClass}">${(breaker.dir || '').toUpperCase()}</span>
+                                    <span class="smt-badge status-${statusClass}">${statusLabel}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
                 }
             }
             
-            html += '</tbody></table>';
+            html += '</div>';
             content.innerHTML = html;
         }
         
