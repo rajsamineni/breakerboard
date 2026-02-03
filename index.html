@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.14</title>
+    <title>SigXFlow v6.15.16</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -6814,25 +6814,32 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 6px;
             background: #252530;
             border: 1px solid #333;
-            min-width: 60px;
+            min-width: 50px;
         }
         
         .smt-stat-count {
             font-family: 'Roboto Mono', monospace;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             line-height: 1.2;
         }
         
         .smt-stat-label {
-            font-size: 10px;
+            font-size: 9px;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+        
+        .smt-stat-pct {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #555;
+            line-height: 1;
         }
         
         .smt-stat-box.active { border-color: rgba(96, 165, 250, 0.3); }
@@ -6849,6 +6856,21 @@
         
         .smt-stat-box.winrate { border-color: rgba(251, 191, 36, 0.3); }
         .smt-stat-box.winrate .smt-stat-count { color: #fbbf24; }
+        
+        .smt-stat-box.nq { border-color: rgba(96, 165, 250, 0.3); }
+        .smt-stat-box.nq .smt-stat-count { color: #60a5fa; }
+        
+        .smt-stat-box.es { border-color: rgba(167, 139, 250, 0.3); }
+        .smt-stat-box.es .smt-stat-count { color: #a78bfa; }
+        
+        .smt-stat-box.bull { border-color: rgba(34, 197, 94, 0.3); }
+        .smt-stat-box.bull .smt-stat-count { color: #22c55e; }
+        
+        .smt-stat-box.bear { border-color: rgba(239, 68, 68, 0.3); }
+        .smt-stat-box.bear .smt-stat-count { color: #ef4444; }
+        
+        .smt-stat-box.tf { border-color: rgba(251, 191, 36, 0.3); }
+        .smt-stat-box.tf .smt-stat-count { color: #fbbf24; }
         
         .smt-modal-content {
             flex: 1;
@@ -13042,21 +13064,49 @@
             
             // Status breakdown counts
             let activeCount = 0, t1Count = 0, t2Count = 0, failCount = 0;
+            let nqCount = 0, esCount = 0;
+            let bullCount = 0, bearCount = 0;
+            let tf1mCount = 0, tf5mCount = 0, tf15mCount = 0, tf1hCount = 0;
+            
             breakersWithSmt.forEach(b => {
                 const status = (b.status || 'ACTIVE').toUpperCase();
                 if (status.includes('SUCCESS_T2')) t2Count++;
                 else if (status.includes('SUCCESS_T1')) t1Count++;
                 else if (status.includes('FAILURE')) failCount++;
                 else activeCount++;
+                
+                // Symbol counts
+                const sym = (b.symbol || '').toUpperCase();
+                if (sym === 'NQ') nqCount++;
+                else if (sym === 'ES') esCount++;
+                
+                // Direction counts
+                const dir = (b.dir || '').toLowerCase();
+                if (dir === 'bull') bullCount++;
+                else if (dir === 'bear') bearCount++;
+                
+                // Timeframe counts
+                const tf = (b.tf || '').toLowerCase();
+                if (tf === '1m') tf1mCount++;
+                else if (tf === '5m') tf5mCount++;
+                else if (tf === '15m') tf15mCount++;
+                else if (tf === '1h') tf1hCount++;
             });
             
             // Calculate win rate (T1 + T2) / (T1 + T2 + Fail)
             const completedCount = t1Count + t2Count + failCount;
             const winRate = completedCount > 0 ? ((t1Count + t2Count) / completedCount * 100).toFixed(1) : '—';
             
+            // Calculate percentages for each status
+            const total = filteredBreakers || 1; // avoid division by zero
+            const activePct = (activeCount / total * 100).toFixed(0);
+            const t1Pct = (t1Count / total * 100).toFixed(0);
+            const t2Pct = (t2Count / total * 100).toFixed(0);
+            const failPct = (failCount / total * 100).toFixed(0);
+            
             let html = `
                 <div style="padding:12px 16px;background:#1e1e24;border-bottom:1px solid #333;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
                         <div style="font-size:13px;color:#888;">
                             <span style="color:#22c55e;font-weight:600;">${uniqueSmtCount}</span> unique SMT signals
                             <span style="color:#555;margin:0 8px;">•</span>
@@ -13064,26 +13114,76 @@
                             <span style="color:#555;margin-left:8px;">(${totalWithSmt} total with SMT)</span>
                         </div>
                     </div>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    
+                    <!-- Status Row -->
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
                         <div class="smt-stat-box active">
                             <span class="smt-stat-count">${activeCount}</span>
+                            <span class="smt-stat-pct">${activePct}%</span>
                             <span class="smt-stat-label">Active</span>
                         </div>
                         <div class="smt-stat-box t1">
                             <span class="smt-stat-count">${t1Count}</span>
+                            <span class="smt-stat-pct">${t1Pct}%</span>
                             <span class="smt-stat-label">T1</span>
                         </div>
                         <div class="smt-stat-box t2">
                             <span class="smt-stat-count">${t2Count}</span>
+                            <span class="smt-stat-pct">${t2Pct}%</span>
                             <span class="smt-stat-label">T2</span>
                         </div>
                         <div class="smt-stat-box fail">
                             <span class="smt-stat-count">${failCount}</span>
+                            <span class="smt-stat-pct">${failPct}%</span>
                             <span class="smt-stat-label">Fail</span>
                         </div>
                         <div class="smt-stat-box winrate">
                             <span class="smt-stat-count">${winRate}${winRate !== '—' ? '%' : ''}</span>
                             <span class="smt-stat-label">Win Rate</span>
+                        </div>
+                        
+                        <div style="width:1px;background:#333;margin:0 8px;"></div>
+                        
+                        <!-- Symbol -->
+                        <div class="smt-stat-box nq">
+                            <span class="smt-stat-count">${nqCount}</span>
+                            <span class="smt-stat-label">NQ</span>
+                        </div>
+                        <div class="smt-stat-box es">
+                            <span class="smt-stat-count">${esCount}</span>
+                            <span class="smt-stat-label">ES</span>
+                        </div>
+                        
+                        <div style="width:1px;background:#333;margin:0 8px;"></div>
+                        
+                        <!-- Direction -->
+                        <div class="smt-stat-box bull">
+                            <span class="smt-stat-count">${bullCount}</span>
+                            <span class="smt-stat-label">Bull</span>
+                        </div>
+                        <div class="smt-stat-box bear">
+                            <span class="smt-stat-count">${bearCount}</span>
+                            <span class="smt-stat-label">Bear</span>
+                        </div>
+                        
+                        <div style="width:1px;background:#333;margin:0 8px;"></div>
+                        
+                        <!-- Timeframes -->
+                        <div class="smt-stat-box tf">
+                            <span class="smt-stat-count">${tf1mCount}</span>
+                            <span class="smt-stat-label">1m</span>
+                        </div>
+                        <div class="smt-stat-box tf">
+                            <span class="smt-stat-count">${tf5mCount}</span>
+                            <span class="smt-stat-label">5m</span>
+                        </div>
+                        <div class="smt-stat-box tf">
+                            <span class="smt-stat-count">${tf15mCount}</span>
+                            <span class="smt-stat-label">15m</span>
+                        </div>
+                        <div class="smt-stat-box tf">
+                            <span class="smt-stat-count">${tf1hCount}</span>
+                            <span class="smt-stat-label">1h</span>
                         </div>
                     </div>
                 </div>
