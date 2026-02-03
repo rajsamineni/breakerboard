@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.16</title>
+    <title>SigXFlow v6.15.28</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -965,6 +965,31 @@
             box-shadow: 0 0 4px rgba(74, 222, 128, 0.6);
         }
         
+        /* SMT linked indicator on breaker bar */
+        .smt-link-indicator {
+            position: absolute;
+            left: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 8px;
+            font-weight: 800;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1;
+            color: #000;
+            background: linear-gradient(135deg, #ffe066 0%, #ffd700 50%, #ffb300 100%);
+            border: 1px solid rgba(0,0,0,0.3);
+            border-radius: 2px;
+            padding: 2px 3px;
+            letter-spacing: -0.5px;
+            z-index: 15;
+            pointer-events: none;
+        }
+        
+        /* Breaker bar with SMT */
+        .breaker-bar.has-smt {
+            padding-left: 26px;
+        }
+        
         /* Active at entry highlight (for selection - yellow crisp) */
         .breaker-bar.active-at-entry {
             box-shadow: 0 0 0 2px #fbbf24, 0 0 8px rgba(251, 191, 36, 0.5) !important;
@@ -1070,10 +1095,20 @@
         /* ===== SMT MARKERS ===== */
         .smt-marker {
             position: absolute;
-            width: 6px;
+            width: 2px;
             z-index: 50;
             cursor: pointer;
             transition: all 0.15s;
+            background: none !important;
+            border-left: 2px dotted;
+        }
+        
+        .smt-marker.bull {
+            border-left-color: rgba(74, 222, 128, 0.7);
+        }
+        
+        .smt-marker.bear {
+            border-left-color: rgba(248, 113, 113, 0.7);
         }
         
         /* Invisible hit area for easier clicking */
@@ -1087,68 +1122,48 @@
             background: transparent;
         }
         
-        .smt-marker.bull {
-            background: linear-gradient(180deg, #4ade80, rgba(74, 222, 128, 0.4));
-            box-shadow: 0 0 12px rgba(74, 222, 128, 0.7), 0 0 24px rgba(74, 222, 128, 0.4);
-        }
-        
-        .smt-marker.bear {
-            background: linear-gradient(180deg, #f87171, rgba(248, 113, 113, 0.4));
-            box-shadow: 0 0 12px rgba(248, 113, 113, 0.7), 0 0 24px rgba(248, 113, 113, 0.4);
-        }
-        
         .smt-marker:hover {
-            width: 10px;
-            margin-left: -2px;
+            width: 4px;
+            border-left-width: 3px;
+            margin-left: -1px;
             z-index: 60;
         }
         
         .smt-marker.bull:hover {
-            box-shadow: 0 0 20px rgba(74, 222, 128, 1), 0 0 40px rgba(74, 222, 128, 0.6);
-            background: linear-gradient(180deg, #4ade80, rgba(74, 222, 128, 0.6));
+            border-left-color: rgba(74, 222, 128, 1);
         }
         
         .smt-marker.bear:hover {
-            box-shadow: 0 0 20px rgba(248, 113, 113, 1), 0 0 40px rgba(248, 113, 113, 0.6);
-            background: linear-gradient(180deg, #f87171, rgba(248, 113, 113, 0.6));
+            border-left-color: rgba(248, 113, 113, 1);
         }
         
         .smt-marker:hover .smt-diamond {
-            width: 16px;
-            height: 16px;
-            border-width: 3px;
-        }
-        
-        .smt-marker:hover .smt-score {
-            font-size: 11px;
-            font-weight: 800;
+            width: 14px;
+            height: 14px;
+            border-width: 2px;
         }
         
         .smt-marker.selected {
-            width: 10px;
-            margin-left: -2px;
+            width: 4px;
+            border-left-width: 3px;
+            margin-left: -1px;
             z-index: 61;
         }
         
         .smt-marker.selected.bull {
-            box-shadow: 0 0 0 2px #fff, 0 0 24px rgba(74, 222, 128, 1), 0 0 48px rgba(74, 222, 128, 0.5);
-            background: linear-gradient(180deg, #4ade80, rgba(74, 222, 128, 0.6));
+            box-shadow: 0 0 0 2px #fff;
+            border-left-color: rgba(74, 222, 128, 1);
         }
         
         .smt-marker.selected.bear {
-            box-shadow: 0 0 0 2px #fff, 0 0 24px rgba(248, 113, 113, 1), 0 0 48px rgba(248, 113, 113, 0.5);
-            background: linear-gradient(180deg, #f87171, rgba(248, 113, 113, 0.6));
+            box-shadow: 0 0 0 2px #fff;
+            border-left-color: rgba(248, 113, 113, 1);
         }
         
         .smt-marker.selected .smt-diamond {
-            width: 16px;
-            height: 16px;
-            border-width: 3px;
-        }
-        
-        .smt-marker.selected .smt-score {
-            font-size: 11px;
-            font-weight: 800;
+            width: 14px;
+            height: 14px;
+            border-width: 2px;
         }
         
         .smt-marker .smt-diamond {
@@ -1156,8 +1171,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(45deg);
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border: 2px solid;
             border-radius: 2px;
             background: #1a1a1f;
@@ -1166,33 +1181,10 @@
         
         .smt-marker.bull .smt-diamond {
             border-color: #4ade80;
-            box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
         }
         
         .smt-marker.bear .smt-diamond {
             border-color: #f87171;
-            box-shadow: 0 0 6px rgba(248, 113, 113, 0.5);
-        }
-        
-        .smt-marker .smt-score {
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 9px;
-            font-weight: 700;
-            font-family: 'Roboto Mono', monospace;
-            white-space: nowrap;
-            transition: all 0.15s;
-            text-shadow: 0 0 4px rgba(0,0,0,0.8);
-        }
-        
-        .smt-marker.bull .smt-score {
-            color: #4ade80;
-        }
-        
-        .smt-marker.bear .smt-score {
-            color: #f87171;
         }
         
         /* Status-based marker styling */
@@ -6872,6 +6864,27 @@
         .smt-stat-box.tf { border-color: rgba(251, 191, 36, 0.3); }
         .smt-stat-box.tf .smt-stat-count { color: #fbbf24; }
         
+        /* Active filter tags */
+        .smt-filter-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .smt-filter-tag.nq { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+        .smt-filter-tag.es { background: rgba(167, 139, 250, 0.2); color: #a78bfa; }
+        .smt-filter-tag.bull { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .smt-filter-tag.bear { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .smt-filter-tag.tf { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .smt-filter-tag.status-active { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+        .smt-filter-tag.status-t1 { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+        .smt-filter-tag.status-t2 { background: rgba(22, 163, 74, 0.2); color: #16a34a; }
+        .smt-filter-tag.status-fail { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        
         .smt-modal-content {
             flex: 1;
             overflow: auto;
@@ -9426,6 +9439,11 @@
                     
                     // Update allData reference
                     allData = Object.values(breakerCache);
+                    
+                    // Re-render chart to show SMT indicators on bars
+                    if (linkedCount > 0) {
+                        renderChart();
+                    }
                 })
                 .catch(err => {
                     console.warn('📊 Error loading linked_smt_ids:', err);
@@ -10684,12 +10702,6 @@
             diamond.className = 'smt-diamond';
             marker.appendChild(diamond);
             
-            // Score at bottom (now single number 0-10)
-            const score = document.createElement('div');
-            score.className = 'smt-score';
-            score.textContent = smt.quality.toFixed(1);
-            marker.appendChild(score);
-            
             // Click handler
             marker.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -10955,6 +10967,17 @@
             
             if (b.status.toUpperCase() !== 'ACTIVE') {
                 bar.classList.add('completed');
+            }
+            
+            // Add SMT linked class and indicator
+            if (b.linkedSmtId) {
+                bar.classList.add('has-smt');
+                
+                const smtIndicator = document.createElement('div');
+                smtIndicator.className = 'smt-link-indicator';
+                smtIndicator.textContent = 'SMT';
+                smtIndicator.title = 'Linked SMT: ' + b.linkedSmtId;
+                bar.appendChild(smtIndicator);
             }
             
             bar.style.left = startX + 'px';
@@ -13104,15 +13127,57 @@
             const t2Pct = (t2Count / total * 100).toFixed(0);
             const failPct = (failCount / total * 100).toFixed(0);
             
+            // Calculate time window from filtered breakers
+            let windowStart = '—', windowEnd = '—';
+            if (breakersWithSmt.length > 0) {
+                const times = breakersWithSmt.map(b => b.startMin).filter(t => t > 0);
+                if (times.length > 0) {
+                    const minTime = Math.min(...times);
+                    const maxTime = Math.max(...times);
+                    const startDate = new Date(minTime * 60000);
+                    const endDate = new Date(maxTime * 60000);
+                    windowStart = startDate.toLocaleString('en-US', { 
+                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false 
+                    });
+                    windowEnd = endDate.toLocaleString('en-US', { 
+                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false 
+                    });
+                }
+            }
+            
             let html = `
                 <div style="padding:12px 16px;background:#1e1e24;border-bottom:1px solid #333;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                    <!-- Time Window -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #2a2a35;">
                         <div style="font-size:13px;color:#888;">
                             <span style="color:#22c55e;font-weight:600;">${uniqueSmtCount}</span> unique SMT signals
                             <span style="color:#555;margin:0 8px;">•</span>
                             <span style="color:#60a5fa;font-weight:600;">${filteredBreakers}</span> breakers
                             <span style="color:#555;margin-left:8px;">(${totalWithSmt} total with SMT)</span>
                         </div>
+                        <div style="font-size:11px;color:#666;font-family:'Roboto Mono',monospace;">
+                            <span style="color:#888;">Window:</span>
+                            <span style="color:#fbbf24;">${windowStart}</span>
+                            <span style="color:#555;margin:0 4px;">→</span>
+                            <span style="color:#fbbf24;">${windowEnd}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Filters Summary -->
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #2a2a35;">
+                        <span style="font-size:10px;color:#555;margin-right:4px;">FILTERS:</span>
+                        ${smtFilters.nq ? '<span class="smt-filter-tag nq">NQ</span>' : ''}
+                        ${smtFilters.es ? '<span class="smt-filter-tag es">ES</span>' : ''}
+                        ${smtFilters.bull ? '<span class="smt-filter-tag bull">Bull</span>' : ''}
+                        ${smtFilters.bear ? '<span class="smt-filter-tag bear">Bear</span>' : ''}
+                        ${smtFilters['1m'] ? '<span class="smt-filter-tag tf">1m</span>' : ''}
+                        ${smtFilters['5m'] ? '<span class="smt-filter-tag tf">5m</span>' : ''}
+                        ${smtFilters['15m'] ? '<span class="smt-filter-tag tf">15m</span>' : ''}
+                        ${smtFilters['1h'] ? '<span class="smt-filter-tag tf">1h</span>' : ''}
+                        ${smtFilters.active ? '<span class="smt-filter-tag status-active">Active</span>' : ''}
+                        ${smtFilters.t1 ? '<span class="smt-filter-tag status-t1">T1</span>' : ''}
+                        ${smtFilters.t2 ? '<span class="smt-filter-tag status-t2">T2</span>' : ''}
+                        ${smtFilters.fail ? '<span class="smt-filter-tag status-fail">Fail</span>' : ''}
                     </div>
                     
                     <!-- Status Row -->
@@ -14418,7 +14483,7 @@
                         <div class="formation-metric smt">
                             <div class="formation-metric-label">SMT Divergence</div>
                             <div class="formation-smt-status ${formation.smt_id ? 'active' : ''}">
-                                ${formation.smt_id ? '✓ ' + formation.smt_id.split('-').slice(0,3).join('-') : '— None'}
+                                ${formation.smt_id ? '✓ ' + formatSmtIdShort(formation.smt_id) : '— None'}
                             </div>
                         </div>
                     </div>
@@ -15460,6 +15525,29 @@
             if (!isoTime) return '—';
             const d = new Date(isoTime);
             return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+        
+        // Format SMT ID for short display
+        // Old format: SMT-NQ-15m-260202T1600-25832-L
+        // New format: SMT-15m-260202-1615e6998-1600n25832-L
+        function formatSmtIdShort(smtId) {
+            if (!smtId) return '—';
+            const parts = smtId.split('-');
+            
+            // Extract direction from last part
+            const lastPart = parts[parts.length - 1];
+            const dir = lastPart === 'L' ? '↑' : lastPart === 'S' ? '↓' : '';
+            
+            // Find timeframe (1m, 5m, 15m, 1h, etc.)
+            let tf = '';
+            for (const part of parts) {
+                if (/^\d+[mh]$/i.test(part)) {
+                    tf = part.toUpperCase();
+                    break;
+                }
+            }
+            
+            return tf ? `${tf} ${dir}` : smtId.substring(0, 12);
         }
         
         // Get the triggered rule name from rules object
