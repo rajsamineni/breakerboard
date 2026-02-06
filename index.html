@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.30</title>
+    <title>SigXFlow v6.15.31</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -10095,89 +10095,87 @@
                             symbol: symbol
                         });
                         
-                        // Trade tabs - only for 1M NQ Bull breakers
-                        if (tf === '1m' && symbol === 'NQ' && b.dir === 'bull') {
-                            const trade = getTradeForBreaker(b.id);
-                            if (trade) {
-                                const barStartX = Math.max(0, (b.startMin - windowStartMin) * PIXELS_PER_MINUTE);
-                                const barEndX = (b.endMin - windowStartMin) * PIXELS_PER_MINUTE;
-                                const barTop = LANE_PADDING + b.stackIdx * (BAR_HEIGHT + BAR_GAP);
+                        // Trade tabs - show for all breakers with trades
+                        const trade = getTradeForBreaker(b.id);
+                        if (trade) {
+                            const barStartX = Math.max(0, (b.startMin - windowStartMin) * PIXELS_PER_MINUTE);
+                            const barEndX = (b.endMin - windowStartMin) * PIXELS_PER_MINUTE;
+                            const barTop = LANE_PADDING + b.stackIdx * (BAR_HEIGHT + BAR_GAP);
+                            
+                            // NEW SCHEMA ONLY
+                            const decision = trade.status?.decision || '';
+                            const phase = trade.status?.phase || '';
+                            const tradeOutcome = trade.outcomes?.trade_outcome || '';
+                            const displayCloseReason = getDisplayCloseReason(trade);
+                            
+                            const isFiltered = decision === 'FILTERED';
+                            const wasFilled = trade.events?.some(e => e.event === 'FILLED') || false;
+                            
+                            // Left tab - entry state
+                            const leftTab = document.createElement('div');
+                            leftTab.className = 'trade-tab trade-tab-left';
+                            leftTab.style.left = (barStartX - 30) + 'px';
+                            leftTab.style.top = barTop + 'px';
+                            
+                            if (isFiltered) {
+                                leftTab.classList.add('denied');
+                                leftTab.textContent = 'D';
+                                leftTab.title = displayCloseReason || 'Filtered';
+                            } else if (phase === 'PENDING') {
+                                leftTab.classList.add('pending');
+                                leftTab.textContent = 'P';
+                                leftTab.title = 'Pending Entry';
+                            } else if (phase === 'FILLED' || phase === 'CLOSED') {
+                                leftTab.classList.add('filled');
+                                leftTab.textContent = 'F';
+                                leftTab.title = 'Filled';
+                            } else {
+                                leftTab.classList.add('pending');
+                                leftTab.textContent = 'P';
+                                leftTab.title = 'Pending';
+                            }
+                            
+                            leftTab.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                showTradeModal(trade);
+                            });
+                            swimlane.appendChild(leftTab);
+                            
+                            // Right tab - exit state (for closed trades)
+                            if (phase === 'CLOSED') {
+                                const rightTab = document.createElement('div');
+                                rightTab.className = 'trade-tab trade-tab-right';
+                                rightTab.style.left = barEndX + 'px';
+                                rightTab.style.top = barTop + 'px';
                                 
-                                // NEW SCHEMA ONLY
-                                const decision = trade.status?.decision || '';
-                                const phase = trade.status?.phase || '';
-                                const tradeOutcome = trade.outcomes?.trade_outcome || '';
-                                const displayCloseReason = getDisplayCloseReason(trade);
-                                
-                                const isFiltered = decision === 'FILTERED';
-                                const wasFilled = trade.events?.some(e => e.event === 'FILLED') || false;
-                                
-                                // Left tab - entry state
-                                const leftTab = document.createElement('div');
-                                leftTab.className = 'trade-tab trade-tab-left';
-                                leftTab.style.left = (barStartX - 30) + 'px';
-                                leftTab.style.top = barTop + 'px';
+                                // Derive win/loss from pnl_points
+                                const pnlPts = trade.outcomes?.close_details?.pnl_points;
                                 
                                 if (isFiltered) {
-                                    leftTab.classList.add('denied');
-                                    leftTab.textContent = 'D';
-                                    leftTab.title = displayCloseReason || 'Filtered';
-                                } else if (phase === 'PENDING') {
-                                    leftTab.classList.add('pending');
-                                    leftTab.textContent = 'P';
-                                    leftTab.title = 'Pending Entry';
-                                } else if (phase === 'FILLED' || phase === 'CLOSED') {
-                                    leftTab.classList.add('filled');
-                                    leftTab.textContent = 'F';
-                                    leftTab.title = 'Filled';
+                                    rightTab.classList.add('denied');
+                                    rightTab.textContent = 'D';
+                                    rightTab.title = displayCloseReason || 'Filtered';
+                                } else if (pnlPts !== undefined) {
+                                    // Use P&L to determine win/loss
+                                    const isWin = pnlPts >= 0;
+                                    rightTab.classList.add(isWin ? 'win' : 'loss');
+                                    rightTab.textContent = isWin ? 'W' : 'L';
+                                    rightTab.title = `${isWin ? 'Win' : 'Loss'} - ${displayCloseReason} (${pnlPts >= 0 ? '+' : ''}${pnlPts.toFixed(1)})`;
+                                } else if (tradeOutcome === 'CANCELLED') {
+                                    rightTab.classList.add('cancelled');
+                                    rightTab.textContent = 'C';
+                                    rightTab.title = 'Cancelled - ' + displayCloseReason;
                                 } else {
-                                    leftTab.classList.add('pending');
-                                    leftTab.textContent = 'P';
-                                    leftTab.title = 'Pending';
+                                    rightTab.classList.add('cancelled');
+                                    rightTab.textContent = 'C';
+                                    rightTab.title = displayCloseReason || 'Closed';
                                 }
                                 
-                                leftTab.addEventListener('click', (e) => {
+                                rightTab.addEventListener('click', (e) => {
                                     e.stopPropagation();
                                     showTradeModal(trade);
                                 });
-                                swimlane.appendChild(leftTab);
-                                
-                                // Right tab - exit state (for closed trades)
-                                if (phase === 'CLOSED') {
-                                    const rightTab = document.createElement('div');
-                                    rightTab.className = 'trade-tab trade-tab-right';
-                                    rightTab.style.left = barEndX + 'px';
-                                    rightTab.style.top = barTop + 'px';
-                                    
-                                    // Derive win/loss from pnl_points
-                                    const pnlPts = trade.outcomes?.close_details?.pnl_points;
-                                    
-                                    if (isFiltered) {
-                                        rightTab.classList.add('denied');
-                                        rightTab.textContent = 'D';
-                                        rightTab.title = displayCloseReason || 'Filtered';
-                                    } else if (pnlPts !== undefined) {
-                                        // Use P&L to determine win/loss
-                                        const isWin = pnlPts >= 0;
-                                        rightTab.classList.add(isWin ? 'win' : 'loss');
-                                        rightTab.textContent = isWin ? 'W' : 'L';
-                                        rightTab.title = `${isWin ? 'Win' : 'Loss'} - ${displayCloseReason} (${pnlPts >= 0 ? '+' : ''}${pnlPts.toFixed(1)})`;
-                                    } else if (tradeOutcome === 'CANCELLED') {
-                                        rightTab.classList.add('cancelled');
-                                        rightTab.textContent = 'C';
-                                        rightTab.title = 'Cancelled - ' + displayCloseReason;
-                                    } else {
-                                        rightTab.classList.add('cancelled');
-                                        rightTab.textContent = 'C';
-                                        rightTab.title = displayCloseReason || 'Closed';
-                                    }
-                                    
-                                    rightTab.addEventListener('click', (e) => {
-                                        e.stopPropagation();
-                                        showTradeModal(trade);
-                                    });
-                                    swimlane.appendChild(rightTab);
-                                }
+                                swimlane.appendChild(rightTab);
                             }
                         }
                     });
