@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.31</title>
+    <title>SigXFlow v6.15.34</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -506,6 +506,105 @@
             box-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
         }
         
+        /* Breaker hover tooltip */
+        .breaker-hover-tooltip {
+            position: fixed;
+            background: rgba(20, 20, 28, 0.98);
+            border: 1px solid rgba(100, 100, 120, 0.4);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: #e5e5e5;
+            pointer-events: none;
+            z-index: 150;
+            display: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255,255,255,0.1);
+            max-width: 320px;
+        }
+        
+        .breaker-hover-tooltip.visible {
+            display: block;
+        }
+        
+        .bht-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .bht-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .bht-tf {
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 10px;
+        }
+        
+        .bht-sym {
+            color: #9ca3af;
+            font-size: 10px;
+        }
+        
+        .bht-dir {
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .bht-dir.bull { color: #4ade80; }
+        .bht-dir.bear { color: #f87171; }
+        
+        .bht-status {
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        .bht-status.active { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .bht-status.t1 { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .bht-status.t2 { background: rgba(34, 197, 94, 0.3); color: #22c55e; }
+        .bht-status.fail { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        
+        .bht-sep {
+            color: #444;
+            margin: 0 2px;
+        }
+        
+        .bht-fib {
+            font-weight: 600;
+        }
+        
+        .bht-fib.bull { color: #4ade80; }
+        .bht-fib.bear { color: #f87171; }
+        
+        .bht-zone {
+            font-size: 10px;
+        }
+        
+        .bht-zone.deep { color: #4ade80; }
+        .bht-zone.partial { color: #fbbf24; }
+        .bht-zone.none { color: #6b7280; }
+        
+        .bht-smt {
+            background: linear-gradient(135deg, #ffe066 0%, #ffd700 50%, #ffb300 100%);
+            color: #000;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        .bht-price {
+            color: #fb923c;
+            font-weight: 600;
+        }
+        
         .scroll-inner {
             display: flex;
             min-width: fit-content;
@@ -968,7 +1067,7 @@
         /* SMT linked indicator on breaker bar */
         .smt-link-indicator {
             position: absolute;
-            left: 3px;
+            right: 3px;
             top: 50%;
             transform: translateY(-50%);
             font-size: 8px;
@@ -987,7 +1086,7 @@
         
         /* Breaker bar with SMT */
         .breaker-bar.has-smt {
-            padding-left: 26px;
+            padding-right: 26px;
         }
         
         /* Active at entry highlight (for selection - yellow crisp) */
@@ -8624,6 +8723,7 @@
     
     <!-- Main chart live cursor time badge -->
     <div class="main-cursor-time" id="main-cursor-time"></div>
+    <div class="breaker-hover-tooltip" id="breaker-hover-tooltip"></div>
     
     <!-- Analysis Modal -->
     <div class="analysis-modal-overlay" id="analysis-modal" onclick="closeAnalysisModal(event)">
@@ -8777,6 +8877,7 @@
         let isLive = true;
         let isFirstLoad = true;
         let lastFetchedTime = null; // Track last observation_time for incremental fetch
+        let lastBreakerRefreshTime = null; // Track last refresh of /breakers collection
         let lastLoadLimit = null; // Track if limit changed (requires full reload)
         let refreshTimer = null;
         let countdownTimer = null;
@@ -9184,9 +9285,10 @@
                 }
             } else {
                 // Incremental load - only fetch newer data from Firebase
-                // Also refresh SMT data and trades data
+                // Also refresh SMT data, trades data, and breakers data
                 loadSmtData(true);
                 loadTradesData();
+                refreshBreakersData(true); // Refresh breakers for SMT links and state updates
                 
                 // Convert lastFetchedTime from "2026-01-21T07:31" to key format "2026-01-21T0731"
                 const lastKey = lastFetchedTime ? lastFetchedTime.replace(':', '') : '';
@@ -9407,47 +9509,105 @@
         }
         
         function loadLinkedSmtIds() {
-            // Fetch breaker records to get linked_smt_id
+            // Initial load - calls refreshBreakersData
+            refreshBreakersData(false);
+        }
+        
+        function refreshBreakersData(incremental = true) {
+            // Fetch breaker records to get linked_smt_id and state updates
             fetch(BREAKERS_FIREBASE_URL + '.json')
                 .then(r => r.json())
                 .then(data => {
                     if (!data) {
-                        console.log('📊 No breaker records found for linked_smt_id');
+                        console.log('📊 No breaker records found');
                         return;
                     }
                     
-                    let linkedCount = 0;
+                    let updatedCount = 0;
+                    let newSmtLinks = 0;
+                    const now = new Date().toISOString();
+                    
                     Object.entries(data).forEach(([key, breaker]) => {
-                        if (breaker && breaker.linked_smt_id) {
-                            // Find matching breaker in cache by ID
-                            // The key might be the breaker_id or the record key
-                            const breakerId = breaker.breaker_id || key;
-                            
-                            if (breakerCache[breakerId]) {
-                                breakerCache[breakerId].linkedSmtId = breaker.linked_smt_id;
-                                linkedCount++;
-                            } else {
-                                // Try matching by key directly
-                                if (breakerCache[key]) {
-                                    breakerCache[key].linkedSmtId = breaker.linked_smt_id;
-                                    linkedCount++;
-                                }
+                        if (!breaker || typeof breaker !== 'object') return;
+                        
+                        const breakerId = breaker.breaker_id || key;
+                        const cachedBreaker = breakerCache[breakerId] || breakerCache[key];
+                        
+                        if (!cachedBreaker) return;
+                        
+                        // Check if this breaker was updated since last refresh
+                        const breakerUpdated = breaker.last_updated;
+                        if (incremental && lastBreakerRefreshTime && breakerUpdated) {
+                            if (breakerUpdated <= lastBreakerRefreshTime) {
+                                return; // Skip - no changes since last refresh
                             }
                         }
+                        
+                        let changed = false;
+                        
+                        // Update linked_smt_id
+                        if (breaker.linked_smt_id && cachedBreaker.linkedSmtId !== breaker.linked_smt_id) {
+                            cachedBreaker.linkedSmtId = breaker.linked_smt_id;
+                            newSmtLinks++;
+                            changed = true;
+                        }
+                        
+                        // Update state fields from breaker record
+                        if (breaker.state) {
+                            // Update status if breaker record has newer info
+                            if (breaker.state.state_status && cachedBreaker.status !== breaker.state.state_status) {
+                                cachedBreaker.status = breaker.state.state_status;
+                                changed = true;
+                            }
+                            
+                            // Update T1 time from state
+                            if (breaker.state.state_t1_time && !cachedBreaker.t1Time) {
+                                cachedBreaker.t1Time = datetimeToMin(breaker.state.state_t1_time);
+                                changed = true;
+                            }
+                            
+                            // Update T2 time from state
+                            if (breaker.state.state_t2_time && !cachedBreaker.t2Time) {
+                                cachedBreaker.t2Time = datetimeToMin(breaker.state.state_t2_time);
+                                changed = true;
+                            }
+                            
+                            // Update max fib from state
+                            if (breaker.state.breaker_max_fib !== undefined) {
+                                const stateMaxFib = parseFloat(breaker.state.breaker_max_fib) || 0;
+                                if (stateMaxFib > cachedBreaker.maxFib) {
+                                    cachedBreaker.maxFib = stateMaxFib;
+                                    changed = true;
+                                }
+                            }
+                            
+                            // Store termination reason if available
+                            if (breaker.state.state_termination_reason) {
+                                cachedBreaker.terminationReason = breaker.state.state_termination_reason;
+                                changed = true;
+                            }
+                        }
+                        
+                        if (changed) updatedCount++;
                     });
                     
-                    console.log(`📊 Loaded ${linkedCount} linked_smt_ids from breakers collection`);
+                    // Update last refresh time
+                    lastBreakerRefreshTime = now;
                     
-                    // Update allData reference
-                    allData = Object.values(breakerCache);
-                    
-                    // Re-render chart to show SMT indicators on bars
-                    if (linkedCount > 0) {
+                    if (updatedCount > 0 || newSmtLinks > 0) {
+                        console.log(`📊 Breakers refresh: ${updatedCount} updated, ${newSmtLinks} new SMT links`);
+                        
+                        // Update allData reference
+                        allData = Object.values(breakerCache);
+                        
+                        // Re-render chart to show updates
                         renderChart();
+                    } else if (!incremental) {
+                        console.log(`📊 Breakers initial load complete`);
                     }
                 })
                 .catch(err => {
-                    console.warn('📊 Error loading linked_smt_ids:', err);
+                    console.warn('📊 Error refreshing breakers:', err);
                 });
         }
         
@@ -10357,6 +10517,16 @@
                 selectTimeContext(clickedMin);
             }, { signal });
             
+            // Mousemove for breaker hover tooltip
+            chartInner.addEventListener('mousemove', (e) => {
+                updateBreakerHoverTooltip(e);
+            }, { signal });
+            
+            chartInner.addEventListener('mouseleave', () => {
+                const tooltip = document.getElementById('breaker-hover-tooltip');
+                if (tooltip) tooltip.classList.remove('visible');
+            }, { signal });
+            
             // Update scroll listener
             const container = document.getElementById('scroll-container');
             container.removeEventListener('scroll', onScroll);
@@ -10476,6 +10646,124 @@
                 cursorLine.classList.remove('visible');
                 cursorTime.style.display = 'none';
             }
+        }
+        
+        // Breaker hover tooltip
+        function updateBreakerHoverTooltip(e) {
+            const tooltip = document.getElementById('breaker-hover-tooltip');
+            if (!tooltip) return;
+            
+            const chartInner = document.getElementById('chart-inner');
+            if (!chartInner) return;
+            
+            const rect = chartInner.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const cursorMin = Math.round(windowStartMin + x / PIXELS_PER_MINUTE);
+            
+            // Find all breakers that the cursor intersects (time-wise)
+            const breakersAtCursor = allData.filter(b => {
+                return b.startMin <= cursorMin && b.endMin >= cursorMin;
+            });
+            
+            if (breakersAtCursor.length === 0) {
+                tooltip.classList.remove('visible');
+                return;
+            }
+            
+            // Sort by timeframe priority (1m first, then 5m, 15m, 1h)
+            const tfOrder = { '1m': 0, '5m': 1, '15m': 2, '1h': 3, '1hr': 3 };
+            breakersAtCursor.sort((a, b) => {
+                const tfA = tfOrder[a.tf] ?? 99;
+                const tfB = tfOrder[b.tf] ?? 99;
+                if (tfA !== tfB) return tfA - tfB;
+                // Then by symbol (NQ first)
+                if (a.symbol !== b.symbol) return a.symbol === 'NQ' ? -1 : 1;
+                return 0;
+            });
+            
+            // Build tooltip HTML (show up to 6 breakers)
+            const maxShow = 6;
+            let html = '';
+            
+            breakersAtCursor.slice(0, maxShow).forEach(b => {
+                const tf = b.tf.replace('hr', 'h').toUpperCase();
+                const tfColor = TF_COLORS[b.tf] || '#888';
+                const dirClass = b.dir;
+                const dirArrow = b.dir === 'bull' ? '▲' : '▼';
+                
+                // Find fib at cursor time
+                let fibAtCursor = b.currentFib || 0;
+                let maxFibAtCursor = b.maxFib || 0;
+                if (b.events && b.events.length > 0) {
+                    for (let i = 0; i < b.events.length; i++) {
+                        if (b.events[i].absMin <= cursorMin) {
+                            fibAtCursor = b.events[i].fib || 0;
+                            maxFibAtCursor = b.events[i].maxFib || b.events[i].fib || 0;
+                        }
+                    }
+                }
+                
+                // Status
+                const parsed = parseStatus(b.status);
+                let statusClass = 'active';
+                let statusText = 'ACTIVE';
+                if (parsed.isSuccess) {
+                    statusClass = parsed.icon === 'T2' ? 't2' : 't1';
+                    statusText = parsed.icon === 'T2' ? 'T2' : 'T1';
+                } else if (parsed.isFail) {
+                    statusClass = 'fail';
+                    statusText = 'FAIL';
+                }
+                
+                // Zone %
+                const zonePct = Math.min(b.zonePct || 0, 100);
+                let zoneClass = 'none';
+                if (zonePct >= 50) zoneClass = 'deep';
+                else if (zonePct > 0) zoneClass = 'partial';
+                
+                // SMT indicator
+                const smtHtml = b.linkedSmtId ? '<span class="bht-smt">SMT</span>' : '';
+                
+                html += `
+                    <div class="bht-row">
+                        <span class="bht-tf" style="background:${tfColor}22;color:${tfColor}">${tf}</span>
+                        <span class="bht-sym">${b.symbol}</span>
+                        <span class="bht-dir ${dirClass}">${dirArrow}</span>
+                        <span class="bht-status ${statusClass}">${statusText}</span>
+                        <span class="bht-sep">│</span>
+                        <span class="bht-fib ${dirClass}">${fibAtCursor.toFixed(2)}</span><span style="color:#666">/</span><span style="color:#aaa">${maxFibAtCursor.toFixed(2)}</span>
+                        <span class="bht-sep">│</span>
+                        <span class="bht-zone ${zoneClass}">${zonePct.toFixed(0)}%</span>
+                        ${smtHtml}
+                    </div>
+                `;
+            });
+            
+            if (breakersAtCursor.length > maxShow) {
+                html += `<div class="bht-row" style="color:#666;font-size:10px">+${breakersAtCursor.length - maxShow} more...</div>`;
+            }
+            
+            tooltip.innerHTML = html;
+            
+            // Position tooltip near cursor
+            const tooltipWidth = 300;
+            const tooltipHeight = tooltip.offsetHeight || 100;
+            
+            let tooltipX = e.clientX + 15;
+            let tooltipY = e.clientY - tooltipHeight / 2;
+            
+            // Keep within viewport
+            if (tooltipX + tooltipWidth > window.innerWidth) {
+                tooltipX = e.clientX - tooltipWidth - 15;
+            }
+            if (tooltipY < 10) tooltipY = 10;
+            if (tooltipY + tooltipHeight > window.innerHeight - 10) {
+                tooltipY = window.innerHeight - tooltipHeight - 10;
+            }
+            
+            tooltip.style.left = tooltipX + 'px';
+            tooltip.style.top = tooltipY + 'px';
+            tooltip.classList.add('visible');
         }
         
         // ===== SMT DATA LOADING =====
