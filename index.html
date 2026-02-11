@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SigXFlow v6.15.34</title>
+    <title>SigXFlow v6.15.43</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1325,49 +1325,6 @@
         .smt-status-pill.invalidated { background: #7f1d1d; color: #fca5a5; }
         .smt-status-pill.expired { background: #44403c; color: #a8a29e; }
         
-        .smt-quality-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            background: #0f0f12;
-            border: 1px solid #2a2a2f;
-        }
-        .smt-quality-pill.high { border-color: #16a34a; }
-        .smt-quality-pill.med { border-color: #ca8a04; }
-        .smt-quality-pill.low { border-color: #dc2626; }
-        
-        .smt-quality-score {
-            padding: 6px 12px;
-            border-radius: 6px;
-            min-width: 50px;
-            text-align: center;
-        }
-        
-        .smt-quality-score .smt-quality-num {
-            font-size: 16px;
-            font-weight: 700;
-            font-family: 'Roboto Mono', monospace;
-            color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        
-        .smt-quality-num {
-            font-size: 14px;
-            font-weight: 700;
-            font-family: 'Roboto Mono', monospace;
-        }
-        .smt-quality-pill.high .smt-quality-num { color: #4ade80; }
-        .smt-quality-pill.med .smt-quality-num { color: #fbbf24; }
-        .smt-quality-pill.low .smt-quality-num { color: #f87171; }
-        
-        .smt-quality-label {
-            font-size: 8px;
-            color: #666;
-            text-transform: uppercase;
-        }
-        
         /* Direction Block */
         .smt-direction-block {
             display: flex;
@@ -1710,55 +1667,6 @@
         
         .smt-criteria-row:not(.ok) .smt-criteria-status {
             color: #444;
-        }
-        
-        /* Quality Bar Section */
-        .smt-quality-bar-section {
-            background: #0a0a0c;
-            border-radius: 6px;
-            padding: 10px;
-        }
-        
-        .smt-qbar-track {
-            position: relative;
-            height: 8px;
-            background: #1a1a1f;
-            border-radius: 4px;
-            overflow: visible;
-            margin-bottom: 6px;
-        }
-        
-        .smt-qbar-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        .smt-qbar-fill.high { background: linear-gradient(90deg, #16a34a, #4ade80); }
-        .smt-qbar-fill.med { background: linear-gradient(90deg, #ca8a04, #fbbf24); }
-        .smt-qbar-fill.low { background: linear-gradient(90deg, #dc2626, #f87171); }
-        
-        .smt-qbar-markers {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-        }
-        .smt-qbar-mark {
-            position: absolute;
-            top: -14px;
-            transform: translateX(-50%);
-            font-size: 8px;
-            color: #444;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        .smt-qbar-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 8px;
-            color: #444;
-            text-transform: uppercase;
         }
         
         /* Meta Row */
@@ -7039,15 +6947,6 @@
         .smt-badge.div { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
         .smt-badge.none { background: rgba(100, 116, 139, 0.2); color: #64748b; }
         
-        .smt-quality {
-            font-family: 'Roboto Mono', monospace;
-            font-weight: 600;
-        }
-        
-        .smt-quality.high { color: #22c55e; }
-        .smt-quality.med { color: #fbbf24; }
-        .smt-quality.low { color: #ef4444; }
-        
         /* Confluence Modal - Enterprise Design */
         .confluence-modal-overlay {
             position: fixed;
@@ -8877,7 +8776,6 @@
         let isLive = true;
         let isFirstLoad = true;
         let lastFetchedTime = null; // Track last observation_time for incremental fetch
-        let lastBreakerRefreshTime = null; // Track last refresh of /breakers collection
         let lastLoadLimit = null; // Track if limit changed (requires full reload)
         let refreshTimer = null;
         let countdownTimer = null;
@@ -9159,8 +9057,6 @@
                 
                 if (useFullLoad) {
                     // Load all data and filter client-side based on LATEST DATA TIME
-                    console.log(`📊 Loading ${currentHours} hours - using full load for accuracy`);
-                    
                     fetch(FIREBASE_URL)
                         .then(r => {
                             if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -9192,13 +9088,10 @@
                                 if (v.observation_time < earliestTime) earliestTime = v.observation_time;
                             });
                             
-                            console.log(`📊 Full data range: ${earliestTime} to ${latestTime}`);
-                            
                             // Calculate cutoff from LATEST DATA TIME (not wall clock)
                             const latestMin = datetimeToMin(latestTime);
                             const cutoffMin = latestMin - (currentHours * 60);
                             
-                            console.log(`📊 Filtering to ${currentHours} hours before latest data (cutoff: ${minToDateTime(cutoffMin)})`);
                             
                             // Filter to only include snapshots within time range
                             const beforeFilter = entries.length;
@@ -9207,7 +9100,6 @@
                                 return snapMin >= cutoffMin;
                             });
                             
-                            console.log(`📊 After filter: ${entries.length} snapshots (removed ${beforeFilter - entries.length})`);
                             
                             // Sort by time
                             entries.sort((a, b) => {
@@ -9235,8 +9127,6 @@
                     // Key format is "2026-01-21T0731" (no colon in time)
                     const cutoffKey = `${cutoffDate.getFullYear()}-${pad(cutoffDate.getMonth()+1)}-${pad(cutoffDate.getDate())}T${pad(cutoffDate.getHours())}${pad(cutoffDate.getMinutes())}`;
                     
-                    console.log(`📊 Loading ${currentHours} hours of data`);
-                    console.log(`📊 Cutoff key: ${cutoffKey}`);
                     
                     // Query by key (since key IS the timestamp)
                     const filteredUrl = FIREBASE_URL + 
@@ -9264,8 +9154,6 @@
                             if (entries.length === 0) throw new Error('No valid data');
                             
                             const times = entries.map(([k, v]) => v.observation_time).sort();
-                            console.log(`✓ Query returned ${entries.length} snapshots`);
-                            console.log(`✓ Data range: ${times[0]} to ${times[times.length-1]}`);
                             
                             entries.sort((a, b) => {
                                 const tsA = a[1].observation_time || '';
@@ -9295,7 +9183,6 @@
                 const url = FIREBASE_URL + 
                     '?orderBy="$key"&startAfter="' + lastKey + '"';
                 
-                console.log('Incremental fetch:', url);
                 
                 fetch(url)
                     .then(r => {
@@ -9326,7 +9213,6 @@
                             }
                         });
                         
-                        console.log('Incremental data:', Object.keys(converted).length, 'snapshots');
                         processIncrementalData(converted);
                     })
                     .catch(err => {
@@ -9374,9 +9260,6 @@
             dataMinTime = minTime;
             dataMaxTime = maxTime;
             
-            console.log(`📊 Processing ${snapshotList.length} snapshots`);
-            console.log(`📊 Time range: ${minToDateTime(minTime)} to ${minToDateTime(maxTime)}`);
-            console.log(`📊 Duration: ${((maxTime - minTime) / 60).toFixed(1)} hours`);
             
             // In live mode, extend window to current time
             const now = new Date();
@@ -9519,60 +9402,51 @@
                 .then(r => r.json())
                 .then(data => {
                     if (!data) {
-                        console.log('📊 No breaker records found');
                         return;
                     }
                     
                     let updatedCount = 0;
                     let newSmtLinks = 0;
-                    const now = new Date().toISOString();
                     
                     Object.entries(data).forEach(([key, breaker]) => {
                         if (!breaker || typeof breaker !== 'object') return;
                         
-                        const breakerId = breaker.breaker_id || key;
-                        const cachedBreaker = breakerCache[breakerId] || breakerCache[key];
+                        // Direct key lookup - keys should match exactly
+                        const cachedBreaker = breakerCache[key];
                         
-                        if (!cachedBreaker) return;
-                        
-                        // Check if this breaker was updated since last refresh
-                        const breakerUpdated = breaker.last_updated;
-                        if (incremental && lastBreakerRefreshTime && breakerUpdated) {
-                            if (breakerUpdated <= lastBreakerRefreshTime) {
-                                return; // Skip - no changes since last refresh
-                            }
+                        if (!cachedBreaker) {
+                            // Breaker exists in /breakers but not yet in cache (not seen in snapshots yet)
+                            return;
                         }
                         
                         let changed = false;
                         
                         // Update linked_smt_id
-                        if (breaker.linked_smt_id && cachedBreaker.linkedSmtId !== breaker.linked_smt_id) {
-                            cachedBreaker.linkedSmtId = breaker.linked_smt_id;
-                            newSmtLinks++;
-                            changed = true;
+                        if (breaker.linked_smt_id) {
+                            if (cachedBreaker.linkedSmtId !== breaker.linked_smt_id) {
+                                cachedBreaker.linkedSmtId = breaker.linked_smt_id;
+                                newSmtLinks++;
+                                changed = true;
+                            }
                         }
                         
                         // Update state fields from breaker record
                         if (breaker.state) {
-                            // Update status if breaker record has newer info
                             if (breaker.state.state_status && cachedBreaker.status !== breaker.state.state_status) {
                                 cachedBreaker.status = breaker.state.state_status;
                                 changed = true;
                             }
                             
-                            // Update T1 time from state
                             if (breaker.state.state_t1_time && !cachedBreaker.t1Time) {
                                 cachedBreaker.t1Time = datetimeToMin(breaker.state.state_t1_time);
                                 changed = true;
                             }
                             
-                            // Update T2 time from state
                             if (breaker.state.state_t2_time && !cachedBreaker.t2Time) {
                                 cachedBreaker.t2Time = datetimeToMin(breaker.state.state_t2_time);
                                 changed = true;
                             }
                             
-                            // Update max fib from state
                             if (breaker.state.breaker_max_fib !== undefined) {
                                 const stateMaxFib = parseFloat(breaker.state.breaker_max_fib) || 0;
                                 if (stateMaxFib > cachedBreaker.maxFib) {
@@ -9581,7 +9455,6 @@
                                 }
                             }
                             
-                            // Store termination reason if available
                             if (breaker.state.state_termination_reason) {
                                 cachedBreaker.terminationReason = breaker.state.state_termination_reason;
                                 changed = true;
@@ -9591,23 +9464,13 @@
                         if (changed) updatedCount++;
                     });
                     
-                    // Update last refresh time
-                    lastBreakerRefreshTime = now;
-                    
                     if (updatedCount > 0 || newSmtLinks > 0) {
-                        console.log(`📊 Breakers refresh: ${updatedCount} updated, ${newSmtLinks} new SMT links`);
-                        
-                        // Update allData reference
                         allData = Object.values(breakerCache);
-                        
-                        // Re-render chart to show updates
                         renderChart();
-                    } else if (!incremental) {
-                        console.log(`📊 Breakers initial load complete`);
                     }
                 })
                 .catch(err => {
-                    console.warn('📊 Error refreshing breakers:', err);
+                    console.warn('Error refreshing breakers:', err);
                 });
         }
         
@@ -9778,7 +9641,6 @@
             const retentionMinutes = (loadHours * 60) + 30;
             const cutoffMin = dataMaxTime - retentionMinutes;
             
-            console.log(`📊 Prune check: retention=${loadHours}h, cutoff=${minToDateTime(cutoffMin)}, maxTime=${minToDateTime(dataMaxTime)}`);
             
             let pruned = 0;
             
@@ -9856,7 +9718,6 @@
             
             const afterPrune = Object.keys(breakerCache).length;
             if (beforePrune !== afterPrune) {
-                console.log(`📊 Pruned ${beforePrune - afterPrune} old breakers`);
             }
             
             allData = Object.values(breakerCache);
@@ -10771,10 +10632,8 @@
             return fetch(SMT_FIREBASE_URL)
                 .then(r => r.json())
                 .then(data => {
-                    console.log('📊 SMT Data Load - Raw response:', data ? Object.keys(data).length + ' records' : 'null/empty');
                     
                     if (!data) {
-                        console.warn('📊 SMT: No data returned from Firebase');
                         if (!incremental) smtData = [];
                         return;
                     }
@@ -10785,63 +10644,14 @@
                         smtCache = {};
                     }
                     
-                    const errors = [];
-                    let newCount = 0;
-                    let updatedCount = 0;
-                    let validationFailCount = 0;
-                    
                     Object.entries(data).forEach(([key, smt]) => {
-                        // STRICT VALIDATION - all fields required
-                        const missing = [];
-                        if (!smt.smt_id) missing.push('smt_id');
-                        if (!smt.dir) missing.push('dir');
-                        if (!smt.tf) missing.push('tf');
-                        if (!smt.smt_time) missing.push('smt_time');
-                        if (!smt.last_detected) missing.push('last_detected');
-                        if (!smt.methods) missing.push('methods');
-                        if (smt.strength === undefined) missing.push('strength');
-                        if (!smt.roles) missing.push('roles');
-                        if (!smt.es) missing.push('es');
-                        if (!smt.nq) missing.push('nq');
-                        if (!smt.criteria) missing.push('criteria');
-                        if (smt.quality === undefined) missing.push('quality');
-                        if (!smt.status) missing.push('status');
-                        
-                        if (missing.length > 0) {
-                            errors.push(`${key}: Missing fields: ${missing.join(', ')}`);
-                            validationFailCount++;
-                            if (validationFailCount <= 3) {
-                                console.warn('📊 SMT Validation fail (top-level):', key, missing);
-                            }
+                        // MINIMAL VALIDATION - only fields required for rendering
+                        if (!smt.smt_id || !smt.dir || !smt.tf || !smt.smt_time || !smt.roles) {
                             return;
                         }
                         
-                        // Validate nested required fields
-                        const nestedMissing = [];
-                        if (!smt.roles.defensive) nestedMissing.push('roles.defensive');
-                        if (!smt.roles.sweep) nestedMissing.push('roles.sweep');
-                        if (smt.es.prev_price === undefined) nestedMissing.push('es.prev_price');
-                        if (smt.es.curr_price === undefined) nestedMissing.push('es.curr_price');
-                        if (!smt.es.structure) nestedMissing.push('es.structure');
-                        if (!smt.es.prev_time) nestedMissing.push('es.prev_time');
-                        if (!smt.es.curr_time) nestedMissing.push('es.curr_time');
-                        if (smt.nq.prev_price === undefined) nestedMissing.push('nq.prev_price');
-                        if (smt.nq.curr_price === undefined) nestedMissing.push('nq.curr_price');
-                        if (!smt.nq.structure) nestedMissing.push('nq.structure');
-                        if (!smt.nq.prev_time) nestedMissing.push('nq.prev_time');
-                        if (!smt.nq.curr_time) nestedMissing.push('nq.curr_time');
-                        
-                        // Validate criteria fields
-                        if (smt.criteria.is_sync === undefined) nestedMissing.push('criteria.is_sync');
-                        if (smt.criteria.sweep_magnitude_ok === undefined) nestedMissing.push('criteria.sweep_magnitude_ok');
-                        if (smt.criteria.defensive_held === undefined) nestedMissing.push('criteria.defensive_held');
-                        
-                        if (nestedMissing.length > 0) {
-                            errors.push(`${key}: Missing nested fields: ${nestedMissing.join(', ')}`);
-                            validationFailCount++;
-                            if (validationFailCount <= 3) {
-                                console.warn('📊 SMT Validation fail (nested):', key, nestedMissing);
-                            }
+                        // Validate roles.defensive is present (needed for lane placement)
+                        if (!smt.roles.defensive) {
                             return;
                         }
                         
@@ -10856,7 +10666,6 @@
                         // Parse smt_time to minutes
                         const smtMin = datetimeToMin(smt.smt_time);
                         if (isNaN(smtMin)) {
-                            errors.push(`${key}: Invalid smt_time format: ${smt.smt_time}`);
                             return;
                         }
                         
@@ -10876,37 +10685,37 @@
                             smtTime: smt.smt_time,
                             smtMin: smtMin,
                             barIndex: smt.bar_index || 0,
-                            lastDetected: smt.last_detected,
+                            lastDetected: smt.last_detected || smt.smt_time,
                             
-                            // Methods and strength
-                            methods: smt.methods,
-                            strength: smt.strength,
+                            // Methods and strength (optional)
+                            methods: smt.methods || [],
+                            strength: smt.strength || 0,
                             
                             // Roles
                             defensiveAsset: smt.roles.defensive,
-                            sweepAsset: smt.roles.sweep,
+                            sweepAsset: smt.roles.sweep || (smt.roles.defensive === 'NQ' ? 'ES' : 'NQ'),
                             leadingAsset: smt.roles.leading || smt.roles.defensive,
                             
-                            // ES swing data
-                            es: {
+                            // ES swing data (optional)
+                            es: smt.es ? {
                                 prevPrice: smt.es.prev_price,
                                 currPrice: smt.es.curr_price,
                                 structure: smt.es.structure,
                                 prevTime: smt.es.prev_time,
                                 currTime: smt.es.curr_time
-                            },
+                            } : null,
                             
-                            // NQ swing data
-                            nq: {
+                            // NQ swing data (optional)
+                            nq: smt.nq ? {
                                 prevPrice: smt.nq.prev_price,
                                 currPrice: smt.nq.curr_price,
                                 structure: smt.nq.structure,
                                 prevTime: smt.nq.prev_time,
                                 currTime: smt.nq.curr_time
-                            },
+                            } : null,
                             
-                            // Criteria
-                            criteria: {
+                            // Criteria (optional)
+                            criteria: smt.criteria ? {
                                 sweptLevel: smt.criteria.swept_level || null,
                                 isDaily: smt.criteria.is_daily || false,
                                 isWeekly: smt.criteria.is_weekly || false,
@@ -10916,13 +10725,10 @@
                                 isSync: smt.criteria.is_sync,
                                 sweepMagnitudeOk: smt.criteria.sweep_magnitude_ok,
                                 defensiveHeld: smt.criteria.defensive_held
-                            },
+                            } : null,
                             
-                            // Quality score (0-10)
-                            quality: smt.quality,
-                            
-                            // Status
-                            status: smt.status
+                            // Status (default to ACTIVE if missing)
+                            status: smt.status || 'ACTIVE'
                         };
                         
                         // For incremental updates, update or add
@@ -10930,10 +10736,8 @@
                             const existingIdx = smtData.findIndex(s => s.smtId === parsed.smtId);
                             if (existingIdx >= 0) {
                                 smtData[existingIdx] = parsed;
-                                updatedCount++;
                             } else {
                                 smtData.push(parsed);
-                                newCount++;
                             }
                         } else {
                             smtData.push(parsed);
@@ -10943,31 +10747,9 @@
                         smtCache[parsed.smtId] = { lastDetected: parsed.lastDetected, status: parsed.status };
                     });
                     
-                    // Log errors if any
-                    if (errors.length > 0) {
-                        console.warn(`📊 SMT validation errors: ${errors.length} failed, ${smtData.length} passed`);
-                        if (errors.length <= 5) {
-                            errors.forEach(e => console.warn('  -', e));
-                        }
-                    }
-                    
-                    // Check for duplicates
-                    const smtIds = smtData.map(s => s.smtId);
-                    const duplicates = smtIds.filter((id, idx) => smtIds.indexOf(id) !== idx);
-                    if (duplicates.length > 0) {
-                        console.warn(`📊 Duplicate SMT IDs: ${duplicates.length}`);
-                    }
-                    
-                    if (incremental) {
-                        console.log(`📊 SMT incremental: ${newCount} new, ${updatedCount} updated (total: ${smtData.length})`);
-                    } else {
-                        console.log(`📊 Loaded ${smtData.length} SMT signals (${validationFailCount} failed validation)`);
-                    }
-                    
                     lastSmtFetchTime = new Date().toISOString();
                 })
                 .catch(err => {
-                    console.error('Error loading SMT data:', err);
                     smtData = [];
                 });
         }
@@ -11100,54 +10882,30 @@
             const statusClass = smt.status === 'ACTIVE' ? 'active' : 
                                smt.status === 'INVALIDATED' ? 'invalidated' : 'expired';
             
-            // Quality (0-100 scale) - compute color gradient from red to dark green
-            const qScore = smt.quality;
-            // Color gradient: 0=red(#dc2626), 50=yellow(#fbbf24), 100=dark green(#166534)
-            const getQualityColor = (score) => {
-                if (score <= 50) {
-                    // Red to yellow (0-50)
-                    const ratio = score / 50;
-                    const r = Math.round(220 - (220 - 251) * ratio);
-                    const g = Math.round(38 + (191 - 38) * ratio);
-                    const b = Math.round(38 + (36 - 38) * ratio);
-                    return `rgb(${r}, ${g}, ${b})`;
-                } else {
-                    // Yellow to dark green (50-100)
-                    const ratio = (score - 50) / 50;
-                    const r = Math.round(251 - (251 - 22) * ratio);
-                    const g = Math.round(191 - (191 - 101) * ratio);
-                    const b = Math.round(36 + (52 - 36) * ratio);
-                    return `rgb(${r}, ${g}, ${b})`;
-                }
-            };
-            const qualityBgColor = getQualityColor(qScore);
-            
             // Build all criteria - show checkmark for true, blank for false
+            const criteria = smt.criteria || {};
             const allCriteria = [
-                { label: 'Daily', ok: smt.criteria.isDaily },
-                { label: 'Weekly', ok: smt.criteria.isWeekly },
-                { label: 'Midnight', ok: smt.criteria.isMidnight },
-                { label: 'Session', ok: smt.criteria.isSession },
-                { label: 'HTF', ok: smt.criteria.isHtf },
-                { label: 'Sync', ok: smt.criteria.isSync },
-                { label: 'Sweep', ok: smt.criteria.sweepMagnitudeOk },
-                { label: 'Held', ok: smt.criteria.defensiveHeld }
+                { label: 'Daily', ok: criteria.isDaily },
+                { label: 'Weekly', ok: criteria.isWeekly },
+                { label: 'Midnight', ok: criteria.isMidnight },
+                { label: 'Session', ok: criteria.isSession },
+                { label: 'HTF', ok: criteria.isHtf },
+                { label: 'Sync', ok: criteria.isSync },
+                { label: 'Sweep', ok: criteria.sweepMagnitudeOk },
+                { label: 'Held', ok: criteria.defensiveHeld }
             ];
             
             // Swept level display
-            const sweptLevel = smt.criteria.sweptLevel || '—';
+            const sweptLevel = criteria.sweptLevel || '—';
             
             // Extract detection time from smt_time
             const smtTimeParts = smt.smtTime.split('T');
             const detectionTime = smtTimeParts[1] ? smtTimeParts[1].substring(0, 5) : '';
             
             document.getElementById('panel-content').innerHTML = `
-                <!-- Status & Quality Header -->
+                <!-- Status Header -->
                 <div class="smt-header-row">
                     <div class="smt-status-pill ${statusClass}">${smt.status}</div>
-                    <div class="smt-quality-score" style="background: ${qualityBgColor}">
-                        <span class="smt-quality-num">${smt.quality.toFixed(1)}</span>
-                    </div>
                 </div>
                 
                 <!-- Direction Headline -->
@@ -15594,7 +15352,6 @@
                         }
                     });
                     
-                    console.log(`Loaded ${Object.keys(tradesData).length} trades`);
                 })
                 .catch(err => {
                     console.warn('Failed to load trades:', err);
